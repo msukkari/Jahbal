@@ -107,9 +107,4 @@
       <Filter>FX</Filter>
     </CustomBuild>
   </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="FX\Basic.fx">
-      <Filter>FX</Filter>
-    </FxCompile>
-  </ItemGroup>
 </Project>
