@@ -20,10 +20,10 @@ public:
 
 	ID3D11Device* GetGFXDevice() { return m_Renderer->GetGFXDevice(); }
 
-private:
 	Mesh* m_Mesh;
 	Material* m_Material;
 
 	JRenderer* m_Renderer;
+
 };
 

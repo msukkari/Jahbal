@@ -11,7 +11,6 @@ struct VIN
 struct VOUT
 {
 	float4 PosH    : SV_POSITION;
-	float3 PosW    : POSITION;
 };
 
 
@@ -19,7 +18,7 @@ VOUT VS(VIN vin)
 {
 	VOUT vout;
 
-	vout.PosH = float4(vin.PosL, 1.0f);
+	vout.PosH = mul(float4(vin.PosL, 1.0f), gWorldViewProj);
 
 	return vout;
 }

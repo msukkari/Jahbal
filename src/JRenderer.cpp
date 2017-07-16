@@ -2,15 +2,41 @@
 #include <d3d11shader.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <DirectXMath.h>
+#include <vector>
 
 #include "JRenderer.h"
 #include "Scene.h"
+#include "Entity.h"
+#include "VisualComponent.h"
+#include "Material.h"
+#include "Shader.h"
+#include "Mesh.h"
+
+using namespace DirectX;
 
 bool JRenderer::Init(int width, int height, HWND hMainWnd)
 {
     m_ClientWidth = width;
     m_ClientHeight = height;
 
+	// Calculate projection matrix
+	XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f*(3.14f), (float)(m_ClientWidth) / m_ClientHeight, 1.0f, 1000.0f);
+	XMStoreFloat4x4(&m_ProjectionMatrix, P);
+
+	// Calculate view matrix
+	// TODO: create camera class
+	float x = -1.39f;
+	float z = -1.92f;
+	float y = 0.77f;
+
+	XMVECTOR pos = XMVectorSet(x, y, z, 1.0f);
+	XMVECTOR target = XMVectorZero();
+	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+
+	XMMATRIX V = XMMatrixLookAtLH(pos, target, up);
+	XMStoreFloat4x4(&m_ViewMatrix, V);
+		
     if (!InitDX11(hMainWnd))
         return false;
 
@@ -19,15 +45,48 @@ bool JRenderer::Init(int width, int height, HWND hMainWnd)
 
 void JRenderer::DrawScene(Scene* scene)
 {
-	m_d3dImmediateContext->ClearRenderTargetView(m_RenderTargetView, reinterpret_cast<const float*>(&m_ClearColor));
-	m_d3dImmediateContext->ClearDepthStencilView(m_DepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	GetGFXDeviceContext()->ClearRenderTargetView(m_RenderTargetView, reinterpret_cast<const float*>(&m_ClearColor));
+	GetGFXDeviceContext()->ClearDepthStencilView(m_DepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 
 	// Draw Scene
+	for (int i = 0; i < scene->GetEntityList()->size(); i++)
+	{
+		Entity* entity = scene->GetEntityList()->at(i);
 
+		GetGFXDeviceContext()->IASetInputLayout(entity->GetShader()->m_InputLayout);
+		GetGFXDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+
+		ID3DX11EffectTechnique* activeTech = entity->GetShader()->m_Tech;
+		D3DX11_TECHNIQUE_DESC techDesc;
+		activeTech->GetDesc(&techDesc);
+
+		UINT stride = sizeof(Vertex);
+		UINT offset = 0;
+
+		for (int p = 0; p < techDesc.Passes; p++)
+		{
+			GetGFXDeviceContext()->IASetVertexBuffers(0, 1, &entity->GetMesh()->m_VB, &stride, &offset);
+			GetGFXDeviceContext()->IASetIndexBuffer(entity->GetMesh()->m_IB, DXGI_FORMAT_R32_UINT, 0);
+
+			XMMATRIX model = XMMatrixIdentity();
+			XMMATRIX view = XMLoadFloat4x4(&m_ViewMatrix);
+			XMMATRIX projection = XMLoadFloat4x4(&m_ProjectionMatrix);
+			XMMATRIX MVP = model * view * projection;
+
+			entity->GetShader()->m_MVP->SetMatrix(reinterpret_cast<const float*>(&MVP));
+
+
+			activeTech->GetPassByIndex(p)->Apply(0, GetGFXDeviceContext());
+			GetGFXDeviceContext()->DrawIndexed(entity->GetMesh()->m_IndexCount, 0, 0);
+		}
+	}
 
 	HR(m_SwapChain->Present(0, 0));
 }
+
+
 
 // Boiler-plate DX initialization
 bool JRenderer::InitDX11(HWND hMainWnd)

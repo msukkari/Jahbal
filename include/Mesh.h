@@ -15,9 +15,10 @@ public:
 
 	void OnDestroy();
 
-private:
 	std::vector<Vertex> m_VertexList;
 	std::vector<int> m_IndexList;
+	int m_IndexCount;
+	int m_VertexCount;
 
 	VisualComponent* m_ComponentOwner;
 

@@ -35,6 +35,9 @@ private:
     ID3D11DepthStencilView* m_DepthStencilView;
     D3D11_VIEWPORT m_ScreenViewport;
 
+	DirectX::XMFLOAT4X4 m_ProjectionMatrix;
+	DirectX::XMFLOAT4X4 m_ViewMatrix;
+
     int m_ClientWidth;
     int m_ClientHeight;
     bool m_Enable4xMSAA;

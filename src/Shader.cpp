@@ -29,6 +29,7 @@ void Shader::InitFX()
 		0, m_ComponentOwner->GetGFXDevice(), &m_FX));
 
 	m_Tech = m_FX->GetTechniqueByName("Tech");
+	m_MVP = m_FX->GetVariableByName("gWorldViewProj")->AsMatrix();
 }
 
 void Shader::InitInputLayout()

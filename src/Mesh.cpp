@@ -10,6 +10,9 @@ Mesh::Mesh(VisualComponent* owner, std::vector<Vertex> vertexList, std::vector<i
 	m_ComponentOwner = owner;
 	m_VertexList = vertexList;
 	m_IndexList = indexList;
+	m_VertexCount = m_VertexList.size();
+	m_IndexCount = m_IndexList.size();
+	
 
 	D3D11_BUFFER_DESC vbd;
 	vbd.Usage = D3D11_USAGE_IMMUTABLE;
