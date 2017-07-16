@@ -5,7 +5,7 @@
 class TransformComponent : public Component
 {
 public:
-	TransformComponent();
+	TransformComponent(BaseEntity* owner);
 	~TransformComponent();
 };
 

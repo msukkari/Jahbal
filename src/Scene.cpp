@@ -8,5 +8,8 @@ void Scene::AddEntity(Entity* entity)
 
 void Scene::Shutdown()
 {
-
+	for (Entity* e : m_EntityList)
+	{
+		delete e->m_VisualComponent;
+	}
 }

@@ -2,8 +2,10 @@
 
 
 
-TransformComponent::TransformComponent()
+TransformComponent::TransformComponent(BaseEntity* owner) :
+	Component(owner)
 {
+
 }
 
 

@@ -4,6 +4,8 @@
 #include <sstream>
 
 #include "Engine.h"
+#include "Entity.h"
+#include "Vertex.h"
 #include "JRenderer.h"
 #include "Scene.h"
 
@@ -35,6 +37,24 @@ bool Engine::Init()
 	// Scene is manually created/filled temporaraly
 	// Eventually, the scene will be serialized for future loading or opened for editing in an edit mode
 	m_ActiveScene = new Scene();
+
+	
+	Entity* entity = new Entity(m_JRenderer);
+
+	std::vector<Vertex> vertexList(4);
+	std::vector<int> indexList(6);
+
+	vertexList[0].Position = { 1.0f, 1.0f, 0.0 };
+	vertexList[1].Position = { 1.0f, -1.0f, 0.0 };
+	vertexList[2].Position = { -1.0f, -1.0f, 0.0 };
+	vertexList[3].Position = { -1.0f, 1.0f, 0.0 };
+
+	indexList = { 0, 1, 2, 2, 3, 0 };
+
+	entity->m_VisualComponent->CreateMesh(vertexList, indexList);
+	entity->m_VisualComponent->CreateMaterial();
+	m_ActiveScene->GetEntityList()->push_back(entity);
+	
 
     return true;
 }

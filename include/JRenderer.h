@@ -20,6 +20,10 @@ public:
 
 	void ShutDown();
 
+
+	ID3D11Device* GetGFXDevice() { return m_d3dDevice; }
+	ID3D11DeviceContext* GetGFXDeviceContext() { return m_d3dImmediateContext; }
+
 private:
     bool InitDX11(HWND hMainWnd);
 

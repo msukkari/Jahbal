@@ -5,16 +5,24 @@
 
 #include "Vertex.h"
 
+class VisualComponent;
+
 class Mesh
 {
 public:
-	Mesh();
-	Mesh(std::vector<Vertex> vertexList);
+	Mesh(VisualComponent* owner, std::vector<Vertex> vertexList, std::vector<int> indexList);
 	~Mesh();
 
 	void OnDestroy();
 
 private:
 	std::vector<Vertex> m_VertexList;
+	std::vector<int> m_IndexList;
+
+	VisualComponent* m_ComponentOwner;
+
+	ID3D11Buffer* m_VB;
+	ID3D11Buffer* m_IB;
+
 };
 

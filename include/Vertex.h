@@ -2,11 +2,9 @@
 
 #include <DirectXMath.h>
 
-using namespace DirectX;
-
 struct Vertex
 {
-	XMFLOAT3 Position;
-	XMVECTORF32 Color;
-	XMFLOAT2 UV;
+	DirectX::XMFLOAT3 Position;
+	//DirectX::XMFLOAT3 Normal;
+	//DirectX::XMFLOAT2 UV;
 };
