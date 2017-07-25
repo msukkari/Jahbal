@@ -38,6 +38,9 @@ private:
 	DirectX::XMFLOAT4X4 m_ProjectionMatrix;
 	DirectX::XMFLOAT4X4 m_ViewMatrix;
 
+	ID3D11RasterizerState* m_WireFrameRS;
+	ID3D11RasterizerState* m_SolidRS;
+
     int m_ClientWidth;
     int m_ClientHeight;
     bool m_Enable4xMSAA;

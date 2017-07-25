@@ -108,7 +108,7 @@ fxgroup
                 //   o0.x <- <PS return value>.x; o0.y <- <PS return value>.y; o0.z <- <PS return value>.z; o0.w <- <PS return value>.w
                 //
                 #line 28 "C:\Users\machine\Documents\Jahbal\fx\Generic.fx"
-                mov o0.xyzw, l(1.000000,0,0,1.000000)
+                mov o0.xyzw, l(1.000000,1.000000,1.000000,1.000000)
                 ret 
                 // Approximately 2 instruction slots used
                             

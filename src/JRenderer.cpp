@@ -26,9 +26,9 @@ bool JRenderer::Init(int width, int height, HWND hMainWnd)
 
 	// Calculate view matrix
 	// TODO: create camera class
-	float x = -1.39f;
-	float z = -1.92f;
-	float y = 0.77f;
+	float x = 0.0f;
+	float z = -20.0f;
+	float y = 5.0f;
 
 	XMVECTOR pos = XMVectorSet(x, y, z, 1.0f);
 	XMVECTOR target = XMVectorZero();
@@ -39,6 +39,23 @@ bool JRenderer::Init(int width, int height, HWND hMainWnd)
 		
     if (!InitDX11(hMainWnd))
         return false;
+
+	D3D11_RASTERIZER_DESC wireframeDesc;
+	ZeroMemory(&wireframeDesc, sizeof(D3D11_RASTERIZER_DESC));
+	wireframeDesc.FillMode = D3D11_FILL_WIREFRAME;
+	wireframeDesc.CullMode = D3D11_CULL_BACK;
+	wireframeDesc.FrontCounterClockwise = false;
+	wireframeDesc.DepthClipEnable = true;
+
+	HR(m_d3dDevice->CreateRasterizerState(&wireframeDesc, &m_WireFrameRS));
+
+	ZeroMemory(&wireframeDesc, sizeof(D3D11_RASTERIZER_DESC));
+	wireframeDesc.FillMode = D3D11_FILL_SOLID;
+	wireframeDesc.CullMode = D3D11_CULL_BACK;
+	wireframeDesc.FrontCounterClockwise = false;
+	wireframeDesc.DepthClipEnable = true;
+
+	HR(m_d3dDevice->CreateRasterizerState(&wireframeDesc, &m_SolidRS));
 
     return true;
 }
@@ -57,6 +74,7 @@ void JRenderer::DrawScene(Scene* scene)
 		GetGFXDeviceContext()->IASetInputLayout(entity->GetShader()->m_InputLayout);
 		GetGFXDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+		GetGFXDeviceContext()->RSSetState(m_WireFrameRS);
 
 		ID3DX11EffectTechnique* activeTech = entity->GetShader()->m_Tech;
 		D3DX11_TECHNIQUE_DESC techDesc;

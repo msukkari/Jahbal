@@ -2,6 +2,8 @@
 #include <WindowsX.h>
 #include <tchar.h>
 #include <sstream>
+#include <iostream>
+#include <fstream>
 
 #include "Engine.h"
 #include "Entity.h"
@@ -38,7 +40,7 @@ bool Engine::Init()
 	// Eventually, the scene will be serialized for future loading or opened for editing in an edit mode
 	m_ActiveScene = new Scene();
 
-	
+	/*
 	Entity* entity = new Entity(m_JRenderer);
 
 	std::vector<Vertex> vertexList(4);
@@ -52,6 +54,48 @@ bool Engine::Init()
 	indexList = { 0, 1, 2, 2, 3, 0 };
 
 	entity->m_VisualComponent->CreateMesh(vertexList, indexList);
+	entity->m_VisualComponent->CreateMaterial();
+	m_ActiveScene->GetEntityList()->push_back(entity);
+	*/
+
+	Entity* entity = new Entity(m_JRenderer);
+
+	std::ifstream fin("Models/skull.txt");
+
+	if (!fin)
+	{
+		MessageBox(0, L"Models/skull.txt not found.", 0, 0);
+		return false;
+	}
+
+	UINT vcount = 0;
+	UINT tcount = 0;
+	std::string ignore;
+
+	fin >> ignore >> vcount;
+	fin >> ignore >> tcount;
+	fin >> ignore >> ignore >> ignore >> ignore;
+
+	std::vector<Vertex> vertices(vcount);
+	for (UINT i = 0; i < vcount; ++i)
+	{
+		fin >> vertices[i].Position.x >> vertices[i].Position.y >> vertices[i].Position.z;
+		fin >> vertices[i].Normal.x >> vertices[i].Normal.y >> vertices[i].Normal.z;
+	}
+
+	fin >> ignore;
+	fin >> ignore;
+	fin >> ignore;
+
+	std::vector<int> indices(3 * tcount);
+	for (UINT i = 0; i < tcount; ++i)
+	{
+		fin >> indices[i * 3 + 0] >> indices[i * 3 + 1] >> indices[i * 3 + 2];
+	}
+
+	fin.close();
+
+	entity->m_VisualComponent->CreateMesh(vertices, indices);
 	entity->m_VisualComponent->CreateMaterial();
 	m_ActiveScene->GetEntityList()->push_back(entity);
 	
