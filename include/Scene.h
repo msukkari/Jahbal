@@ -4,6 +4,7 @@
 
 class Entity;
 class Light;
+class Camera;
 
 class Scene
 {
@@ -14,7 +15,12 @@ public:
 
 	std::vector<Entity*>* GetEntityList() { return &m_EntityList; }
 
+	void SetActiveCamera(Camera* cam) { m_ActiveCamera = cam; }
+	Camera* GetActiveCamera() { return m_ActiveCamera; }
+
 private:
 	std::vector<Entity*> m_EntityList;
 	std::vector<Light*> m_LightList;
+	Camera* m_ActiveCamera;
+
 };

@@ -12,4 +12,9 @@ void Scene::Shutdown()
 	{
 		delete e->m_VisualComponent;
 	}
+
+	for (Light* l : m_LightList)
+	{
+		delete l;
+	}
 }

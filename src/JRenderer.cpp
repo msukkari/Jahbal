@@ -12,6 +12,8 @@
 #include "Material.h"
 #include "Shader.h"
 #include "Mesh.h"
+#include "SimpleMath.h"
+#include "Camera.h" 
 
 using namespace DirectX;
 
@@ -28,7 +30,7 @@ bool JRenderer::Init(int width, int height, HWND hMainWnd)
 	// TODO: create camera class
 	float x = 0.0f;
 	float z = -20.0f;
-	float y = 5.0f;
+	float y = 20.0f;
 
 	XMVECTOR pos = XMVectorSet(x, y, z, 1.0f);
 	XMVECTOR target = XMVectorZero();
@@ -65,6 +67,7 @@ void JRenderer::DrawScene(Scene* scene)
 	GetGFXDeviceContext()->ClearRenderTargetView(m_RenderTargetView, reinterpret_cast<const float*>(&m_ClearColor));
 	GetGFXDeviceContext()->ClearDepthStencilView(m_DepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
+	Camera* cam = scene->GetActiveCamera();
 
 	// Draw Scene
 	for (int i = 0; i < scene->GetEntityList()->size(); i++)
@@ -74,7 +77,7 @@ void JRenderer::DrawScene(Scene* scene)
 		GetGFXDeviceContext()->IASetInputLayout(entity->GetShader()->m_InputLayout);
 		GetGFXDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		GetGFXDeviceContext()->RSSetState(m_WireFrameRS);
+		GetGFXDeviceContext()->RSSetState(m_SolidRS);
 
 		ID3DX11EffectTechnique* activeTech = entity->GetShader()->m_Tech;
 		D3DX11_TECHNIQUE_DESC techDesc;
@@ -89,7 +92,7 @@ void JRenderer::DrawScene(Scene* scene)
 			GetGFXDeviceContext()->IASetIndexBuffer(entity->GetMesh()->m_IB, DXGI_FORMAT_R32_UINT, 0);
 
 			XMMATRIX model = XMMatrixIdentity();
-			XMMATRIX view = XMLoadFloat4x4(&m_ViewMatrix);
+			XMMATRIX view = cam->GetLookAtMatrix();
 			XMMATRIX projection = XMLoadFloat4x4(&m_ProjectionMatrix);
 			XMMATRIX MVP = model * view * projection;
 

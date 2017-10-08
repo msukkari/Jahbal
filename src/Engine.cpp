@@ -4,12 +4,18 @@
 #include <sstream>
 #include <iostream>
 #include <fstream>
+#include <memory>
+#include <DirectXMath.h>
 
 #include "Engine.h"
 #include "Entity.h"
 #include "Vertex.h"
 #include "JRenderer.h"
 #include "Scene.h"
+#include "Camera.h"
+#include "SimpleMath.h"
+
+using namespace DirectX;
 
 Engine* Engine::m_spInstance = nullptr;
 
@@ -35,6 +41,10 @@ bool Engine::Init()
     m_JRenderer = new JRenderer();
     if (!m_JRenderer->Init(m_ClientWidth, m_ClientHeight, m_hMainWnd))
         return false;
+
+	m_Keyboard = std::make_unique<Keyboard>();
+	m_Mouse = std::make_unique<Mouse>();
+	m_Mouse->SetWindow(m_hMainWnd);
 
 	// Scene is manually created/filled temporaraly
 	// Eventually, the scene will be serialized for future loading or opened for editing in an edit mode
@@ -98,6 +108,12 @@ bool Engine::Init()
 	entity->m_VisualComponent->CreateMesh(vertices, indices);
 	entity->m_VisualComponent->CreateMaterial();
 	m_ActiveScene->GetEntityList()->push_back(entity);
+
+	Vector4 camPosition = Vector4(0.0f, 20.0f, -20.0f, 1.0f);
+	Vector4 camTarget = Vector4(0.0f, 0.0f, 0.0f, 0.0f);
+	Camera* camera = new Camera();
+
+	m_ActiveScene->SetActiveCamera(camera);
 	
 
     return true;
@@ -167,6 +183,30 @@ LRESULT Engine::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		return 0;
+	case WM_ACTIVATEAPP:
+		Keyboard::ProcessMessage(msg, wParam, lParam);
+		Mouse::ProcessMessage(msg, wParam, lParam);
+		break;
+	case WM_INPUT:
+	case WM_MOUSEMOVE:
+	case WM_LBUTTONDOWN:
+	case WM_LBUTTONUP:
+	case WM_RBUTTONDOWN:
+	case WM_RBUTTONUP:
+	case WM_MBUTTONDOWN:
+	case WM_MBUTTONUP:
+	case WM_MOUSEWHEEL:
+	case WM_XBUTTONDOWN:
+	case WM_XBUTTONUP:
+	case WM_MOUSEHOVER:
+		Mouse::ProcessMessage(msg, wParam, lParam);
+		break;
+	case WM_KEYDOWN:
+	case WM_SYSKEYDOWN:
+	case WM_KEYUP:
+	case WM_SYSKEYUP:
+		Keyboard::ProcessMessage(msg, wParam, lParam);
+		break;
 	}
     return DefWindowProc(hwnd, msg, wParam, lParam);
 }
@@ -196,12 +236,45 @@ void Engine::Run()
 
 void Engine::HandleEvents()
 {
+	auto kb = m_Keyboard->GetState();
+	if (kb.Escape) m_Running = false;
+		
 
+	auto mouse = m_Mouse->GetState();
+
+	Camera* cam = m_ActiveScene->GetActiveCamera();
+	float phi = cam->m_Phi;
+	float theta = cam->m_Theta;
+	float radius = cam->m_Radius;
+
+	if (cam)
+	{
+		if (kb.Up || kb.W)
+			phi += 0.0005f;
+		if (kb.Down || kb.S)
+			phi -= 0.0005f;
+		if (kb.Left || kb.A)
+			theta -= 0.0005f;
+		if (kb.Right || kb.D)
+			theta += 0.0005f;
+		if (kb.OemPlus) radius += 0.01;
+		if (kb.OemMinus) radius -= 0.01f;
+
+		radius = radius < 1.0 ? 1.0f : radius;
+		phi = phi > (3.14f / 2.0f) ? (3.14f / 2.0f) : (phi < -(3.14f / 2.0f) ? -(3.14f / 2.0f) : phi);
+		cam->m_Phi = phi; cam->m_Theta = theta; cam->m_Radius = radius;
+		cam->UpdatePosition();
+	}
 }
 
 void Engine::Update()
 {
 
+}
+
+void Engine::OnKeyDown(WPARAM keyState)
+{
+	
 }
 
 void Engine::DrawScene(Scene* scene)
@@ -210,7 +283,7 @@ void Engine::DrawScene(Scene* scene)
 		m_JRenderer->DrawScene(scene);
 	else
 	{
-		printf("ERROR: Attempting to drawe scene with no renderer!");
+		printf("ERROR: Attempting to draw scene with no renderer!");
 		m_Running = false;
 	}
 

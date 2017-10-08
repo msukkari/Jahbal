@@ -1,6 +1,9 @@
 #pragma once
 
 #include <string>
+#include <memory>
+#include <Keyboard.h>
+#include <Mouse.h>
 
 class JRenderer;
 class Scene;
@@ -33,6 +36,8 @@ private:
     void Update();
     void DrawScene(Scene* scene);
 
+	void OnKeyDown(WPARAM keyState);
+
     HINSTANCE		m_hAppInst;
     HWND			m_hMainWnd;
     bool			m_Minimized;
@@ -46,6 +51,9 @@ private:
 
     JRenderer* m_JRenderer;
 	Scene* m_ActiveScene;
+
+	std::unique_ptr<DirectX::Keyboard> m_Keyboard;
+	std::unique_ptr<DirectX::Mouse> m_Mouse;
 
     static Engine* m_spInstance;
 };
