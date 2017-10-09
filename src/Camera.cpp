@@ -3,7 +3,7 @@
 
 Camera::Camera()
 {
-	m_Phi = 0; m_Theta = 0; m_Radius = 50.0;
+	m_Phi = 0; m_Theta = 0; m_Radius = 30.0;
 
 	UpdatePosition();
 	m_target = Vector4(0.0f, 0.0f, 0.0f, 0.0f);

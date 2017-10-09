@@ -14,6 +14,9 @@
 #include "Scene.h"
 #include "Camera.h"
 #include "SimpleMath.h"
+#include "ShaderManager.h"
+#include "Shader.h"
+#include "JGeneric.h"
 
 using namespace DirectX;
 
@@ -41,6 +44,8 @@ bool Engine::Init()
     m_JRenderer = new JRenderer();
     if (!m_JRenderer->Init(m_ClientWidth, m_ClientHeight, m_hMainWnd))
         return false;
+
+	ShaderManager::GetInstance()->Init(m_JRenderer->GetGFXDevice());
 
 	m_Keyboard = std::make_unique<Keyboard>();
 	m_Mouse = std::make_unique<Mouse>();
@@ -107,6 +112,7 @@ bool Engine::Init()
 
 	entity->m_VisualComponent->CreateMesh(vertices, indices);
 	entity->m_VisualComponent->CreateMaterial();
+	entity->m_VisualComponent->m_Shader = ShaderManager::GetInstance()->m_JGeneric;
 	m_ActiveScene->GetEntityList()->push_back(entity);
 
 	Vector4 camPosition = Vector4(0.0f, 20.0f, -20.0f, 1.0f);

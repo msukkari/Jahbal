@@ -17,7 +17,7 @@ public:
 
 	Mesh* GetMesh() { return m_VisualComponent->m_Mesh; }
 	Material* GetMaterial() { return m_VisualComponent->m_Material; }
-	Shader* GetShader() { return m_VisualComponent->m_Material->m_Shader; }
+	Shader* GetShader() { return m_VisualComponent->m_Shader; }
 
 	VisualComponent* m_VisualComponent;
 };

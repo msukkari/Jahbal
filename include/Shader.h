@@ -1,25 +1,17 @@
 #pragma once
 
-#include "d3dx11effect.h"
+#include <d3d11.h>
+#include <string>
 
-class VisualComponent;
+#include "d3dx11effect.h"
 
 class Shader
 {
 public:
-	Shader(VisualComponent* owner);
+	Shader(ID3D11Device* device, const std::string filename);
 	~Shader();
 
-	void InitFX();
-	void InitInputLayout();
-
 	ID3DX11Effect* m_FX;
-	ID3DX11EffectTechnique* m_Tech;
 	ID3D11InputLayout* m_InputLayout;
-
-	ID3DX11EffectMatrixVariable* m_MVP;
-
-	VisualComponent* m_ComponentOwner;
-
 };
 

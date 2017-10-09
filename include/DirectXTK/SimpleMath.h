@@ -1025,6 +1025,7 @@ namespace std
 } // namespace std
 
 
+#define Vector2 SimpleMath::Vector2
 #define Vector3 SimpleMath::Vector3
 #define Vector4 SimpleMath::Vector4
 #define Matrix SimpleMath::Matrix

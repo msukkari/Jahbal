@@ -24,6 +24,7 @@
     <ClCompile Include="src\dxerr.cpp" />
     <ClCompile Include="src\Engine.cpp" />
     <ClCompile Include="src\Entity.cpp" />
+    <ClCompile Include="src\JGeneric.cpp" />
     <ClCompile Include="src\JRenderer.cpp" />
     <ClCompile Include="src\Light.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -31,6 +32,7 @@
     <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\Shader.cpp" />
+    <ClCompile Include="src\ShaderManager.cpp" />
     <ClCompile Include="src\TransformComponent.cpp" />
     <ClCompile Include="src\VisualComponent.cpp" />
   </ItemGroup>
@@ -41,11 +43,13 @@
     <ClInclude Include="include\dxerr.h" />
     <ClInclude Include="include\Engine.h" />
     <ClInclude Include="include\Entity.h" />
+    <ClInclude Include="include\JGeneric.h" />
     <ClInclude Include="include\JRenderer.h" />
     <ClInclude Include="include\Light.h" />
     <ClInclude Include="include\Mesh.h" />
     <ClInclude Include="include\Scene.h" />
     <ClInclude Include="include\Shader.h" />
+    <ClInclude Include="include\ShaderManager.h" />
     <ClInclude Include="include\TransformComponent.h" />
     <ClInclude Include="include\Vertex.h" />
     <ClInclude Include="include\VisualComponent.h" />

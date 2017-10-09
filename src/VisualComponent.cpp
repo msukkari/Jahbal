@@ -12,6 +12,7 @@ VisualComponent::VisualComponent(BaseEntity* owner, JRenderer* renderer) :
 
 	m_Mesh = nullptr;
 	m_Material = nullptr;
+	m_Shader = nullptr;
 
 	m_Renderer = renderer;
 }
@@ -43,6 +44,6 @@ void VisualComponent::CreateMaterial()
 		delete m_Material;
 	}
 
-	m_Material = new Material();
-	m_Material->m_Shader = new Shader(this);
+	//m_Material = new Material();
+	//m_Material->m_Shader = new Shader(this);
 }

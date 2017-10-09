@@ -14,6 +14,9 @@
 #include "Mesh.h"
 #include "SimpleMath.h"
 #include "Camera.h" 
+#include "ShaderManager.h"
+#include "Shader.h"
+#include "JGeneric.h"
 
 using namespace DirectX;
 
@@ -74,12 +77,12 @@ void JRenderer::DrawScene(Scene* scene)
 	{
 		Entity* entity = scene->GetEntityList()->at(i);
 
-		GetGFXDeviceContext()->IASetInputLayout(entity->GetShader()->m_InputLayout);
+		GetGFXDeviceContext()->IASetInputLayout(ShaderManager::GetInstance()->m_JGeneric->m_InputLayout);
 		GetGFXDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 		GetGFXDeviceContext()->RSSetState(m_SolidRS);
 
-		ID3DX11EffectTechnique* activeTech = entity->GetShader()->m_Tech;
+		ID3DX11EffectTechnique* activeTech = ShaderManager::GetInstance()->m_JGeneric->Tech;
 		D3DX11_TECHNIQUE_DESC techDesc;
 		activeTech->GetDesc(&techDesc);
 
@@ -96,7 +99,12 @@ void JRenderer::DrawScene(Scene* scene)
 			XMMATRIX projection = XMLoadFloat4x4(&m_ProjectionMatrix);
 			XMMATRIX MVP = model * view * projection;
 
-			entity->GetShader()->m_MVP->SetMatrix(reinterpret_cast<const float*>(&MVP));
+			ShaderManager::GetInstance()->m_JGeneric->SetWorldViewProj(MVP);
+			ShaderManager::GetInstance()->m_JGeneric->SetWorld(model);
+
+			Vector4 camPosition = scene->GetActiveCamera()->m_position;
+			XMFLOAT3 eyePos = XMFLOAT3(camPosition.x, camPosition.y, camPosition.z);
+			ShaderManager::GetInstance()->m_JGeneric->SetEyePosW(eyePos);
 
 
 			activeTech->GetPassByIndex(p)->Apply(0, GetGFXDeviceContext());

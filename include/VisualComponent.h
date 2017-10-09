@@ -6,6 +6,7 @@
 #include "JRenderer.h"
 
 class Mesh;
+class Shader;
 class Material;
 struct Vertex;
 
@@ -21,6 +22,7 @@ public:
 	ID3D11Device* GetGFXDevice() { return m_Renderer->GetGFXDevice(); }
 
 	Mesh* m_Mesh;
+	Shader* m_Shader;
 	Material* m_Material;
 
 	JRenderer* m_Renderer;
