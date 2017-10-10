@@ -76,11 +76,6 @@ class Light : BaseEntity
 {
 public:
 	Light(LightType lightType);
-	LightData* GetLightData() { return m_LightData; }
-
-private:
-	TransformComponent* m_TransformComponent;
-
 	LightType m_LightType;
 
 	LightData* m_LightData;

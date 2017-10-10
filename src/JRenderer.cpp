@@ -17,6 +17,7 @@
 #include "ShaderManager.h"
 #include "Shader.h"
 #include "JGeneric.h"
+#include "Light.h"
 
 using namespace DirectX;
 
@@ -86,6 +87,12 @@ void JRenderer::DrawScene(Scene* scene)
 		D3DX11_TECHNIQUE_DESC techDesc;
 		activeTech->GetDesc(&techDesc);
 
+		Light* sun = nullptr;
+		if (!scene->GetLightList()->empty())
+			sun = scene->GetLightList()->at(0);
+
+		ShaderManager::GetInstance()->m_JGeneric->SetDLight((DLightData*)sun->m_LightData);
+
 		UINT stride = sizeof(Vertex);
 		UINT offset = 0;
 
@@ -101,12 +108,13 @@ void JRenderer::DrawScene(Scene* scene)
 
 			ShaderManager::GetInstance()->m_JGeneric->SetWorldViewProj(MVP);
 			ShaderManager::GetInstance()->m_JGeneric->SetWorld(model);
+			ShaderManager::GetInstance()->m_JGeneric->SetMaterial(entity->m_VisualComponent->m_Material);
 
 			Vector4 camPosition = scene->GetActiveCamera()->m_position;
 			XMFLOAT3 eyePos = XMFLOAT3(camPosition.x, camPosition.y, camPosition.z);
 			ShaderManager::GetInstance()->m_JGeneric->SetEyePosW(eyePos);
 
-
+			
 			activeTech->GetPassByIndex(p)->Apply(0, GetGFXDeviceContext());
 			GetGFXDeviceContext()->DrawIndexed(entity->GetMesh()->m_IndexCount, 0, 0);
 		}

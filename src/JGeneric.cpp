@@ -6,10 +6,16 @@ JGeneric::JGeneric(ID3D11Device* device, std::string filename)
 {
 	Tech = m_FX->GetTechniqueByName("Tech");
 
+
+	// cbPerObject
 	WorldViewProj = m_FX->GetVariableByName("gWorldViewProj")->AsMatrix();
 	World = m_FX->GetVariableByName("gWorld")->AsMatrix();
 	WorldInvTranspose = m_FX->GetVariableByName("gWorldInvTranspose")->AsMatrix();
 	EyePosW = m_FX->GetVariableByName("gEyePosW")->AsVector();
+	Mat = m_FX->GetVariableByName("gMaterial");
+
+	// cbPerFrame
+	DirectionalLight = m_FX->GetVariableByName("gDLight");
 
 	D3D11_INPUT_ELEMENT_DESC PosNorUVDesc[] =
 	{

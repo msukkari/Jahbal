@@ -17,6 +17,7 @@
 #include "ShaderManager.h"
 #include "Shader.h"
 #include "JGeneric.h"
+#include "OBJLoader.h"
 
 using namespace DirectX;
 
@@ -110,9 +111,21 @@ bool Engine::Init()
 
 	fin.close();
 
+	/*
+	std::vector<Vertex> fidgetV;
+	std::vector<int> fidgetI;
+	OBJLoader::loadOBJ("./Models/Fidget_Spinner.obj", fidgetV, fidgetI);
+	*/
+
+	Material* material = new Material();
+	material->Ambient = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
+	material->Diffuse = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
+	material->Specular = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
+
 	entity->m_VisualComponent->CreateMesh(vertices, indices);
 	entity->m_VisualComponent->CreateMaterial();
 	entity->m_VisualComponent->m_Shader = ShaderManager::GetInstance()->m_JGeneric;
+	entity->m_VisualComponent->m_Material = material;
 	m_ActiveScene->GetEntityList()->push_back(entity);
 
 	Vector4 camPosition = Vector4(0.0f, 20.0f, -20.0f, 1.0f);
@@ -120,6 +133,16 @@ bool Engine::Init()
 	Camera* camera = new Camera();
 
 	m_ActiveScene->SetActiveCamera(camera);
+
+	Light* sun = new Light(Directional);
+	DLightData* sunData = new DLightData();
+	sunData->Ambient = Vector4(0.2f, 0.2f, 0.2f, 1.0f);
+	sunData->Diffuse = Vector4(0.5f, 0.5f, 0.5f, 1.0f);
+	sunData->Specular = Vector4(0.5f, 0.5f, 0.5f, 1.0f);
+	sunData->Direction = Vector3(0.57735f, -0.57735f, 0.57735f);
+	sun->m_LightData = sunData;
+
+	m_ActiveScene->GetLightList()->push_back(sun);
 	
 
     return true;

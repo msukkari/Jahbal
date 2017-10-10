@@ -14,6 +14,7 @@ public:
 	void Shutdown();
 
 	std::vector<Entity*>* GetEntityList() { return &m_EntityList; }
+	std::vector<Light*>* GetLightList() { return &m_LightList; }
 
 	void SetActiveCamera(Camera* cam) { m_ActiveCamera = cam; }
 	Camera* GetActiveCamera() { return m_ActiveCamera; }

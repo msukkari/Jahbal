@@ -1,14 +1,17 @@
 #pragma once
 
-class Shader;
+#include <d3d11.h>
+#include "SimpleMath.h"
 
+using namespace DirectX;
 
 class Material
 {
 public:
-	Material();
-	~Material();
 
-	Shader* m_Shader;
+	Material() {}
+	XMFLOAT4 Ambient;
+	XMFLOAT4 Diffuse;
+	XMFLOAT4 Specular;
 };
 
