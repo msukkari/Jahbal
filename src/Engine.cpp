@@ -56,26 +56,9 @@ bool Engine::Init()
 	// Eventually, the scene will be serialized for future loading or opened for editing in an edit mode
 	m_ActiveScene = new Scene();
 
-	/*
 	Entity* entity = new Entity(m_JRenderer);
 
-	std::vector<Vertex> vertexList(4);
-	std::vector<int> indexList(6);
-
-	vertexList[0].Position = { 1.0f, 1.0f, 0.0 };
-	vertexList[1].Position = { 1.0f, -1.0f, 0.0 };
-	vertexList[2].Position = { -1.0f, -1.0f, 0.0 };
-	vertexList[3].Position = { -1.0f, 1.0f, 0.0 };
-
-	indexList = { 0, 1, 2, 2, 3, 0 };
-
-	entity->m_VisualComponent->CreateMesh(vertexList, indexList);
-	entity->m_VisualComponent->CreateMaterial();
-	m_ActiveScene->GetEntityList()->push_back(entity);
-	*/
-
-	Entity* entity = new Entity(m_JRenderer);
-
+	// Mesh
 	std::ifstream fin("Models/skull.txt");
 
 	if (!fin)
@@ -111,16 +94,10 @@ bool Engine::Init()
 
 	fin.close();
 
-	/*
-	std::vector<Vertex> fidgetV;
-	std::vector<int> fidgetI;
-	OBJLoader::loadOBJ("./Models/Fidget_Spinner.obj", fidgetV, fidgetI);
-	*/
-
 	Material* material = new Material();
 	material->Ambient = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
 	material->Diffuse = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
-	material->Specular = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
+	material->Specular = XMFLOAT4(0.8f, 0.8f, 0.8f, 8.0f);
 
 	entity->m_VisualComponent->CreateMesh(vertices, indices);
 	entity->m_VisualComponent->CreateMaterial();
@@ -128,12 +105,14 @@ bool Engine::Init()
 	entity->m_VisualComponent->m_Material = material;
 	m_ActiveScene->GetEntityList()->push_back(entity);
 
+	// Camera
 	Vector4 camPosition = Vector4(0.0f, 20.0f, -20.0f, 1.0f);
 	Vector4 camTarget = Vector4(0.0f, 0.0f, 0.0f, 0.0f);
 	Camera* camera = new Camera();
 
 	m_ActiveScene->SetActiveCamera(camera);
 
+	// Directional light
 	Light* sun = new Light(Directional);
 	DLightData* sunData = new DLightData();
 	sunData->Ambient = Vector4(0.2f, 0.2f, 0.2f, 1.0f);

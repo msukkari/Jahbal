@@ -137,12 +137,27 @@ fxgroup
                 //
                 // }
                 //
+                // cbuffer cbPerObject2
+                // {
+                //
+                //   struct Material
+                //   {
+                //       
+                //       float4 ambient;                // Offset:    0
+                //       float4 diffuse;                // Offset:   16
+                //       float4 specular;               // Offset:   32
+                //
+                //   } gMaterial;                       // Offset:    0 Size:    48
+                //
+                // }
+                //
                 //
                 // Resource Bindings:
                 //
                 // Name                                 Type  Format         Dim Slot Elements
                 // ------------------------------ ---------- ------- ----------- ---- --------
                 // cbPerFrame                        cbuffer      NA          NA    0        1
+                // cbPerObject2                      cbuffer      NA          NA    1        1
                 //
                 //
                 //
@@ -164,6 +179,7 @@ fxgroup
                 ps_5_0
                 dcl_globalFlags refactoringAllowed | skipOptimization
                 dcl_constantbuffer cb0[5], immediateIndexed
+                dcl_constantbuffer cb1[3], immediateIndexed
                 dcl_input_ps linear v1.xyz
                 dcl_input_ps linear v2.xyz
                 dcl_output o0.xyzw
@@ -179,10 +195,10 @@ fxgroup
                 mov r0.xyz, cb0[3].xyzx  // r0.x <- light_direction.x; r0.y <- light_direction.y; r0.z <- light_direction.z
                 mov r0.w, cb0[1].x  // r0.w <- light_diffuseC.x
                 mov r1.xyzw, cb0[2].xyzw  // r1.x <- light_specC.x; r1.y <- light_specC.y; r1.z <- light_specC.z; r1.w <- light_specC.w
-                mov r2.x, l(0.800000)  // r2.x <- material_diffuseC.x
-                mov r3.xyzw, l(0.800000,0.800000,0.800000,8.000000)  // r3.x <- material_specC.x; r3.y <- material_specC.y; r3.z <- material_specC.z; r3.w <- material_specC.w
                 
-                #line 63
+                #line 55
+                mov r2.x, cb1[1].x  // r2.x <- material_diffuseC.x
+                mov r3.xyzw, cb1[2].xyzw  // r3.x <- material_specC.x; r3.y <- material_specC.y; r3.z <- material_specC.z; r3.w <- material_specC.w
                 dp3 r2.y, r0.xyzx, r0.xyzx
                 rsq r2.y, r2.y
                 mul r0.xyz, r0.xyzx, r2.yyyy
@@ -202,30 +218,30 @@ fxgroup
                 dp3 r4.w, r5.xyzx, r5.xyzx
                 rsq r4.w, r4.w
                 mul r5.xyz, r4.wwww, r5.xyzx
+                
+                #line 67
                 mov r0.xyz, -r0.xyzx
                 dp3 r0.x, r0.xyzx, r2.yzwy
                 max r0.x, r0.x, l(0.000000)  // r0.x <- diffuse_factor
                 mul r0.y, r0.w, r2.x
                 mul r0.y, r0.y, r0.x  // r0.y <- diffuse_color
                 
-                #line 76
+                #line 71
                 mov r2.xyzw, l(0,0,0,0)  // r2.x <- spec_color.x; r2.y <- spec_color.y; r2.z <- spec_color.z; r2.w <- spec_color.w
                 lt r0.x, l(0.000000), r0.x
                 if_nz r0.x
                   dp3 r0.x, r5.xyzx, r4.xyzx
                   max r0.x, r0.x, l(0.000000)
-                  mov r0.z, l(1.000000)
-                  mul r0.x, r0.x, r0.x
-                  mul r0.x, r0.x, r0.x
-                  mul r0.x, r0.x, r0.x
-                  mul r0.x, r0.x, r0.z  // r0.x <- spec_factor
+                  log r0.x, r0.x
+                  mul r0.x, r0.x, r3.w
+                  exp r0.x, r0.x  // r0.x <- spec_factor
                   mul r1.xyzw, r1.xyzw, r3.xyzw
                   mul r2.xyzw, r0.xxxx, r1.xyzw
                 endif 
                 add r0.xyzw, r0.yyyy, r2.xyzw  // r0.x <- color.x; r0.y <- color.y; r0.z <- color.z; r0.w <- color.w
                 mov o0.xyzw, r0.xyzw
                 ret 
-                // Approximately 45 instruction slots used
+                // Approximately 43 instruction slots used
                             
             };
         }

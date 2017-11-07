@@ -51,14 +51,9 @@ float4 PS(VOUT pin) : SV_Target
 	float4 light_diffuseC = gDLight.diffuse;
 	float4 light_specC = gDLight.specular;
 
-	float4 material_diffuseC = float4(0.8f, 0.8f, 0.8f, 1.0f);
-	float4 material_specC = float4(0.8f, 0.8f, 0.8f, 8.0f);
-
-	/*
 	float4 material_ambientC = gMaterial.ambient;
 	float4 material_diffuseC = gMaterial.diffuse;
 	float4 material_specC = gMaterial.specular;
-	*/
 
 	light_direction = normalize(light_direction);
 	pin.NormalW = normalize(pin.NormalW);
