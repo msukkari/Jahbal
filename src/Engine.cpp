@@ -9,7 +9,7 @@
 
 #include "Engine.h"
 #include "Entity.h"
-#include "Vertex.h"
+#include "Mesh.h"
 #include "JRenderer.h"
 #include "Scene.h"
 #include "Camera.h"
@@ -17,7 +17,6 @@
 #include "ShaderManager.h"
 #include "Shader.h"
 #include "JGeneric.h"
-#include "OBJLoader.h"
 
 using namespace DirectX;
 
@@ -122,6 +121,9 @@ bool Engine::Init()
 	sun->m_LightData = sunData;
 
 	m_ActiveScene->GetLightList()->push_back(sun);
+
+
+
 	
 
     return true;

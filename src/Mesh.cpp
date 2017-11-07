@@ -1,7 +1,6 @@
 #include <d3d11.h>
 
 #include "Mesh.h"
-#include "Vertex.h"
 #include "VisualComponent.h"
 
 
@@ -12,8 +11,26 @@ Mesh::Mesh(VisualComponent* owner, std::vector<Vertex> vertexList, std::vector<i
 	m_IndexList = indexList;
 	m_VertexCount = m_VertexList.size();
 	m_IndexCount = m_IndexList.size();
-	
 
+
+	SetupMesh();
+}
+
+Mesh::Mesh(VisualComponent* owner, std::vector<Vertex> vertexList, std::vector<int> indexList, std::vector<Texture> textureList)
+{
+	m_ComponentOwner = owner;
+	m_VertexList = vertexList;
+	m_IndexList = indexList;
+	m_TextureList = textureList;
+	m_VertexCount = m_VertexList.size();
+	m_IndexCount = m_IndexList.size();
+	m_TextureCount = m_TextureList.size();
+
+	SetupMesh();
+}
+
+void Mesh::SetupMesh()
+{
 	D3D11_BUFFER_DESC vbd;
 	vbd.Usage = D3D11_USAGE_IMMUTABLE;
 	vbd.ByteWidth = sizeof(Vertex) * m_VertexList.size();
@@ -34,7 +51,6 @@ Mesh::Mesh(VisualComponent* owner, std::vector<Vertex> vertexList, std::vector<i
 	iinitData.pSysMem = &m_IndexList[0];
 	HR(m_ComponentOwner->GetGFXDevice()->CreateBuffer(&ibd, &iinitData, &m_IB));
 }
-
 void Mesh::OnDestroy()
 {
 

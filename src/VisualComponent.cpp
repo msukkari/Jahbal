@@ -3,7 +3,6 @@
 #include "JRenderer.h"
 #include "Material.h"
 #include "Shader.h"
-#include "Vertex.h"
 
 
 VisualComponent::VisualComponent(BaseEntity* owner, JRenderer* renderer) : 
