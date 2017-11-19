@@ -17,6 +17,7 @@
 #include "ShaderManager.h"
 #include "Shader.h"
 #include "JGeneric.h"
+#include "GeometryGenerator.h"
 
 using namespace DirectX;
 
@@ -97,8 +98,17 @@ bool Engine::Init()
 	material->Ambient = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
 	material->Diffuse = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
 	material->Specular = XMFLOAT4(0.8f, 0.8f, 0.8f, 8.0f);
-
+	/*
 	entity->m_VisualComponent->CreateMesh(vertices, indices);
+	entity->m_VisualComponent->CreateMaterial();
+	entity->m_VisualComponent->m_Shader = ShaderManager::GetInstance()->m_JGeneric;
+	entity->m_VisualComponent->m_Material = material;
+	*/
+
+	std::vector<Vertex> v2;
+	std::vector<int> i2;
+	GeometryGenerator::CreateBox(10.0f, 10.0f, 10.0f, v2, i2);
+	entity->m_VisualComponent->CreateMesh(v2, i2);
 	entity->m_VisualComponent->CreateMaterial();
 	entity->m_VisualComponent->m_Shader = ShaderManager::GetInstance()->m_JGeneric;
 	entity->m_VisualComponent->m_Material = material;
