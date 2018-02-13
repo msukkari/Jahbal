@@ -1,8 +1,10 @@
 #pragma once
+#include <d3d11.h>
 
-#include <DirectXMath.h>
-
+#include "SimpleMath.h"
 #include "BaseEntity.h"
+
+using namespace DirectX;
 
 class TransformComponent;
 
@@ -16,10 +18,10 @@ public:
 
 	DLightData() {}
 
-	DirectX::XMFLOAT4 Ambient;
-	DirectX::XMFLOAT4 Diffuse;
-	DirectX::XMFLOAT4 Specular;
-	DirectX::XMFLOAT3 Direction;
+	Vector4 Ambient;
+	Vector4 Diffuse;
+	Vector4 Specular;
+	Vector3 Direction;
 	float Pad; // Pad the last float so we can set an array of lights if we wanted.
 };
 
@@ -29,16 +31,16 @@ public:
 
 	PLightData() {}
 
-	DirectX::XMFLOAT4 Ambient;
-	DirectX::XMFLOAT4 Diffuse;
-	DirectX::XMFLOAT4 Specular;
+	Vector4 Ambient;
+	Vector4 Diffuse;
+	Vector4 Specular;
 
 	// Packed into 4D vector: (Position, Range)
-	DirectX::XMFLOAT3 Position;
+	Vector3 Position;
 	float Range;
 
 	// Packed into 4D vector: (A0, A1, A2, Pad)
-	DirectX::XMFLOAT3 Att;
+	Vector3 Att;
 	float Pad; // Pad the last float so we can set an array of lights if we wanted.
 };
 
@@ -48,20 +50,20 @@ public:
 
 	SLightData() {}
 
-	DirectX::XMFLOAT4 Ambient;
-	DirectX::XMFLOAT4 Diffuse;
-	DirectX::XMFLOAT4 Specular;
+	Vector4 Ambient;
+	Vector4 Diffuse;
+	Vector4 Specular;
 
 	// Packed into 4D vector: (Position, Range)
-	DirectX::XMFLOAT3 Position;
+	Vector3 Position;
 	float Range;
 
 	// Packed into 4D vector: (Direction, Spot)
-	DirectX::XMFLOAT3 Direction;
+	Vector3 Direction;
 	float Spot;
 
 	// Packed into 4D vector: (Att, Pad)
-	DirectX::XMFLOAT3 Att;
+	Vector3 Att;
 	float Pad; // Pad the last float so we can set an array of lights if we wanted.
 };
 

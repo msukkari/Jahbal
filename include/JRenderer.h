@@ -5,6 +5,9 @@
 #include <DirectXMath.h>
 
 #include "dxerr.h"
+#include "SimpleMath.h"
+
+using namespace DirectX;
 
 class Scene;
 
@@ -35,8 +38,8 @@ private:
     ID3D11DepthStencilView* m_DepthStencilView;
     D3D11_VIEWPORT m_ScreenViewport;
 
-	DirectX::XMFLOAT4X4 m_ProjectionMatrix;
-	DirectX::XMFLOAT4X4 m_ViewMatrix;
+	Matrix m_ProjectionMatrix;
+	Matrix m_ViewMatrix;
 
 	ID3D11RasterizerState* m_WireFrameRS;
 	ID3D11RasterizerState* m_SolidRS;
@@ -44,7 +47,7 @@ private:
     int m_ClientWidth;
     int m_ClientHeight;
     bool m_Enable4xMSAA;
-	const DirectX::XMVECTORF32 m_ClearColor = { 0.2f, 0.2f, 0.2f, 1.0f };
+	const Vector4 m_ClearColor = { 0.2f, 0.2f, 0.2f, 1.0f };
 
 
     UINT m_4xMsaaQuality;

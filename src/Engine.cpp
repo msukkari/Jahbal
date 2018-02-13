@@ -95,9 +95,9 @@ bool Engine::Init()
 	fin.close();
 
 	Material* material = new Material();
-	material->Ambient = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
-	material->Diffuse = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
-	material->Specular = XMFLOAT4(0.8f, 0.8f, 0.8f, 8.0f);
+	material->Ambient = Vector4(0.8f, 0.8f, 0.8f, 1.0f);
+	material->Diffuse = Vector4(0.8f, 0.8f, 0.8f, 1.0f);
+	material->Specular = Vector4(0.8f, 0.8f, 0.8f, 8.0f);
 	entity->m_VisualComponent->CreateMesh(vertices, indices);
 	entity->m_VisualComponent->CreateMaterial();
 	entity->m_VisualComponent->m_Shader = ShaderManager::GetInstance()->m_JGeneric;

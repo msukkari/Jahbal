@@ -10,8 +10,8 @@ class Material
 public:
 
 	Material() {}
-	XMFLOAT4 Ambient;
-	XMFLOAT4 Diffuse;
-	XMFLOAT4 Specular;
+	Vector4 Ambient;
+	Vector4 Diffuse;
+	Vector4 Specular;
 };
 

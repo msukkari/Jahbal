@@ -27,21 +27,7 @@ bool JRenderer::Init(int width, int height, HWND hMainWnd)
     m_ClientHeight = height;
 
 	// Calculate projection matrix
-	XMMATRIX P = XMMatrixPerspectiveFovLH(0.25f*(3.14f), (float)(m_ClientWidth) / m_ClientHeight, 1.0f, 1000.0f);
-	XMStoreFloat4x4(&m_ProjectionMatrix, P);
-
-	// Calculate view matrix
-	// TODO: create camera class
-	float x = 0.0f;
-	float z = -20.0f;
-	float y = 20.0f;
-
-	XMVECTOR pos = XMVectorSet(x, y, z, 1.0f);
-	XMVECTOR target = XMVectorZero();
-	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-
-	XMMATRIX V = XMMatrixLookAtLH(pos, target, up);
-	XMStoreFloat4x4(&m_ViewMatrix, V);
+	m_ProjectionMatrix = Matrix::CreatePerspectiveFieldOfViewLH(0.25f*(3.14f), (float)m_ClientWidth / (float)m_ClientHeight, 1.0f, 1000.0f);
 		
     if (!InitDX11(hMainWnd))
         return false;
@@ -101,17 +87,16 @@ void JRenderer::DrawScene(Scene* scene)
 			GetGFXDeviceContext()->IASetVertexBuffers(0, 1, &entity->GetMesh()->m_VB, &stride, &offset);
 			GetGFXDeviceContext()->IASetIndexBuffer(entity->GetMesh()->m_IB, DXGI_FORMAT_R32_UINT, 0);
 
-			XMMATRIX model = Matrix::CreateTranslation(entity->m_position);
-			XMMATRIX view = cam->GetLookAtMatrix();
-			XMMATRIX projection = XMLoadFloat4x4(&m_ProjectionMatrix);
-			XMMATRIX MVP = model * view * projection;
+			Matrix model = Matrix::CreateTranslation(entity->m_position);
+			Matrix view = cam->GetLookAtMatrix();
+			Matrix MVP = model * view * m_ProjectionMatrix;
 
 			ShaderManager::GetInstance()->m_JGeneric->SetWorldViewProj(MVP);
 			ShaderManager::GetInstance()->m_JGeneric->SetWorld(model);
 			ShaderManager::GetInstance()->m_JGeneric->SetMaterial(entity->m_VisualComponent->m_Material);
 
 			Vector4 camPosition = scene->GetActiveCamera()->m_position;
-			XMFLOAT3 eyePos = XMFLOAT3(camPosition.x, camPosition.y, camPosition.z);
+			Vector3 eyePos = Vector3(camPosition);
 			ShaderManager::GetInstance()->m_JGeneric->SetEyePosW(eyePos);
 
 			

@@ -10,11 +10,11 @@ class Camera
 public:
 	Camera();
 
-	XMMATRIX GetLookAtMatrix();
+	Matrix GetLookAtMatrix();
 	void UpdatePosition();
 
-	Vector4 m_position;
-	Vector4 m_target;
+	Vector3 m_position;
+	Vector3 m_target;
 
 	float m_Phi;
 	float m_Theta;
