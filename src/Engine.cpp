@@ -98,21 +98,21 @@ bool Engine::Init()
 	material->Ambient = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
 	material->Diffuse = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
 	material->Specular = XMFLOAT4(0.8f, 0.8f, 0.8f, 8.0f);
-	/*
 	entity->m_VisualComponent->CreateMesh(vertices, indices);
 	entity->m_VisualComponent->CreateMaterial();
 	entity->m_VisualComponent->m_Shader = ShaderManager::GetInstance()->m_JGeneric;
 	entity->m_VisualComponent->m_Material = material;
-	*/
+	m_ActiveScene->GetEntityList()->push_back(entity);
 
+	Entity* entity2 = new Entity(m_JRenderer, Vector3(10.0f, 0.0f, 0.0f));
 	std::vector<Vertex> v2;
 	std::vector<int> i2;
 	GeometryGenerator::CreateBox(10.0f, 10.0f, 10.0f, v2, i2);
-	entity->m_VisualComponent->CreateMesh(v2, i2);
-	entity->m_VisualComponent->CreateMaterial();
-	entity->m_VisualComponent->m_Shader = ShaderManager::GetInstance()->m_JGeneric;
-	entity->m_VisualComponent->m_Material = material;
-	m_ActiveScene->GetEntityList()->push_back(entity);
+	entity2->m_VisualComponent->CreateMesh(v2, i2);
+	entity2->m_VisualComponent->CreateMaterial();
+	entity2->m_VisualComponent->m_Shader = ShaderManager::GetInstance()->m_JGeneric;
+	entity2->m_VisualComponent->m_Material = material;
+	m_ActiveScene->GetEntityList()->push_back(entity2);
 
 	// Camera
 	Vector4 camPosition = Vector4(0.0f, 20.0f, -20.0f, 1.0f);

@@ -101,7 +101,7 @@ void JRenderer::DrawScene(Scene* scene)
 			GetGFXDeviceContext()->IASetVertexBuffers(0, 1, &entity->GetMesh()->m_VB, &stride, &offset);
 			GetGFXDeviceContext()->IASetIndexBuffer(entity->GetMesh()->m_IB, DXGI_FORMAT_R32_UINT, 0);
 
-			XMMATRIX model = XMMatrixIdentity();
+			XMMATRIX model = Matrix::CreateTranslation(entity->m_position);
 			XMMATRIX view = cam->GetLookAtMatrix();
 			XMMATRIX projection = XMLoadFloat4x4(&m_ProjectionMatrix);
 			XMMATRIX MVP = model * view * projection;
