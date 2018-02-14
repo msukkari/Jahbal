@@ -8,6 +8,8 @@ using namespace DirectX;
 class Camera
 {
 public:
+	Camera(float radius, Vector3 target);
+	Camera(float radius);
 	Camera();
 
 	Matrix GetLookAtMatrix();

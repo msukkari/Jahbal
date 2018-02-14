@@ -1,13 +1,16 @@
 #include "Camera.h"
 
-
-Camera::Camera()
+Camera::Camera(float radius)
 {
-	m_Phi = 0; m_Theta = 0; m_Radius = 20.0;
+	m_Phi = 0;
+	m_Theta = 0;
+	m_Radius = radius;
 
 	UpdatePosition();
-	m_target = Vector3(0.0f, 0.0f, 0.0f);
+	m_target = Vector3::Zero;
 }
+
+Camera::Camera() : Camera(20.0){}
 
 void Camera::UpdatePosition()
 {

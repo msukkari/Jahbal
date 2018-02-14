@@ -117,16 +117,14 @@ bool Engine::Init()
 		//m_ActiveScene->GetEntityList()->push_back(entity2);
 
 		Entity* entity3 = new Entity(m_JRenderer);
-		entity3->m_VisualComponent->CreateMesh("resources/objects/nanosuit/nanosuit.obj");
+		entity3->m_VisualComponent->CreateMesh("resources/objects/cyborg/cyborg.obj");
 		entity3->m_VisualComponent->CreateMaterial();
 		entity3->m_VisualComponent->m_Shader = ShaderManager::GetInstance()->m_JGeneric;
 		entity3->m_VisualComponent->m_Material = material;
 		m_ActiveScene->GetEntityList()->push_back(entity3);
 
 		// Camera
-		Vector4 camPosition = Vector4(0.0f, 20.0f, -20.0f, 1.0f);
-		Vector4 camTarget = Vector4(0.0f, 0.0f, 0.0f, 0.0f);
-		Camera* camera = new Camera();
+		Camera* camera = new Camera(10.0f);
 
 		m_ActiveScene->SetActiveCamera(camera);
 
