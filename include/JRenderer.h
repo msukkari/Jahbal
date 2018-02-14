@@ -5,7 +5,7 @@
 #include <DirectXMath.h>
 
 #include "dxerr.h"
-#include "SimpleMath.h"
+#include "DirectXTK/SimpleMath.h"
 
 using namespace DirectX;
 

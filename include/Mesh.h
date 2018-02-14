@@ -5,7 +5,10 @@
 #include <DirectXMath.h>
 #include <d3d11.h>
 
-#include "SimpleMath.h"
+#include "assimp/Importer.hpp"
+#include "assimp/scene.h"
+#include "assimp/postprocess.h"
+#include "DirectXTK/SimpleMath.h"
 
 class VisualComponent;
 
@@ -40,6 +43,7 @@ class Mesh
 public:
 	Mesh(VisualComponent* owner, std::vector<Vertex> vertexList, std::vector<int> indexList);
 	Mesh(VisualComponent* owner, std::vector<Vertex> vertexList, std::vector<int> indexList, std::vector<Texture> textureList);
+	Mesh(VisualComponent* owner, std::string filename);
 	~Mesh();
 
 	//void Draw() ??

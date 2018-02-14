@@ -6,7 +6,7 @@
 #include "Mesh.h"
 #include "Material.h"
 #include "Shader.h"
-#include "SimpleMath.h"
+#include "DirectXTK/SimpleMath.h"
 
 using namespace DirectX;
 

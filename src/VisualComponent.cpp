@@ -34,6 +34,19 @@ void VisualComponent::CreateMesh(std::vector<Vertex> vertexList, std::vector<int
 	m_Mesh = new Mesh(this, vertexList, indexList);
 }
 
+void VisualComponent::CreateMesh(std::string filename)
+{
+	if (m_Mesh)
+	{
+		printf("WARNING: CREATEMESH CALLED WHEN MESH ALREADY EXISTS, MESH IS GOING TO BE OVERWRITTEN!");
+
+		m_Mesh->OnDestroy();
+		delete m_Mesh;
+	}
+
+	m_Mesh = new Mesh(this, filename);
+}
+
 void VisualComponent::CreateMaterial()
 {
 	if (m_Material)

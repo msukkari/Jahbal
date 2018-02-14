@@ -4,7 +4,7 @@
 #include <DirectXMath.h>
 #include <d3d11.h>
 
-#include "SimpleMath.h"
+#include "DirectXTK/SimpleMath.h"
 #include "Mesh.h"
 
 using namespace DirectX;

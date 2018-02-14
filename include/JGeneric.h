@@ -3,7 +3,7 @@
 #include <DirectXMath.h>
 
 #include "Shader.h"
-#include "SimpleMath.h"
+#include "DirectXTK/SimpleMath.h"
 #include "Light.h"
 #include "Material.h"
 

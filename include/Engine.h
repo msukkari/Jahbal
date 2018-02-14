@@ -2,8 +2,8 @@
 
 #include <string>
 #include <memory>
-#include <Keyboard.h>
-#include <Mouse.h>
+#include <DirectXTK/Keyboard.h>
+#include <DirectXTK/Mouse.h>
 
 class JRenderer;
 class Scene;

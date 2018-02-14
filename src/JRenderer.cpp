@@ -12,7 +12,7 @@
 #include "Material.h"
 #include "Shader.h"
 #include "Mesh.h"
-#include "SimpleMath.h"
+#include "DirectXTK/SimpleMath.h"
 #include "Camera.h" 
 #include "ShaderManager.h"
 #include "Shader.h"

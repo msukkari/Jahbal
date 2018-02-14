@@ -13,7 +13,7 @@
 #include "JRenderer.h"
 #include "Scene.h"
 #include "Camera.h"
-#include "SimpleMath.h"
+#include "DirectXTK/SimpleMath.h"
 #include "ShaderManager.h"
 #include "Shader.h"
 #include "JGeneric.h"
@@ -54,87 +54,96 @@ bool Engine::Init()
 
 	// Scene is manually created/filled temporaraly
 	// Eventually, the scene will be serialized for future loading or opened for editing in an edit mode
-	m_ActiveScene = new Scene();
-
-	Entity* entity = new Entity(m_JRenderer);
-
-	// Mesh
-	std::ifstream fin("Models/skull.txt");
-
-	if (!fin)
 	{
-		MessageBox(0, L"Models/skull.txt not found.", 0, 0);
-		return false;
+
+		m_ActiveScene = new Scene();
+
+		Entity* entity = new Entity(m_JRenderer);
+
+		// Mesh
+		std::ifstream fin("Models/skull.txt");
+
+		if (!fin)
+		{
+			MessageBox(0, L"Models/skull.txt not found.", 0, 0);
+			return false;
+		}
+
+		UINT vcount = 0;
+		UINT tcount = 0;
+		std::string ignore;
+
+		fin >> ignore >> vcount;
+		fin >> ignore >> tcount;
+		fin >> ignore >> ignore >> ignore >> ignore;
+
+		std::vector<Vertex> vertices(vcount);
+		for (UINT i = 0; i < vcount; ++i)
+		{
+			fin >> vertices[i].Position.x >> vertices[i].Position.y >> vertices[i].Position.z;
+			fin >> vertices[i].Normal.x >> vertices[i].Normal.y >> vertices[i].Normal.z;
+		}
+
+		fin >> ignore;
+		fin >> ignore;
+		fin >> ignore;
+
+		std::vector<int> indices(3 * tcount);
+		for (UINT i = 0; i < tcount; ++i)
+		{
+			fin >> indices[i * 3 + 0] >> indices[i * 3 + 1] >> indices[i * 3 + 2];
+		}
+
+		fin.close();
+
+		Material* material = new Material();
+		material->Ambient = Vector4(0.8f, 0.8f, 0.8f, 1.0f);
+		material->Diffuse = Vector4(0.8f, 0.8f, 0.8f, 1.0f);
+		material->Specular = Vector4(0.8f, 0.8f, 0.8f, 8.0f);
+		entity->m_VisualComponent->CreateMesh(vertices, indices);
+		entity->m_VisualComponent->CreateMaterial();
+		entity->m_VisualComponent->m_Shader = ShaderManager::GetInstance()->m_JGeneric;
+		entity->m_VisualComponent->m_Material = material;
+		//m_ActiveScene->GetEntityList()->push_back(entity);
+
+		Entity* entity2 = new Entity(m_JRenderer, Vector3(10.0f, 0.0f, 0.0f));
+		std::vector<Vertex> v2;
+		std::vector<int> i2;
+		GeometryGenerator::CreateBox(10.0f, 10.0f, 10.0f, v2, i2);
+		entity2->m_VisualComponent->CreateMesh(v2, i2);
+		entity2->m_VisualComponent->CreateMaterial();
+		entity2->m_VisualComponent->m_Shader = ShaderManager::GetInstance()->m_JGeneric;
+		entity2->m_VisualComponent->m_Material = material;
+		//m_ActiveScene->GetEntityList()->push_back(entity2);
+
+		Entity* entity3 = new Entity(m_JRenderer);
+		entity3->m_VisualComponent->CreateMesh("resources/objects/nanosuit/nanosuit.obj");
+		entity3->m_VisualComponent->CreateMaterial();
+		entity3->m_VisualComponent->m_Shader = ShaderManager::GetInstance()->m_JGeneric;
+		entity3->m_VisualComponent->m_Material = material;
+		m_ActiveScene->GetEntityList()->push_back(entity3);
+
+		// Camera
+		Vector4 camPosition = Vector4(0.0f, 20.0f, -20.0f, 1.0f);
+		Vector4 camTarget = Vector4(0.0f, 0.0f, 0.0f, 0.0f);
+		Camera* camera = new Camera();
+
+		m_ActiveScene->SetActiveCamera(camera);
+
+		// Directional light
+		Light* sun = new Light(Directional);
+		DLightData* sunData = new DLightData();
+		sunData->Ambient = Vector4(0.2f, 0.2f, 0.2f, 1.0f);
+		sunData->Diffuse = Vector4(0.5f, 0.5f, 0.5f, 1.0f);
+		sunData->Specular = Vector4(0.5f, 0.5f, 0.5f, 1.0f);
+		sunData->Direction = Vector3(0.57735f, -0.57735f, 0.57735f);
+		sun->m_LightData = sunData;
+
+
+
+		m_ActiveScene->GetLightList()->push_back(sun);
+
 	}
-
-	UINT vcount = 0;
-	UINT tcount = 0;
-	std::string ignore;
-
-	fin >> ignore >> vcount;
-	fin >> ignore >> tcount;
-	fin >> ignore >> ignore >> ignore >> ignore;
-
-	std::vector<Vertex> vertices(vcount);
-	for (UINT i = 0; i < vcount; ++i)
-	{
-		fin >> vertices[i].Position.x >> vertices[i].Position.y >> vertices[i].Position.z;
-		fin >> vertices[i].Normal.x >> vertices[i].Normal.y >> vertices[i].Normal.z;
-	}
-
-	fin >> ignore;
-	fin >> ignore;
-	fin >> ignore;
-
-	std::vector<int> indices(3 * tcount);
-	for (UINT i = 0; i < tcount; ++i)
-	{
-		fin >> indices[i * 3 + 0] >> indices[i * 3 + 1] >> indices[i * 3 + 2];
-	}
-
-	fin.close();
-
-	Material* material = new Material();
-	material->Ambient = Vector4(0.8f, 0.8f, 0.8f, 1.0f);
-	material->Diffuse = Vector4(0.8f, 0.8f, 0.8f, 1.0f);
-	material->Specular = Vector4(0.8f, 0.8f, 0.8f, 8.0f);
-	entity->m_VisualComponent->CreateMesh(vertices, indices);
-	entity->m_VisualComponent->CreateMaterial();
-	entity->m_VisualComponent->m_Shader = ShaderManager::GetInstance()->m_JGeneric;
-	entity->m_VisualComponent->m_Material = material;
-	m_ActiveScene->GetEntityList()->push_back(entity);
-
-	Entity* entity2 = new Entity(m_JRenderer, Vector3(10.0f, 0.0f, 0.0f));
-	std::vector<Vertex> v2;
-	std::vector<int> i2;
-	GeometryGenerator::CreateBox(10.0f, 10.0f, 10.0f, v2, i2);
-	entity2->m_VisualComponent->CreateMesh(v2, i2);
-	entity2->m_VisualComponent->CreateMaterial();
-	entity2->m_VisualComponent->m_Shader = ShaderManager::GetInstance()->m_JGeneric;
-	entity2->m_VisualComponent->m_Material = material;
-	m_ActiveScene->GetEntityList()->push_back(entity2);
-
-	// Camera
-	Vector4 camPosition = Vector4(0.0f, 20.0f, -20.0f, 1.0f);
-	Vector4 camTarget = Vector4(0.0f, 0.0f, 0.0f, 0.0f);
-	Camera* camera = new Camera();
-
-	m_ActiveScene->SetActiveCamera(camera);
-
-	// Directional light
-	Light* sun = new Light(Directional);
-	DLightData* sunData = new DLightData();
-	sunData->Ambient = Vector4(0.2f, 0.2f, 0.2f, 1.0f);
-	sunData->Diffuse = Vector4(0.5f, 0.5f, 0.5f, 1.0f);
-	sunData->Specular = Vector4(0.5f, 0.5f, 0.5f, 1.0f);
-	sunData->Direction = Vector3(0.57735f, -0.57735f, 0.57735f);
-	sun->m_LightData = sunData;
-
-	m_ActiveScene->GetLightList()->push_back(sun);
-
-
-
-	
 
     return true;
 }
