@@ -1,10 +1,12 @@
 #include <d3d11.h>
 #include <iostream>
 
+#include "Engine.h"
 #include "Mesh.h"
 #include "VisualComponent.h"
 
 void processNode(aiNode* node, const aiScene* scene, Mesh* m);
+void processMesh(aiMesh* mesh, Mesh* m);
 
 Mesh::Mesh(VisualComponent* owner, std::vector<Vertex> vertexList, std::vector<int> indexList)
 {
@@ -46,6 +48,7 @@ Mesh::Mesh(VisualComponent* owner, std::string filename)
 
 	processNode(scene->mRootNode, scene, this);
 
+
 	SetupMesh();
 }
 
@@ -67,7 +70,7 @@ void processMesh(aiMesh* mesh, Mesh* m)
 	for (int i = 0; i < mesh->mNumFaces; i++)
 	{
 		aiFace face = mesh->mFaces[i];
-		for (int j = 0; j < face.mNumIndices; j++) indices.push_back(face.mIndices[j]);
+		for (int j = 0; j < face.mNumIndices; j++) indices.push_back(face.mIndices[j] + m->m_VertexCount);
 	}
 
 	m->m_VertexList.insert(m->m_VertexList.end(), vertices.begin(), vertices.end());
@@ -103,7 +106,7 @@ void Mesh::SetupMesh()
 	vbd.MiscFlags = 0;
 	D3D11_SUBRESOURCE_DATA vinitData;
 	vinitData.pSysMem = &m_VertexList[0];
-	HR(m_ComponentOwner->GetGFXDevice()->CreateBuffer(&vbd, &vinitData, &m_VB));
+	HR(Engine::GetInstance()->GetRenderer()->GetGFXDevice()->CreateBuffer(&vbd, &vinitData, &m_VB));
 
 	D3D11_BUFFER_DESC ibd;
 	ibd.Usage = D3D11_USAGE_IMMUTABLE;
@@ -113,7 +116,7 @@ void Mesh::SetupMesh()
 	ibd.MiscFlags = 0;
 	D3D11_SUBRESOURCE_DATA iinitData;
 	iinitData.pSysMem = &m_IndexList[0];
-	HR(m_ComponentOwner->GetGFXDevice()->CreateBuffer(&ibd, &iinitData, &m_IB));
+	HR(Engine::GetInstance()->GetRenderer()->GetGFXDevice()->CreateBuffer(&ibd, &iinitData, &m_IB));
 }
 void Mesh::OnDestroy()
 {

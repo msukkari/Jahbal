@@ -56,6 +56,7 @@ void JRenderer::DrawScene(Scene* scene)
 {
 	GetGFXDeviceContext()->ClearRenderTargetView(m_RenderTargetView, reinterpret_cast<const float*>(&m_ClearColor));
 	GetGFXDeviceContext()->ClearDepthStencilView(m_DepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	GetGFXDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	Camera* cam = scene->GetActiveCamera();
 
@@ -65,8 +66,6 @@ void JRenderer::DrawScene(Scene* scene)
 		Entity* entity = scene->GetEntityList()->at(i);
 
 		GetGFXDeviceContext()->IASetInputLayout(ShaderManager::GetInstance()->m_JGeneric->m_InputLayout);
-		GetGFXDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
 		GetGFXDeviceContext()->RSSetState(m_SolidRS);
 
 		ID3DX11EffectTechnique* activeTech = ShaderManager::GetInstance()->m_JGeneric->Tech;

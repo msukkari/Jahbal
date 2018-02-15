@@ -52,6 +52,7 @@
     <ClInclude Include="include\Scene.h" />
     <ClInclude Include="include\Shader.h" />
     <ClInclude Include="include\ShaderManager.h" />
+    <ClInclude Include="include\SubMesh.h" />
     <ClInclude Include="include\TransformComponent.h" />
     <ClInclude Include="include\VisualComponent.h" />
   </ItemGroup>

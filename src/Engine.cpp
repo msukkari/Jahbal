@@ -58,6 +58,35 @@ bool Engine::Init()
 
 		m_ActiveScene = new Scene();
 
+		Material* material = new Material();
+		material->Ambient = Vector4(0.8f, 0.8f, 0.8f, 1.0f);
+		material->Diffuse = Vector4(0.8f, 0.8f, 0.8f, 1.0f);
+		material->Specular = Vector4(0.8f, 0.8f, 0.8f, 8.0f);
+
+		Mesh* nanosuitMesh = new Mesh(NULL, "resources/objects/nanosuit/nanosuit.obj");
+
+		for (int i = 0; i < 10; i++)
+		{
+			for (int j = 0; j < 10; j++)
+			{
+				Entity* e = new Entity(m_JRenderer, Vector3(i * 5.0f, 0, j * 5.0f));
+				e->m_VisualComponent->m_Mesh = nanosuitMesh;
+				e->m_VisualComponent->m_Shader = ShaderManager::GetInstance()->m_JGeneric;
+				e->m_VisualComponent->m_Material = material;
+				m_ActiveScene->GetEntityList()->push_back(e);
+			}
+		}
+
+		/*
+		Entity* entity3 = new Entity(m_JRenderer);
+		entity3->m_VisualComponent->CreateMesh("resources/objects/nanosuit/nanosuit.obj");
+		entity3->m_VisualComponent->CreateMaterial();
+		entity3->m_VisualComponent->m_Shader = ShaderManager::GetInstance()->m_JGeneric;
+		entity3->m_VisualComponent->m_Material = material;
+		m_ActiveScene->GetEntityList()->push_back(entity3);
+		*/
+
+		/*
 		Entity* entity = new Entity(m_JRenderer);
 
 		// Mesh
@@ -96,15 +125,11 @@ bool Engine::Init()
 
 		fin.close();
 
-		Material* material = new Material();
-		material->Ambient = Vector4(0.8f, 0.8f, 0.8f, 1.0f);
-		material->Diffuse = Vector4(0.8f, 0.8f, 0.8f, 1.0f);
-		material->Specular = Vector4(0.8f, 0.8f, 0.8f, 8.0f);
 		entity->m_VisualComponent->CreateMesh(vertices, indices);
 		entity->m_VisualComponent->CreateMaterial();
 		entity->m_VisualComponent->m_Shader = ShaderManager::GetInstance()->m_JGeneric;
 		entity->m_VisualComponent->m_Material = material;
-		//m_ActiveScene->GetEntityList()->push_back(entity);
+		m_ActiveScene->GetEntityList()->push_back(entity);
 
 		Entity* entity2 = new Entity(m_JRenderer, Vector3(10.0f, 0.0f, 0.0f));
 		std::vector<Vertex> v2;
@@ -114,17 +139,12 @@ bool Engine::Init()
 		entity2->m_VisualComponent->CreateMaterial();
 		entity2->m_VisualComponent->m_Shader = ShaderManager::GetInstance()->m_JGeneric;
 		entity2->m_VisualComponent->m_Material = material;
-		//m_ActiveScene->GetEntityList()->push_back(entity2);
+		m_ActiveScene->GetEntityList()->push_back(entity2);
+		*/
 
-		Entity* entity3 = new Entity(m_JRenderer);
-		entity3->m_VisualComponent->CreateMesh("resources/objects/cyborg/cyborg.obj");
-		entity3->m_VisualComponent->CreateMaterial();
-		entity3->m_VisualComponent->m_Shader = ShaderManager::GetInstance()->m_JGeneric;
-		entity3->m_VisualComponent->m_Material = material;
-		m_ActiveScene->GetEntityList()->push_back(entity3);
 
 		// Camera
-		Camera* camera = new Camera(10.0f);
+		Camera* camera = new Camera(100.0f);
 
 		m_ActiveScene->SetActiveCamera(camera);
 

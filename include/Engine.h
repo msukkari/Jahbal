@@ -27,6 +27,9 @@ public:
     LRESULT MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
     bool isRunning() { return m_Running; }
 
+
+	JRenderer* GetRenderer() { return m_JRenderer; }
+
 private:
     Engine() {};
 
