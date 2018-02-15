@@ -30,8 +30,8 @@ bool Engine::Init()
     m_Minimized = false;
     m_Maximized = false;
     m_Resizing = false;
-    m_ClientWidth = 800;
-    m_ClientHeight = 600;
+    m_ClientWidth = 1920;
+    m_ClientHeight = 1080;
 
     m_MainWndCaption = L"Jahbal";
 
@@ -59,17 +59,17 @@ bool Engine::Init()
 		m_ActiveScene = new Scene();
 
 		Material* material = new Material();
-		material->Ambient = Vector4(0.8f, 0.8f, 0.8f, 1.0f);
-		material->Diffuse = Vector4(0.8f, 0.8f, 0.8f, 1.0f);
-		material->Specular = Vector4(0.8f, 0.8f, 0.8f, 8.0f);
+		material->Ambient = Vector4((181.0 / 255.), (50.0f / 255.0f), (43.0f / 255.0f), 1.0f);
+		material->Diffuse = Vector4((181.0 / 255.), (50.0f / 255.0f), (43.0f / 255.0f), 1.0f);
+		material->Specular = Vector4((181.0 / 255.), (50.0f / 255.0f), (43.0f / 255.0f), 1.0f);
 
-		Mesh* nanosuitMesh = new Mesh(NULL, "resources/objects/nanosuit/nanosuit.obj");
+		Mesh* nanosuitMesh = new Mesh(NULL, "resources/objects/Heart.obj");
 
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < 1; i++)
 		{
-			for (int j = 0; j < 10; j++)
+			for (int j = 0; j < 1; j++)
 			{
-				Entity* e = new Entity(m_JRenderer, Vector3(i * 5.0f, 0, j * 5.0f));
+				Entity* e = new Entity(m_JRenderer, Vector3(i * 100.0f, 0, j * 100.0f));
 				e->m_VisualComponent->m_Mesh = nanosuitMesh;
 				e->m_VisualComponent->m_Shader = ShaderManager::GetInstance()->m_JGeneric;
 				e->m_VisualComponent->m_Material = material;
@@ -144,7 +144,7 @@ bool Engine::Init()
 
 
 		// Camera
-		Camera* camera = new Camera(100.0f);
+		Camera* camera = new Camera(200.0f);
 
 		m_ActiveScene->SetActiveCamera(camera);
 

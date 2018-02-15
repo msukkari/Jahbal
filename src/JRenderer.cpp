@@ -12,6 +12,7 @@
 #include "Material.h"
 #include "Shader.h"
 #include "Mesh.h"
+#include "SubMesh.h"
 #include "DirectXTK/SimpleMath.h"
 #include "Camera.h" 
 #include "ShaderManager.h"
@@ -83,8 +84,6 @@ void JRenderer::DrawScene(Scene* scene)
 
 		for (int p = 0; p < techDesc.Passes; p++)
 		{
-			GetGFXDeviceContext()->IASetVertexBuffers(0, 1, &entity->GetMesh()->m_VB, &stride, &offset);
-			GetGFXDeviceContext()->IASetIndexBuffer(entity->GetMesh()->m_IB, DXGI_FORMAT_R32_UINT, 0);
 
 			Matrix model = Matrix::CreateTranslation(entity->m_position);
 			Matrix view = cam->GetLookAtMatrix();
@@ -98,9 +97,16 @@ void JRenderer::DrawScene(Scene* scene)
 			Vector3 eyePos = Vector3(camPosition);
 			ShaderManager::GetInstance()->m_JGeneric->SetEyePosW(eyePos);
 
+			for (int s = 0; s < entity->GetMesh()->m_subMeshList.size(); s++)
+			{
+				SubMesh* subMesh = &entity->GetMesh()->m_subMeshList[s];
+				GetGFXDeviceContext()->IASetVertexBuffers(0, 1, &subMesh->m_VB, &stride, &offset);
+				GetGFXDeviceContext()->IASetIndexBuffer(subMesh->m_IB, DXGI_FORMAT_R32_UINT, 0);
+
 			
-			activeTech->GetPassByIndex(p)->Apply(0, GetGFXDeviceContext());
-			GetGFXDeviceContext()->DrawIndexed(entity->GetMesh()->m_IndexCount, 0, 0);
+				activeTech->GetPassByIndex(p)->Apply(0, GetGFXDeviceContext());
+				GetGFXDeviceContext()->DrawIndexed(subMesh->m_indexList.size(), 0, 0);
+			}
 		}
 	}
 

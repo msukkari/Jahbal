@@ -11,6 +11,7 @@
 #include "DirectXTK/SimpleMath.h"
 
 class VisualComponent;
+class SubMesh;
 
 using namespace DirectX;
 
@@ -46,23 +47,13 @@ public:
 	Mesh(VisualComponent* owner, std::string filename);
 	~Mesh();
 
-	//void Draw() ??
-
-	void SetupMesh();
-
 	void OnDestroy();
 
-	std::vector<Vertex> m_VertexList;
-	std::vector<int> m_IndexList;
-	std::vector<Texture> m_TextureList;
-	int m_IndexCount;
-	int m_VertexCount;
-	int m_TextureCount;
+	std::vector<SubMesh> m_subMeshList;
+	VisualComponent* m_componentOwner;
 
-	VisualComponent* m_ComponentOwner;
-
-	ID3D11Buffer* m_VB;
-	ID3D11Buffer* m_IB;
-
+private:
+	void processMesh(aiMesh* mesh);
+	void processNode(aiNode* node, const aiScene* scene);
 };
 

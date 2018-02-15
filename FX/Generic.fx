@@ -65,7 +65,7 @@ float4 PS(VOUT pin) : SV_Target
 	reflected = normalize(reflected);
 
 	float diffuse_factor = max(dot(-light_direction, pin.NormalW), 0.0f);
-	float diffuse_color = diffuse_factor * (material_diffuseC * light_diffuseC);
+	float4 diffuse_color = diffuse_factor * (material_diffuseC * light_diffuseC);
 
 
 	float4 spec_color = float4(0.0f, 0.0f, 0.0f, 0.0f);

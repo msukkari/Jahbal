@@ -33,6 +33,7 @@
     <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\ShaderManager.cpp" />
+    <ClCompile Include="src\SubMesh.cpp" />
     <ClCompile Include="src\TransformComponent.cpp" />
     <ClCompile Include="src\VisualComponent.cpp" />
   </ItemGroup>
