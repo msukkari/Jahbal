@@ -50,7 +50,9 @@ public:
 	void OnDestroy();
 
 	std::vector<SubMesh> m_subMeshList;
+	std::string m_meshFilePath;
 	VisualComponent* m_componentOwner;
+
 
 private:
 	void processMesh(aiMesh* mesh, const aiScene* scene);

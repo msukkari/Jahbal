@@ -8,18 +8,18 @@
 #include "DirectXTK\WICTextureLoader.h"
 
 Mesh::Mesh(VisualComponent* owner, std::vector<Vertex> vertexList, std::vector<int> indexList) :
-	m_componentOwner(owner)
+	m_componentOwner(owner), m_meshFilePath("")
 {
 	m_subMeshList.push_back(SubMesh(vertexList, indexList));
 }
 
 Mesh::Mesh(VisualComponent* owner, std::vector<Vertex> vertexList, std::vector<int> indexList, std::vector<Texture> textureList) :
-	m_componentOwner(owner)
+	m_componentOwner(owner), m_meshFilePath("")
 {
 }
 
 Mesh::Mesh(VisualComponent* owner, std::string filename) :
-	m_componentOwner(owner)
+	m_componentOwner(owner), m_meshFilePath(filename)
 {
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(filename, aiProcess_Triangulate | aiProcess_FlipUVs); 
@@ -67,14 +67,17 @@ void Mesh::processMesh(aiMesh* mesh, const aiScene* scene)
 		aiString str;
 		mat->GetTexture(aiTextureType_DIFFUSE, 0, &str);
 
-		ID3D11Resource* texResource = nullptr;
+		// get the path to the texture file
 		std::string s = str.C_Str();
-		std::string objectName;
-		if (s.find('_') == std::string::npos) objectName = s.substr(0, s.find('.'));
-		else objectName = s.substr(0, s.find('_'));
-
-		s = "resources/objects/" + objectName + '/' + s;
+		std::string path = "";
+		for (int i = m_meshFilePath.size(); i >= 0; i--)
+		{
+			if (m_meshFilePath[i] == '/') { path = m_meshFilePath.substr(0, i+1); break; }
+		}
+		s = path + s;
 		
+		// create the shader resource view
+		ID3D11Resource* texResource = nullptr;
 		std::wstring wc = std::wstring(s.begin(), s.end());
 		CreateWICTextureFromFile(
 			Engine::GetInstance()->GetRenderer()->GetGFXDevice(),
