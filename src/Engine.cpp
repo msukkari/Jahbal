@@ -63,13 +63,13 @@ bool Engine::Init()
 		material->Diffuse = Vector4((181.0 / 255.), (50.0f / 255.0f), (43.0f / 255.0f), 1.0f);
 		material->Specular = Vector4((181.0 / 255.), (50.0f / 255.0f), (43.0f / 255.0f), 1.0f);
 
-		Mesh* nanosuitMesh = new Mesh(NULL, "resources/objects/nanosuit/nanosuit.obj");
+		Mesh* nanosuitMesh = new Mesh(NULL, "resources/objects/cyborg/cyborg.obj");
 
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < 30; i++)
 		{
-			for (int j = 0; j < 10; j++)
+			for (int j = 0; j < 30; j++)
 			{
-				Entity* e = new Entity(m_JRenderer, Vector3(i * 10.0f, 0, j * 10.0f));
+				Entity* e = new Entity(m_JRenderer, Vector3(i * 3.0f, 0, j * 3.0f));
 				e->m_VisualComponent->m_Mesh = nanosuitMesh;
 				e->m_VisualComponent->m_Shader = ShaderManager::GetInstance()->m_JGeneric;
 				e->m_VisualComponent->m_Material = material;
@@ -144,7 +144,7 @@ bool Engine::Init()
 
 
 		// Camera
-		Camera* camera = new Camera(100.0f);
+		Camera* camera = new Camera(40.0f);
 
 		m_ActiveScene->SetActiveCamera(camera);
 

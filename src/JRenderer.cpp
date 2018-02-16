@@ -103,6 +103,8 @@ void JRenderer::DrawScene(Scene* scene)
 				GetGFXDeviceContext()->IASetVertexBuffers(0, 1, &subMesh->m_VB, &stride, &offset);
 				GetGFXDeviceContext()->IASetIndexBuffer(subMesh->m_IB, DXGI_FORMAT_R32_UINT, 0);
 
+				ShaderManager::GetInstance()->m_JGeneric->SetDiffuseMap(subMesh->m_SRV);
+
 			
 				activeTech->GetPassByIndex(p)->Apply(0, GetGFXDeviceContext());
 				GetGFXDeviceContext()->DrawIndexed(subMesh->m_indexList.size(), 0, 0);

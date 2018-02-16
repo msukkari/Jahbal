@@ -69,12 +69,17 @@ void Mesh::processMesh(aiMesh* mesh, const aiScene* scene)
 
 		ID3D11Resource* texResource = nullptr;
 		std::string s = str.C_Str();
-		s = "resources/objects/nanosuit/" + s;
+		std::string objectName;
+		if (s.find('_') == std::string::npos) objectName = s.substr(0, s.find('.'));
+		else objectName = s.substr(0, s.find('_'));
+
+		s = "resources/objects/" + objectName + '/' + s;
+		
 		std::wstring wc = std::wstring(s.begin(), s.end());
 		CreateWICTextureFromFile(
 			Engine::GetInstance()->GetRenderer()->GetGFXDevice(),
 			Engine::GetInstance()->GetRenderer()->GetGFXDeviceContext(),
-			L"resources/objects/nanosuit/glass_dif.png", 
+			wc.c_str(), 
 			&texResource, &srv);
 		ReleaseCOM(texResource);
 	}

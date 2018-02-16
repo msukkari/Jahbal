@@ -30,8 +30,15 @@ struct VOUT
 	float4 PosH      : SV_POSITION;
 	float4 PosW      : POSITION;
 	float3 NormalW   : NORMAL;
+	float2 UV		 : TEXCOORD;
 };
 
+SamplerState MeshTextureSampler
+{
+	Filter = MIN_MAG_MIP_LINEAR;
+	AddressU = Wrap;
+	AddressV = Wrap;
+};
 Texture2D gDiffuseMap;
 
 
@@ -42,6 +49,7 @@ VOUT VS(VIN vin)
 	vout.PosW = mul(float4(vin.PosL, 1.0f), gWorld);
 	vout.PosH = mul(float4(vin.PosL, 1.0f), gWorldViewProj);
 	vout.NormalW = vin.Normal;
+	vout.UV = vin.TexCoord;
 
 	return vout;
 }
@@ -78,8 +86,8 @@ float4 PS(VOUT pin) : SV_Target
 		spec_color = spec_factor * (light_specC * material_specC);
 	}
 
-	float4 color = diffuse_color + spec_color;
-
+	//float4 color = diffuse_color + spec_color;
+	float4 color = gDiffuseMap.Sample(MeshTextureSampler, pin.UV);
 	return color;
 }
 
