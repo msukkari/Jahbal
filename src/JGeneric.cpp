@@ -1,9 +1,10 @@
 #include "JGeneric.h"
 #include "JRenderer.h"
 
-JGeneric::JGeneric(ID3D11Device* device, std::string filename)
-	: Shader(device, filename)
+JGeneric::JGeneric(ID3D11Device* device)
+	: Shader(device)
 {
+	loadFX("./FX/Generic.fxo");
 	Tech = m_FX->GetTechniqueByName("Tech");
 
 
@@ -17,6 +18,9 @@ JGeneric::JGeneric(ID3D11Device* device, std::string filename)
 	// cbPerFrame
 	DirectionalLight = m_FX->GetVariableByName("gDLight");
 
+	// textures
+	DiffuseMap = m_FX->GetVariableByName("gDiffuseMap")->AsShaderResource();
+	
 	D3D11_INPUT_ELEMENT_DESC PosNorUVDesc[] =
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,
@@ -29,6 +33,18 @@ JGeneric::JGeneric(ID3D11Device* device, std::string filename)
 
 	D3DX11_PASS_DESC passDesc;
 	Tech->GetPassByIndex(0)->GetDesc(&passDesc);
-	HR(device->CreateInputLayout(PosNorUVDesc, 3, passDesc.pIAInputSignature,
+	HR(m_deviceReference->CreateInputLayout(PosNorUVDesc, 3, passDesc.pIAInputSignature,
 		passDesc.IAInputSignatureSize, &m_InputLayout));
+}
+
+JGeneric::~JGeneric()
+{
+	ReleaseCOM(Tech);
+	ReleaseCOM(WorldViewProj)
+	ReleaseCOM(World)
+	ReleaseCOM(WorldInvTranspose)
+	ReleaseCOM(EyePosW)
+	ReleaseCOM(DirectionalLight)
+	ReleaseCOM(Mat)
+	ReleaseCOM(DiffuseMap)
 }

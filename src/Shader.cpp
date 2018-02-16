@@ -5,9 +5,20 @@
 #include "Shader.h"
 #include "JRenderer.h"
 
-Shader::Shader(ID3D11Device* device, const std::string filename)
+Shader::Shader(ID3D11Device* device)
 {
-	std::ifstream fin(L"./FX/Generic.fxo", std::ios::binary);
+	m_deviceReference = device;
+}
+
+Shader::~Shader()
+{
+	ReleaseCOM(m_FX);
+	ReleaseCOM(m_InputLayout);
+}
+
+void Shader::loadFX(std::string path)
+{
+	std::ifstream fin(path, std::ios::binary);
 
 	fin.seekg(0, std::ios_base::end);
 	int size = (int)fin.tellg();
@@ -18,10 +29,6 @@ Shader::Shader(ID3D11Device* device, const std::string filename)
 	fin.close();
 
 	HR(D3DX11CreateEffectFromMemory(&compiledShader[0], size,
-		0, device, &m_FX));
+		0, m_deviceReference, &m_FX));
 }
 
-Shader::~Shader()
-{
-
-}

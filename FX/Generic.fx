@@ -32,6 +32,8 @@ struct VOUT
 	float3 NormalW   : NORMAL;
 };
 
+Texture2D gDiffuseMap;
+
 
 VOUT VS(VIN vin)
 {

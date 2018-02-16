@@ -6,7 +6,7 @@ ShaderManager* ShaderManager::m_pInstance = nullptr;
 
 void ShaderManager::Init(ID3D11Device* device)
 {
-	m_JGeneric = new JGeneric(device, "./FX/Generic.fxo");
+	m_JGeneric = new JGeneric(device);
 }
 
 void ShaderManager::ShutDown()

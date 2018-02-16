@@ -12,7 +12,7 @@ using namespace DirectX;
 class JGeneric : public Shader
 {
 public:
-	JGeneric(ID3D11Device* device, std::string filename);
+	JGeneric(ID3D11Device* device);
 	~JGeneric();
 
 	void SetWorldViewProj(Matrix M) { WorldViewProj->SetMatrix(reinterpret_cast<const float*>(&M)); }
@@ -22,6 +22,8 @@ public:
 	void SetDLight(const LightData* data) { DirectionalLight->SetRawValue(data, 0, sizeof(DLightData)); }
 	void SetMaterial(const Material* mat) { Mat->SetRawValue(mat, 0, sizeof(Material)); }
 
+	void SetDiffuseMap(ID3D11ShaderResourceView* d) { DiffuseMap->SetResource(d); }
+	
 	ID3DX11EffectTechnique* Tech;
 
 	ID3DX11EffectMatrixVariable* WorldViewProj;
@@ -31,4 +33,5 @@ public:
 	ID3DX11EffectVariable* DirectionalLight;
 	ID3DX11EffectVariable* Mat;
 
+	ID3DX11EffectShaderResourceVariable* DiffuseMap;
 };

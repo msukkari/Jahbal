@@ -53,7 +53,7 @@ public:
 	VisualComponent* m_componentOwner;
 
 private:
-	void processMesh(aiMesh* mesh);
+	void processMesh(aiMesh* mesh, const aiScene* scene);
 	void processNode(aiNode* node, const aiScene* scene);
 };
 
