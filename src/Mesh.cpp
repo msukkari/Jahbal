@@ -8,18 +8,13 @@
 #include "DirectXTK\WICTextureLoader.h"
 
 Mesh::Mesh(VisualComponent* owner, std::vector<Vertex> vertexList, std::vector<int> indexList) :
-	m_componentOwner(owner), m_meshFilePath("")
+	m_componentOwner(owner), m_meshFullPath(""), m_meshFolder("")
 {
 	m_subMeshList.push_back(SubMesh(vertexList, indexList));
 }
 
-Mesh::Mesh(VisualComponent* owner, std::vector<Vertex> vertexList, std::vector<int> indexList, std::vector<Texture> textureList) :
-	m_componentOwner(owner), m_meshFilePath("")
-{
-}
-
 Mesh::Mesh(VisualComponent* owner, std::string filename) :
-	m_componentOwner(owner), m_meshFilePath(filename)
+	m_componentOwner(owner), m_meshFullPath(filename), m_meshFolder(getFolderFromFullPath(filename))
 {
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(filename, aiProcess_Triangulate | aiProcess_FlipUVs); 
@@ -31,6 +26,7 @@ Mesh::Mesh(VisualComponent* owner, std::string filename) :
 	}
 
 	processNode(scene->mRootNode, scene);
+
 }
 
 
@@ -59,37 +55,49 @@ void Mesh::processMesh(aiMesh* mesh, const aiScene* scene)
 		for (int j = 0; j < face.mNumIndices; j++) indices.push_back(face.mIndices[j]);
 	}
 
-	ID3D11ShaderResourceView* srv = nullptr;
+	ID3D11ShaderResourceView* diffuseSRV = nullptr;
+	ID3D11ShaderResourceView* specSRV = nullptr;
 	if (mesh->mMaterialIndex >= 0)
 	{
 		aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
 
-		aiString str;
-		mat->GetTexture(aiTextureType_DIFFUSE, 0, &str);
-
-		// get the path to the texture file
-		std::string s = str.C_Str();
-		std::string path = "";
-		for (int i = m_meshFilePath.size(); i >= 0; i--)
-		{
-			if (m_meshFilePath[i] == '/') { path = m_meshFilePath.substr(0, i+1); break; }
-		}
-		s = path + s;
-		
-		// create the shader resource view
-		ID3D11Resource* texResource = nullptr;
-		std::wstring wc = std::wstring(s.begin(), s.end());
-		CreateWICTextureFromFile(
-			Engine::GetInstance()->GetRenderer()->GetGFXDevice(),
-			Engine::GetInstance()->GetRenderer()->GetGFXDeviceContext(),
-			wc.c_str(), 
-			&texResource, &srv);
-		ReleaseCOM(texResource);
+		createSRVFromAssimpMat(mat, aiTextureType_DIFFUSE, &diffuseSRV);
+		createSRVFromAssimpMat(mat, aiTextureType_SPECULAR, &specSRV);
 	}
 
 	SubMesh sb(vertices, indices);
-	sb.m_SRV = srv;
+	sb.m_diffuseSRV = diffuseSRV;
+	sb.m_specSRV = specSRV;
 	m_subMeshList.push_back(sb);
+}
+
+bool Mesh::createSRVFromAssimpMat(aiMaterial* mat, aiTextureType type, ID3D11ShaderResourceView** srv)
+{
+	aiString str;
+	mat->GetTexture(type, 0, &str);
+
+	// create the shader resource view
+	ID3D11Resource* texResource = nullptr;
+	std::string path = m_meshFolder + str.C_Str();
+	std::wstring wc = std::wstring(path.begin(), path.end());
+	CreateWICTextureFromFile(
+		Engine::GetInstance()->GetRenderer()->GetGFXDevice(),
+		Engine::GetInstance()->GetRenderer()->GetGFXDeviceContext(),
+		wc.c_str(),
+		&texResource, srv);
+	ReleaseCOM(texResource);
+
+	return srv == nullptr;
+}
+
+std::string Mesh::getFolderFromFullPath(std::string path)
+{
+	for (int i = path.size(); i >= 0; i--)
+	{
+		if (path[i] == '/') return path.substr(0, i+1);
+	}
+
+	return "";
 }
 
 void Mesh::processNode(aiNode* node, const aiScene* scene)

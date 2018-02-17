@@ -20,7 +20,8 @@ JGeneric::JGeneric(ID3D11Device* device)
 
 	// textures
 	DiffuseMap = m_FX->GetVariableByName("gDiffuseMap")->AsShaderResource();
-	
+	SpecMap = m_FX->GetVariableByName("gSpecMap")->AsShaderResource();
+
 	D3D11_INPUT_ELEMENT_DESC PosNorUVDesc[] =
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0,

@@ -39,8 +39,9 @@ SamplerState MeshTextureSampler
 	AddressU = Wrap;
 	AddressV = Wrap;
 };
-Texture2D gDiffuseMap;
 
+Texture2D gDiffuseMap;
+Texture2D gSpecMap;
 
 VOUT VS(VIN vin)
 {
@@ -61,9 +62,9 @@ float4 PS(VOUT pin) : SV_Target
 	float4 light_diffuseC = gDLight.diffuse;
 	float4 light_specC = gDLight.specular;
 
-	float4 material_ambientC = gMaterial.ambient;
-	float4 material_diffuseC = gMaterial.diffuse;
-	float4 material_specC = gMaterial.specular;
+	float4 material_diffuseC = gDiffuseMap.Sample(MeshTextureSampler, pin.UV);// gMaterial.diffuse;
+	float4 material_specC = gSpecMap.Sample(MeshTextureSampler, pin.UV); // gMaterial.specular;
+	float4 material_ambientC = material_diffuseC;
 
 	light_direction = normalize(light_direction);
 	pin.NormalW = normalize(pin.NormalW);
@@ -86,8 +87,10 @@ float4 PS(VOUT pin) : SV_Target
 		spec_color = spec_factor * (light_specC * material_specC);
 	}
 
-	//float4 color = diffuse_color + spec_color;
-	float4 color = gDiffuseMap.Sample(MeshTextureSampler, pin.UV);
+	float4 ambient_color = light_ambientC * material_ambientC;
+
+	float4 color = ambient_color + diffuse_color + spec_color;
+	//float4 color = gDiffuseMap.Sample(MeshTextureSampler, pin.UV);
 	return color;
 }
 

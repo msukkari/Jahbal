@@ -23,7 +23,8 @@ public:
 	void SetMaterial(const Material* mat) { Mat->SetRawValue(mat, 0, sizeof(Material)); }
 
 	void SetDiffuseMap(ID3D11ShaderResourceView* d) { DiffuseMap->SetResource(d); }
-	
+	void SetSpecMap(ID3D11ShaderResourceView* s) { SpecMap->SetResource(s); }
+
 	ID3DX11EffectTechnique* Tech;
 
 	ID3DX11EffectMatrixVariable* WorldViewProj;
@@ -34,4 +35,13 @@ public:
 	ID3DX11EffectVariable* Mat;
 
 	ID3DX11EffectShaderResourceVariable* DiffuseMap;
+	ID3DX11EffectShaderResourceVariable* SpecMap;
+
+	/*
+	From Shader:
+
+	ID3DX11Effect* m_FX;
+	ID3D11InputLayout* m_InputLayout;
+	ID3D11Device* m_deviceReference;
+	*/
 };

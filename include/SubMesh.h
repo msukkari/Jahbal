@@ -23,5 +23,6 @@ public:
 
 	ID3D11Buffer* m_VB;
 	ID3D11Buffer* m_IB;
-	ID3D11ShaderResourceView* m_SRV;
+	ID3D11ShaderResourceView* m_diffuseSRV;
+	ID3D11ShaderResourceView* m_specSRV;
 };
