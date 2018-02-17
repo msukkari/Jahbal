@@ -25,4 +25,5 @@ public:
 	float m_Phi;
 	float m_Theta;
 	float m_Radius;
+	int m_moveSpeed;
 };

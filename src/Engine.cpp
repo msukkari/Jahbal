@@ -289,7 +289,7 @@ void Engine::HandleEvents()
 void Engine::Update(float dt)
 {
 	m_ActiveScene->GetActiveCamera()->Update(dt);
-	for (unsigned unsigned int i = 0; i < m_ActiveScene->GetEntityList()->size(); i++)
+	for (unsigned int i = 0; i < m_ActiveScene->GetEntityList()->size(); i++)
 	{
 		m_ActiveScene->GetEntityList()->at(i)->Update(dt);
 	}

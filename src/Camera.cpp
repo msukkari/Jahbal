@@ -6,6 +6,7 @@ Camera::Camera(float radius)
 	m_Phi = 0;
 	m_Theta = 0;
 	m_Radius = radius;
+	m_moveSpeed = 60;
 
 	UpdatePosition();
 	m_target = Vector3::Zero;
@@ -21,15 +22,15 @@ void Camera::Update(float dt)
 	float theta = m_Theta;
 	float radius = m_Radius;
 	if (kb.Up || kb.W)
-		phi += 0.0005f;
+		phi += 0.0005f * dt * m_moveSpeed;
 	if (kb.Down || kb.S)
-		phi -= 0.0005f;
+		phi -= 0.0005f * dt * m_moveSpeed;
 	if (kb.Left || kb.A)
-		theta -= 0.0005f;
+		theta -= 0.0005f * dt * m_moveSpeed;
 	if (kb.Right || kb.D)
-		theta += 0.0005f;
-	if (kb.OemPlus) radius += 0.01f;
-	if (kb.OemMinus) radius -= 0.01f;
+		theta += 0.0005f * dt * m_moveSpeed;
+	if (kb.OemPlus) radius += 0.01f * dt * m_moveSpeed;
+	if (kb.OemMinus) radius -= 0.01f * dt * m_moveSpeed;
 
 	radius = radius < 1.0 ? 1.0f : radius;
 	phi = phi >(3.14f / 2.0f) ? (3.14f / 2.0f) : (phi < -(3.14f / 2.0f) ? -(3.14f / 2.0f) : phi);
