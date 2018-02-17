@@ -20,6 +20,8 @@ public:
 	Entity(JRenderer* renderer, Vector3 position);
 	~Entity();
 
+	void Update(float dt) {}
+
 	Mesh* GetMesh() { return m_VisualComponent->m_Mesh; }
 	Material* GetMaterial() { return m_VisualComponent->m_Material; }
 	Shader* GetShader() { return m_VisualComponent->m_Shader; }

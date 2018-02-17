@@ -35,7 +35,7 @@ void Mesh::processMesh(aiMesh* mesh, const aiScene* scene)
 	std::vector<Vertex> vertices;
 	std::vector<int> indices;
 
-	for (int i = 0; i < mesh->mNumVertices; i++)
+	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 	{
 		aiVector3D v = mesh->mVertices[i];
 		aiVector3D n = mesh->mNormals[i];
@@ -49,10 +49,10 @@ void Mesh::processMesh(aiMesh* mesh, const aiScene* scene)
 
 	}
 
-	for (int i = 0; i < mesh->mNumFaces; i++)
+	for (unsigned int i = 0; i < mesh->mNumFaces; i++)
 	{
 		aiFace face = mesh->mFaces[i];
-		for (int j = 0; j < face.mNumIndices; j++) indices.push_back(face.mIndices[j]);
+		for (unsigned int j = 0; j < face.mNumIndices; j++) indices.push_back(face.mIndices[j]);
 	}
 
 	ID3D11ShaderResourceView* diffuseSRV = nullptr;
@@ -102,13 +102,13 @@ std::string Mesh::getFolderFromFullPath(std::string path)
 
 void Mesh::processNode(aiNode* node, const aiScene* scene)
 {
-	for (int i = 0; i < node->mNumMeshes; i++)
+	for (unsigned int i = 0; i < node->mNumMeshes; i++)
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
 		processMesh(mesh, scene);
 	}
 
-	for (int i = 0; i < node->mNumChildren; i++)
+	for (unsigned int i = 0; i < node->mNumChildren; i++)
 	{
 		processNode(node->mChildren[i], scene);
 	}

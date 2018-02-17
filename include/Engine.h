@@ -36,10 +36,8 @@ private:
     bool InitWindow();
 
     void HandleEvents();
-    void Update();
+    void Update(float dt);
     void DrawScene(Scene* scene);
-
-	void OnKeyDown(WPARAM keyState);
 
     HINSTANCE		m_hAppInst;
     HWND			m_hMainWnd;
@@ -54,9 +52,6 @@ private:
 
     JRenderer* m_JRenderer;
 	Scene* m_ActiveScene;
-
-	std::unique_ptr<DirectX::Keyboard> m_Keyboard;
-	std::unique_ptr<DirectX::Mouse> m_Mouse;
 
     static Engine* m_spInstance;
 };

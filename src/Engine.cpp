@@ -18,6 +18,7 @@
 #include "Shader.h"
 #include "JGeneric.h"
 #include "GeometryGenerator.h"
+#include "InputManager.h"
 
 using namespace DirectX;
 
@@ -48,10 +49,8 @@ bool Engine::Init()
 
 	ShaderManager::GetInstance()->Init(m_JRenderer->GetGFXDevice());
 
-	m_Keyboard = std::make_unique<Keyboard>();
-	m_Mouse = std::make_unique<Mouse>();
-	m_Mouse->SetWindow(m_hMainWnd);
-
+	InputManager::GetInstance()->Init(m_hMainWnd);
+	
 	// Scene is manually created/filled temporaraly
 	// Eventually, the scene will be serialized for future loading or opened for editing in an edit mode
 	{
@@ -59,17 +58,17 @@ bool Engine::Init()
 		m_ActiveScene = new Scene();
 
 		Material* material = new Material();
-		material->Ambient = Vector4((181.0 / 255.), (50.0f / 255.0f), (43.0f / 255.0f), 1.0f);
-		material->Diffuse = Vector4((181.0 / 255.), (50.0f / 255.0f), (43.0f / 255.0f), 1.0f);
-		material->Specular = Vector4((181.0 / 255.), (50.0f / 255.0f), (43.0f / 255.0f), 1.0f);
+		material->Ambient = Vector4((181.0f / 255.0f), (50.0f / 255.0f), (43.0f / 255.0f), 1.0f);
+		material->Diffuse = Vector4((181.0f / 255.0f), (50.0f / 255.0f), (43.0f / 255.0f), 1.0f);
+		material->Specular = Vector4((181.0f / 255.0f), (50.0f / 255.0f), (43.0f / 255.0f), 1.0f);
 
 		Mesh* nanosuitMesh = new Mesh(NULL, "resources/objects/nanosuit/nanosuit.obj");
 
-		for (int i = 0; i < 1; i++)
+		for (unsigned int i = 0; i < 1; i++)
 		{
 			for (int j = 0; j < 1; j++)
 			{
-				Entity* e = new Entity(m_JRenderer, Vector3(i * 3.0f, 0.0f, j * 3.0f));
+				Entity* e = new Entity(m_JRenderer, Vector3(i * 3.0f, -6.0f, j * 3.0f));
 				e->m_VisualComponent->m_Mesh = nanosuitMesh;
 				e->m_VisualComponent->m_Shader = ShaderManager::GetInstance()->m_JGeneric;
 				e->m_VisualComponent->m_Material = material;
@@ -107,7 +106,7 @@ bool Engine::Init()
 		fin >> ignore >> ignore >> ignore >> ignore;
 
 		std::vector<Vertex> vertices(vcount);
-		for (UINT i = 0; i < vcount; ++i)
+		for (Uunsigned int i = 0; i < vcount; ++i)
 		{
 			fin >> vertices[i].Position.x >> vertices[i].Position.y >> vertices[i].Position.z;
 			fin >> vertices[i].Normal.x >> vertices[i].Normal.y >> vertices[i].Normal.z;
@@ -118,7 +117,7 @@ bool Engine::Init()
 		fin >> ignore;
 
 		std::vector<int> indices(3 * tcount);
-		for (UINT i = 0; i < tcount; ++i)
+		for (Uunsigned int i = 0; i < tcount; ++i)
 		{
 			fin >> indices[i * 3 + 0] >> indices[i * 3 + 1] >> indices[i * 3 + 2];
 		}
@@ -144,7 +143,7 @@ bool Engine::Init()
 
 
 		// Camera
-		Camera* camera = new Camera(10.0f);
+		Camera* camera = new Camera(24.0f);
 
 		m_ActiveScene->SetActiveCamera(camera);
 
@@ -153,7 +152,7 @@ bool Engine::Init()
 		DLightData* sunData = new DLightData();
 		sunData->Ambient = Vector4(0.2f, 0.2f, 0.2f, 1.0f);
 		sunData->Diffuse = Vector4(0.5f, 0.5f, 0.5f, 1.0f);
-		sunData->Specular = Vector4(0.5f, 0.5f, 0.5f, 1.0f);
+		sunData->Specular = Vector4(0.05f, 0.05f, 0.05f, 16.0f);
 		sunData->Direction = Vector3(0.57735f, -0.57735f, 0.57735f);
 		sun->m_LightData = sunData;
 
@@ -273,7 +272,7 @@ void Engine::Run()
         else
         {
             HandleEvents();
-            Update();
+            Update(1.0f / 60.0f);
             DrawScene(m_ActiveScene);
         }
     }
@@ -283,45 +282,17 @@ void Engine::Run()
 
 void Engine::HandleEvents()
 {
-	auto kb = m_Keyboard->GetState();
+	auto kb = InputManager::GetInstance()->m_Keyboard->GetState();
 	if (kb.Escape) m_Running = false;
-		
+}
 
-	auto mouse = m_Mouse->GetState();
-
-	Camera* cam = m_ActiveScene->GetActiveCamera();
-	float phi = cam->m_Phi;
-	float theta = cam->m_Theta;
-	float radius = cam->m_Radius;
-
-	if (cam)
+void Engine::Update(float dt)
+{
+	m_ActiveScene->GetActiveCamera()->Update(dt);
+	for (unsigned unsigned int i = 0; i < m_ActiveScene->GetEntityList()->size(); i++)
 	{
-		if (kb.Up || kb.W)
-			phi += 0.0005f;
-		if (kb.Down || kb.S)
-			phi -= 0.0005f;
-		if (kb.Left || kb.A)
-			theta -= 0.0005f;
-		if (kb.Right || kb.D)
-			theta += 0.0005f;
-		if (kb.OemPlus) radius += 0.01;
-		if (kb.OemMinus) radius -= 0.01f;
-
-		radius = radius < 1.0 ? 1.0f : radius;
-		phi = phi > (3.14f / 2.0f) ? (3.14f / 2.0f) : (phi < -(3.14f / 2.0f) ? -(3.14f / 2.0f) : phi);
-		cam->m_Phi = phi; cam->m_Theta = theta; cam->m_Radius = radius;
-		cam->UpdatePosition();
+		m_ActiveScene->GetEntityList()->at(i)->Update(dt);
 	}
-}
-
-void Engine::Update()
-{
-
-}
-
-void Engine::OnKeyDown(WPARAM keyState)
-{
-	
 }
 
 void Engine::DrawScene(Scene* scene)

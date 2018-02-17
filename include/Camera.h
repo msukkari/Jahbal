@@ -1,16 +1,20 @@
 #pragma once
 
 #include <d3d11.h>
+
+#include "BaseEntity.h"
 #include "DirectXTK/SimpleMath.h"
 
 using namespace DirectX;
 
-class Camera
+class Camera : BaseEntity
 {
 public:
 	Camera(float radius, Vector3 target);
 	Camera(float radius);
 	Camera();
+
+	void Update(float dt);
 
 	Matrix GetLookAtMatrix();
 	void UpdatePosition();

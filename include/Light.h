@@ -80,6 +80,8 @@ public:
 	Light(LightType lightType);
 	LightType m_LightType;
 
+	void Update(float dt) {}
+
 	LightData* m_LightData;
 };
 

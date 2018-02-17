@@ -25,6 +25,7 @@
     <ClCompile Include="src\Engine.cpp" />
     <ClCompile Include="src\Entity.cpp" />
     <ClCompile Include="src\GeometryGenerator.cpp" />
+    <ClCompile Include="src\InputManager.cpp" />
     <ClCompile Include="src\JGeneric.cpp" />
     <ClCompile Include="src\JRenderer.cpp" />
     <ClCompile Include="src\Light.cpp" />
@@ -45,6 +46,7 @@
     <ClInclude Include="include\Engine.h" />
     <ClInclude Include="include\Entity.h" />
     <ClInclude Include="include\GeometryGenerator.h" />
+    <ClInclude Include="include\InputManager.h" />
     <ClInclude Include="include\JGeneric.h" />
     <ClInclude Include="include\JRenderer.h" />
     <ClInclude Include="include\Light.h" />

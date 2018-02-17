@@ -1,4 +1,5 @@
 #include "Camera.h"
+#include "InputManager.h"
 
 Camera::Camera(float radius)
 {
@@ -11,6 +12,30 @@ Camera::Camera(float radius)
 }
 
 Camera::Camera() : Camera(20.0){}
+
+void Camera::Update(float dt)
+{
+	auto kb = InputManager::GetInstance()->m_Keyboard->GetState();
+
+	float phi = m_Phi;
+	float theta = m_Theta;
+	float radius = m_Radius;
+	if (kb.Up || kb.W)
+		phi += 0.0005f;
+	if (kb.Down || kb.S)
+		phi -= 0.0005f;
+	if (kb.Left || kb.A)
+		theta -= 0.0005f;
+	if (kb.Right || kb.D)
+		theta += 0.0005f;
+	if (kb.OemPlus) radius += 0.01f;
+	if (kb.OemMinus) radius -= 0.01f;
+
+	radius = radius < 1.0 ? 1.0f : radius;
+	phi = phi >(3.14f / 2.0f) ? (3.14f / 2.0f) : (phi < -(3.14f / 2.0f) ? -(3.14f / 2.0f) : phi);
+	m_Phi = phi; m_Theta = theta; m_Radius = radius;
+	UpdatePosition();
+}
 
 void Camera::UpdatePosition()
 {
