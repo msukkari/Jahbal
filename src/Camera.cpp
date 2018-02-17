@@ -6,7 +6,7 @@ Camera::Camera(float radius)
 	m_Phi = 0;
 	m_Theta = 0;
 	m_Radius = radius;
-	m_moveSpeed = 60;
+	m_moveSpeed = 5;
 
 	UpdatePosition();
 	m_target = Vector3::Zero;

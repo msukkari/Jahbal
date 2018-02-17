@@ -6,6 +6,7 @@
 #include <fstream>
 #include <memory>
 #include <DirectXMath.h>
+#include <chrono>
 
 #include "Engine.h"
 #include "Entity.h"
@@ -23,6 +24,8 @@
 using namespace DirectX;
 
 Engine* Engine::m_spInstance = nullptr;
+
+#define getCurTime() std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count()
 
 bool Engine::Init()
 {
@@ -262,6 +265,7 @@ void Engine::Run()
 {
     MSG msg = { 0 };
 
+	auto currentTime = getCurTime();
     while (m_Running)
     {
         if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
@@ -271,8 +275,19 @@ void Engine::Run()
         }
         else
         {
+			double newTime = getCurTime();
+			
+			std::stringstream ss;
+			ss << currentTime << " " << newTime << std::endl;
+
+			double frameTime = newTime - currentTime;
+			currentTime = newTime;
+
+
+			std::string s = ss.str();
+			OutputDebugString(std::wstring(s.begin(), s.end()).c_str());
             HandleEvents();
-            Update(1.0f / 60.0f);
+            Update(frameTime);
             DrawScene(m_ActiveScene);
         }
     }
@@ -315,3 +330,4 @@ void Engine::ShutDown()
 	if (m_ActiveScene)
 		m_ActiveScene->Shutdown();
 }
+
