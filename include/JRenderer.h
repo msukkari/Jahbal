@@ -3,6 +3,7 @@
 #include <d3d11_1.h>
 #include <d3d11shader.h>
 #include <DirectXMath.h>
+#include <vector>
 
 #include "dxerr.h"
 #include "DirectXTK/SimpleMath.h"
@@ -10,6 +11,9 @@
 using namespace DirectX;
 
 class Scene;
+
+enum BlendState {BSNONE, BSALPHA, BSSIZE};
+enum RasterizerState {RSWIREFRAME, RSSOLID, RSSIZE};
 
 class JRenderer
 {
@@ -29,20 +33,22 @@ public:
 
 private:
     bool InitDX11(HWND hMainWnd);
+	void InitRenderStates();
+	void InitBlendStates();
 
     ID3D11Device* m_d3dDevice;
     ID3D11DeviceContext* m_d3dImmediateContext;
-    IDXGISwapChain* m_SwapChain;
-    ID3D11Texture2D* m_DepthStencilBuffer;
-    ID3D11RenderTargetView* m_RenderTargetView;
-    ID3D11DepthStencilView* m_DepthStencilView;
-    D3D11_VIEWPORT m_ScreenViewport;
+    IDXGISwapChain* m_swapChain;
+    ID3D11Texture2D* m_depthStencilBuffer;
+    ID3D11RenderTargetView* m_renderTargetView;
+    ID3D11DepthStencilView* m_depthStencilView;
+    D3D11_VIEWPORT m_screenViewport;
 
 	Matrix m_ProjectionMatrix;
 	Matrix m_ViewMatrix;
 
-	ID3D11RasterizerState* m_WireFrameRS;
-	ID3D11RasterizerState* m_SolidRS;
+	std::vector<ID3D11RasterizerState*> m_rasterizerStates;
+	std::vector<ID3D11BlendState*> m_blendStates;
 
     int m_ClientWidth;
     int m_ClientHeight;

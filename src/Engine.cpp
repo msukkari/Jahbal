@@ -73,6 +73,7 @@ bool Engine::Init()
 			{
 				Entity* e = new Entity(m_JRenderer, Vector3(i * 3.0f, -6.0f, j * 3.0f));
 				e->m_VisualComponent->m_Mesh = nanosuitMesh;
+				e->m_VisualComponent->m_Mesh->m_componentOwner = e->m_VisualComponent;
 				e->m_VisualComponent->m_Shader = ShaderManager::GetInstance()->m_JGeneric;
 				e->m_VisualComponent->m_Material = material;
 				m_ActiveScene->GetEntityList()->push_back(e);

@@ -155,6 +155,20 @@ fxgroup
                 //
                 // }
                 //
+                // cbuffer cbPerObject2
+                // {
+                //
+                //   struct Material
+                //   {
+                //       
+                //       float4 ambient;                // Offset:    0
+                //       float4 diffuse;                // Offset:   16
+                //       float4 specular;               // Offset:   32
+                //
+                //   } gMaterial;                       // Offset:    0 Size:    48
+                //
+                // }
+                //
                 //
                 // Resource Bindings:
                 //
@@ -164,6 +178,7 @@ fxgroup
                 // gDiffuseMap                       texture  float4          2d    0        1
                 // gSpecMap                          texture  float4          2d    1        1
                 // cbPerFrame                        cbuffer      NA          NA    0        1
+                // cbPerObject2                      cbuffer      NA          NA    1        1
                 //
                 //
                 //
@@ -186,6 +201,7 @@ fxgroup
                 ps_5_0
                 dcl_globalFlags refactoringAllowed | skipOptimization
                 dcl_constantbuffer cb0[5], immediateIndexed
+                dcl_constantbuffer cb1[1], immediateIndexed
                 dcl_sampler s0, mode_default
                 dcl_resource_texture2d (float,float,float,float) t0
                 dcl_resource_texture2d (float,float,float,float) t1
@@ -204,12 +220,13 @@ fxgroup
                 //
                 #line 60 "C:\Users\msukka1\Documents\Jahbal\fx\Generic.fx"
                 mov r0.xyz, cb0[3].xyzx  // r0.x <- light_direction.x; r0.y <- light_direction.y; r0.z <- light_direction.z
-                mov r1.xyzw, cb0[0].xyzw  // r1.x <- light_ambientC.x; r1.y <- light_ambientC.y; r1.z <- light_ambientC.z; r1.w <- light_ambientC.w
-                mov r2.xyzw, cb0[1].xyzw  // r2.x <- light_diffuseC.x; r2.y <- light_diffuseC.y; r2.z <- light_diffuseC.z; r2.w <- light_diffuseC.w
-                mov r3.xyzw, cb0[2].xyzw  // r3.x <- light_specC.x; r3.y <- light_specC.y; r3.z <- light_specC.z; r3.w <- light_specC.w
-                sample_indexable(texture2d)(float,float,float,float) r4.xyzw, v3.xyxx, t0.xyzw, s0  // r4.x <- material_diffuseC.x; r4.y <- material_diffuseC.y; r4.z <- material_diffuseC.z; r4.w <- material_diffuseC.w
+                mov r1.xyz, cb0[0].xyzx  // r1.x <- light_ambientC.x; r1.y <- light_ambientC.y; r1.z <- light_ambientC.z
+                mov r2.xyz, cb0[1].xyzx  // r2.x <- light_diffuseC.x; r2.y <- light_diffuseC.y; r2.z <- light_diffuseC.z
+                mov r3.xyz, cb0[2].xyzx  // r3.x <- light_specC.x; r3.y <- light_specC.y; r3.z <- light_specC.z
+                sample_indexable(texture2d)(float,float,float,float) r4.xyz, v3.xyxx, t0.xyzw, s0
+                mov r4.xyz, r4.xyzx  // r4.x <- material_diffuseC.x; r4.y <- material_diffuseC.y; r4.z <- material_diffuseC.z
                 sample_indexable(texture2d)(float,float,float,float) r5.xyzw, v3.xyxx, t1.xyzw, s0  // r5.x <- material_specC.x; r5.y <- material_specC.y; r5.z <- material_specC.z; r5.w <- material_specC.w
-                mov r4.xyzw, r4.xyzw  // r4.x <- material_ambientC.x; r4.y <- material_ambientC.y; r4.z <- material_ambientC.z; r4.w <- material_ambientC.w
+                mov r4.xyz, r4.xyzx  // r4.x <- material_ambientC.x; r4.y <- material_ambientC.y; r4.z <- material_ambientC.z
                 dp3 r0.w, r0.xyzx, r0.xyzx
                 rsq r0.w, r0.w
                 mul r0.xyz, r0.wwww, r0.xyzx
@@ -234,11 +251,11 @@ fxgroup
                 mov r0.xyz, -r0.xyzx
                 dp3 r0.x, r0.xyzx, r6.xyzx
                 max r0.x, r0.x, l(0.000000)  // r0.x <- diffuse_factor
-                mul r2.xyzw, r2.xyzw, r4.xyzw
-                mul r2.xyzw, r0.xxxx, r2.xyzw  // r2.x <- diffuse_color.x; r2.y <- diffuse_color.y; r2.z <- diffuse_color.z; r2.w <- diffuse_color.w
+                mul r0.yzw, r2.xxyz, r4.xxyz
+                mul r0.yzw, r0.yyzw, r0.xxxx  // r0.y <- diffuse_color.x; r0.z <- diffuse_color.y; r0.w <- diffuse_color.z
                 
                 #line 82
-                mov r6.xyzw, l(0,0,0,0)  // r6.x <- spec_color.x; r6.y <- spec_color.y; r6.z <- spec_color.z; r6.w <- spec_color.w
+                mov r2.xyz, l(0,0,0,0)  // r2.x <- spec_color.x; r2.y <- spec_color.y; r2.z <- spec_color.z
                 lt r0.x, l(0.000000), r0.x
                 if_nz r0.x
                   dp3 r0.x, r8.xyzx, r7.xyzx
@@ -246,17 +263,19 @@ fxgroup
                   log r0.x, r0.x
                   mul r0.x, r0.x, r5.w
                   exp r0.x, r0.x  // r0.x <- spec_factor
-                  mul r3.xyzw, r3.xyzw, r5.xyzw
-                  mul r6.xyzw, r0.xxxx, r3.xyzw
+                  mul r3.xyz, r3.xyzx, r5.xyzx
+                  mul r2.xyz, r0.xxxx, r3.xyzx
                 endif 
-                mul r0.xyzw, r1.xyzw, r4.xyzw  // r0.x <- ambient_color.x; r0.y <- ambient_color.y; r0.z <- ambient_color.z; r0.w <- ambient_color.w
-                add r0.xyzw, r2.xyzw, r0.xyzw
-                add r0.xyzw, r6.xyzw, r0.xyzw  // r0.x <- color.x; r0.y <- color.y; r0.z <- color.z; r0.w <- color.w
+                mul r1.xyz, r1.xyzx, r4.xyzx  // r1.x <- ambient_color.x; r1.y <- ambient_color.y; r1.z <- ambient_color.z
+                add r0.xyz, r0.yzwy, r1.xyzx
+                add r0.xyz, r2.xyzx, r0.xyzx  // r0.x <- color.x; r0.y <- color.y; r0.z <- color.z
                 
-                #line 94
-                mov o0.xyzw, r0.xyzw
+                #line 93
+                mov r0.w, cb1[0].w  // r0.w <- color.w
+                mov o0.xyz, r0.xyzx
+                mov o0.w, r0.w
                 ret 
-                // Approximately 47 instruction slots used
+                // Approximately 50 instruction slots used
                             
             };
         }

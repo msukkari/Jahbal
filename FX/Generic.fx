@@ -90,7 +90,8 @@ float4 PS(VOUT pin) : SV_Target
 	float4 ambient_color = light_ambientC * material_ambientC;
 
 	float4 color = ambient_color + diffuse_color + spec_color;
-	//float4 color = gDiffuseMap.Sample(MeshTextureSampler, pin.UV);
+	color.a = gMaterial.ambient.a;
+
 	return color;
 }
 
