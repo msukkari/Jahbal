@@ -33,7 +33,7 @@ public:
 
 private:
     bool InitDX11(HWND hMainWnd);
-	void InitRenderStates();
+	void InitRasterizerStates();
 	void InitBlendStates();
 
     ID3D11Device* m_d3dDevice;

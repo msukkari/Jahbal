@@ -35,7 +35,7 @@ bool JRenderer::Init(int width, int height, HWND hMainWnd)
 
 	m_blendStates = std::vector<ID3D11BlendState*>(BSSIZE);
 	m_rasterizerStates = std::vector<ID3D11RasterizerState*>(RSSIZE);
-	InitRenderStates();
+	InitRasterizerStates();
 	InitBlendStates();
 
     return true;
@@ -130,7 +130,7 @@ void JRenderer::InitBlendStates()
 	m_blendStates[BSNONE] = nullptr;
 }
 
-void JRenderer::InitRenderStates()
+void JRenderer::InitRasterizerStates()
 {
 	D3D11_RASTERIZER_DESC wireframeDesc;
 	ZeroMemory(&wireframeDesc, sizeof(D3D11_RASTERIZER_DESC));
