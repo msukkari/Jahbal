@@ -6,7 +6,7 @@
 #include "SubMesh.h"
 
 SubMesh::SubMesh(std::vector<Vertex> v, std::vector<int> i) :
-	m_vertexList(v), m_indexList(i)
+	m_vertexList(v), m_indexList(i), m_diffuseSRV(0), m_specSRV(0)
 {
 	SetupBuffers();
 }

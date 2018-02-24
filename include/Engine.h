@@ -56,6 +56,10 @@ private:
     static Engine* m_spInstance;
 };
 
+#define M_PI 3.14159265359f
+#define dtr(angleDegrees) ((angleDegrees) * M_PI / 180.0)
+#define rtd(angleRadians) ((angleRadians) * 180.0 / M_PI)
+
 
 
 

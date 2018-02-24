@@ -77,8 +77,8 @@ void JRenderer::DrawScene(Scene* scene)
 
 		for (unsigned int p = 0; p < techDesc.Passes; p++)
 		{
-
-			Matrix model = Matrix::CreateTranslation(entity->m_position);
+			Matrix rotation = Matrix::CreateFromYawPitchRoll(entity->m_rotationEuler.x, entity->m_rotationEuler.y, entity->m_rotationEuler.z);
+			Matrix model = rotation * Matrix::CreateTranslation(entity->m_position);
 			Matrix view = cam->GetLookAtMatrix();
 			Matrix MVP = model * view * m_ProjectionMatrix;
 
@@ -107,9 +107,6 @@ void JRenderer::DrawScene(Scene* scene)
 
 	HR(m_swapChain->Present(0, 0));
 }
-
-
-
 
 void JRenderer::InitBlendStates()
 {

@@ -22,8 +22,8 @@ public:
 	void SetDLight(const LightData* data) { DirectionalLight->SetRawValue(data, 0, sizeof(DLightData)); }
 	void SetMaterial(const Material* mat) { Mat->SetRawValue(mat, 0, sizeof(Material)); }
 
-	void SetDiffuseMap(ID3D11ShaderResourceView* d) { DiffuseMap->SetResource(d); }
-	void SetSpecMap(ID3D11ShaderResourceView* s) { SpecMap->SetResource(s); }
+	void SetDiffuseMap(ID3D11ShaderResourceView* d) { if(d) DiffuseMap->SetResource(d); }
+	void SetSpecMap(ID3D11ShaderResourceView* s) { if(s) SpecMap->SetResource(s); }
 
 	ID3DX11EffectTechnique* Tech;
 

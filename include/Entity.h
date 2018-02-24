@@ -18,6 +18,7 @@ class Entity : BaseEntity
 public:
 	Entity(JRenderer* renderer);
 	Entity(JRenderer* renderer, Vector3 position);
+	Entity(JRenderer* renderer, Vector3 position, Vector3 rotation);
 	~Entity();
 
 	void Update(float dt) {}
@@ -29,5 +30,6 @@ public:
 	VisualComponent* m_VisualComponent;
 
 	Vector3 m_position;
+	Vector3 m_rotationEuler;
 };
 

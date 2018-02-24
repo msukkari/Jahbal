@@ -1,5 +1,28 @@
 #include "GeometryGenerator.h"
 
+void GeometryGenerator::CreatePlane(float width, float length, std::vector<Vertex>& v, std::vector<int>& i)
+{
+	v.clear();
+	v.resize(4);
+
+	float w2 = 0.5f * width;
+	float l2 = 0.5f * length;
+
+	v[0] = Vertex(w2, 0.0f, l2, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f);
+	v[1] = Vertex(w2, 0.0f, -l2, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f);
+	v[2] = Vertex(-w2, 0.0f, -l2, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f);
+	v[3] = Vertex(-w2, 0.0f, l2, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f);
+
+	i.clear();
+	i.resize(6);
+
+	i[0] = 0;
+	i[1] = 1;
+	i[2] = 2;
+	i[3] = 2;
+	i[4] = 3;
+	i[5] = 0;
+}
 
 void GeometryGenerator::CreateBox(float width, float height, float depth, std::vector<Vertex>& v, std::vector<int>&  i)
 {

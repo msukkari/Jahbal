@@ -11,10 +11,12 @@
 #include "Engine.h"
 #include "Entity.h"
 #include "Mesh.h"
+#include "SubMesh.h"
 #include "JRenderer.h"
 #include "Scene.h"
 #include "Camera.h"
 #include "DirectXTK/SimpleMath.h"
+#include "DirectXTK\WICTextureLoader.h"
 #include "ShaderManager.h"
 #include "Shader.h"
 #include "JGeneric.h"
@@ -79,6 +81,40 @@ bool Engine::Init()
 				m_ActiveScene->GetEntityList()->push_back(e);
 			}
 		}
+
+		Mesh* planeMesh;
+		{
+			std::vector<Vertex> planeV;
+			std::vector<int> planeI;
+			GeometryGenerator::CreatePlane(40.0f, 40.0f, planeV, planeI);
+			planeMesh = new Mesh(nullptr, planeV, planeI);
+			ID3D11Resource* texResource = nullptr;
+			ID3D11ShaderResourceView* srv;
+			std::string path = "resources/textures/brickwall.jpg";
+			std::wstring wc = std::wstring(path.begin(), path.end());
+			CreateWICTextureFromFile(
+				Engine::GetInstance()->GetRenderer()->GetGFXDevice(),
+				Engine::GetInstance()->GetRenderer()->GetGFXDeviceContext(),
+				wc.c_str(),
+				&texResource, &srv);
+			ReleaseCOM(texResource);
+
+			planeMesh->m_subMeshList[0].m_diffuseSRV = srv;
+			//planeMesh->m_subMeshList[0].m_specSRV = nullptr;
+		}
+
+		Entity* plane = new Entity(m_JRenderer, Vector3(0.0f, -6.0f, 0.0f));
+		plane->m_VisualComponent->m_Mesh = planeMesh;
+		plane->m_VisualComponent->m_Shader = ShaderManager::GetInstance()->m_JGeneric;
+		plane->m_VisualComponent->m_Material = material;
+
+		Entity* plane2 = new Entity(m_JRenderer, Vector3(22.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, M_PI / 2));
+		plane2->m_VisualComponent->m_Mesh = planeMesh;
+		plane2->m_VisualComponent->m_Shader = ShaderManager::GetInstance()->m_JGeneric;
+		plane2->m_VisualComponent->m_Material = material;
+
+		m_ActiveScene->GetEntityList()->push_back(plane);
+		m_ActiveScene->GetEntityList()->push_back(plane2);
 
 		/*
 		Entity* entity3 = new Entity(m_JRenderer);
@@ -147,7 +183,7 @@ bool Engine::Init()
 
 
 		// Camera
-		Camera* camera = new Camera(24.0f);
+		Camera* camera = new Camera(50.0f);
 
 		m_ActiveScene->SetActiveCamera(camera);
 
