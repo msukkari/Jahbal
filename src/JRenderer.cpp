@@ -79,11 +79,13 @@ void JRenderer::DrawScene(Scene* scene)
 		{
 			Matrix rotation = Matrix::CreateFromYawPitchRoll(entity->m_rotationEuler.x, entity->m_rotationEuler.y, entity->m_rotationEuler.z);
 			Matrix model = rotation * Matrix::CreateTranslation(entity->m_position);
+			Matrix modelInvTranspose = model; modelInvTranspose.Invert().Transpose();
 			Matrix view = cam->GetLookAtMatrix();
 			Matrix MVP = model * view * m_ProjectionMatrix;
 
 			ShaderManager::GetInstance()->m_JGeneric->SetWorldViewProj(MVP);
 			ShaderManager::GetInstance()->m_JGeneric->SetWorld(model);
+			ShaderManager::GetInstance()->m_JGeneric->SetWorldInvTranspose(modelInvTranspose);
 			ShaderManager::GetInstance()->m_JGeneric->SetMaterial(entity->m_VisualComponent->m_Material);
 
 			Vector4 camPosition = scene->GetActiveCamera()->m_position;

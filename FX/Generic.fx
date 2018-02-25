@@ -49,7 +49,7 @@ VOUT VS(VIN vin)
 
 	vout.PosW = mul(float4(vin.PosL, 1.0f), gWorld);
 	vout.PosH = mul(float4(vin.PosL, 1.0f), gWorldViewProj);
-	vout.NormalW = vin.Normal;
+	vout.NormalW = mul(vin.Normal, (float3x3)gWorldInvTranspose);
 	vout.UV = vin.TexCoord;
 
 	return vout;

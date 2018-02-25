@@ -193,7 +193,7 @@ bool Engine::Init()
 		sunData->Ambient = Vector4(0.2f, 0.2f, 0.2f, 1.0f);
 		sunData->Diffuse = Vector4(0.5f, 0.5f, 0.5f, 1.0f);
 		sunData->Specular = Vector4(0.05f, 0.05f, 0.05f, 16.0f);
-		sunData->Direction = Vector3(0.57735f, -0.57735f, 0.57735f);
+		sunData->Direction = Vector3(1.0f, 0.0f, 0.0f);
 		sun->m_LightData = sunData;
 
 
