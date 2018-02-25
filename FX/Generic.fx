@@ -1,4 +1,5 @@
 #include "Defs.fx"
+#include "LightFuncs.fx"
 
 cbuffer cbPerFrame
 {
@@ -57,39 +58,21 @@ VOUT VS(VIN vin)
 
 float4 PS(VOUT pin) : SV_Target
 {
-	float3 light_direction = gDLight.direction;
-	float4 light_ambientC = gDLight.ambient;
-	float4 light_diffuseC = gDLight.diffuse;
-	float4 light_specC = gDLight.specular;
-
 	float4 material_diffuseC = gDiffuseMap.Sample(MeshTextureSampler, pin.UV);// gMaterial.diffuse;
 	float4 material_specC = gSpecMap.Sample(MeshTextureSampler, pin.UV); // gMaterial.specular;
 	float4 material_ambientC = material_diffuseC;
-
-	light_direction = normalize(light_direction);
+	
 	pin.NormalW = normalize(pin.NormalW);
+	float3 ptoeye = normalize(gEyePosW - pin.PosW); 
 
-	float3 ptoeye = gEyePosW - pin.PosW; 
-	ptoeye = normalize(ptoeye);
+	float4 dirLight_ambientC = float4(0.0f, 0.0f, 0.0f, 0.0f);
+	float4 dirLight_diffuseC = float4(0.0f, 0.0f, 0.0f, 0.0f);
+	float4 dirLight_specC = float4(0.0f, 0.0f, 0.0f, 0.0f);
+	computeDirectionalLight(gDLight, pin.NormalW, ptoeye, material_specC.w, dirLight_ambientC, dirLight_diffuseC, dirLight_specC);
 
-	float3 reflected = reflect(light_direction, pin.NormalW); 
-	reflected = normalize(reflected);
-
-	float diffuse_factor = max(dot(-light_direction, pin.NormalW), 0.0f);
-	float4 diffuse_color = diffuse_factor * (material_diffuseC * light_diffuseC);
-
-
-	float4 spec_color = float4(0.0f, 0.0f, 0.0f, 0.0f);
-	if (diffuse_factor > 0.0f)
-	{
-		float spec_factor = pow(max(dot(reflected, ptoeye), 0.0f), material_specC.w);
-
-		spec_color = spec_factor * (light_specC * material_specC);
-	}
-
-	float4 ambient_color = light_ambientC * material_ambientC;
-
-	float4 color = ambient_color + diffuse_color + spec_color;
+	float4 color = (dirLight_ambientC * material_ambientC) +
+				   (dirLight_diffuseC * material_diffuseC) + 
+				   (dirLight_specC * material_specC);
 	color.a = gMaterial.ambient.a;
 
 	return color;

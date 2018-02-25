@@ -140,4 +140,9 @@
       <Filter>FX</Filter>
     </CustomBuild>
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="FX\LightFuncs.fx">
+      <Filter>FX</Filter>
+    </FxCompile>
+  </ItemGroup>
 </Project>

@@ -1,3 +1,8 @@
+#ifndef DEFS_FX
+#define DEFS_FX
+
+#define F4_Zero float4(0.0f, 0.0f, 0.0f, 0.0f);
+
 struct DirectionalLight
 {
 	float4 ambient;
@@ -42,3 +47,5 @@ struct Material
 	float4 diffuse;
 	float4 specular;
 };
+
+#endif
