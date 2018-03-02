@@ -17,6 +17,7 @@ JGeneric::JGeneric(ID3D11Device* device)
 
 	// cbPerFrame
 	DirectionalLight = m_FX->GetVariableByName("gDLight");
+	PointLight = m_FX->GetVariableByName("gPLight");
 
 	// textures
 	DiffuseMap = m_FX->GetVariableByName("gDiffuseMap")->AsShaderResource();
@@ -40,12 +41,13 @@ JGeneric::JGeneric(ID3D11Device* device)
 
 JGeneric::~JGeneric()
 {
-	ReleaseCOM(Tech);
+	ReleaseCOM(Tech)
 	ReleaseCOM(WorldViewProj)
 	ReleaseCOM(World)
 	ReleaseCOM(WorldInvTranspose)
 	ReleaseCOM(EyePosW)
 	ReleaseCOM(DirectionalLight)
+	ReleaseCOM(PointLight)
 	ReleaseCOM(Mat)
 	ReleaseCOM(DiffuseMap)
 }

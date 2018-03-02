@@ -196,10 +196,19 @@ bool Engine::Init()
 		sunData->Direction = Vector3(1.0f, 0.0f, 0.0f);
 		sun->m_LightData = sunData;
 
-
+		// Point light
+		Light* point = new Light(Point);
+		PLightData* pData = new PLightData();
+		pData->Ambient = Vector4(0.2f, 0.2f, 0.2f, 1.0f);
+		pData->Diffuse = Vector4(0.5f, 0.5f, 0.5f, 1.0f);
+		pData->Specular = Vector4(0.02f, 0.02f, 0.02f, 16.0f);
+		pData->Position = Vector3(10.0f, 0.0f, 0.0f);
+		pData->Range = 50.0f;
+		pData->Att = Vector3(0.0f, 0.1f, 0.0f);
+		point->m_LightData = pData;
 
 		m_ActiveScene->GetLightList()->push_back(sun);
-
+		m_ActiveScene->GetLightList()->push_back(point);
 	}
 
     return true;

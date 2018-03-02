@@ -20,6 +20,7 @@ public:
 	void SetWorldInvTranspose(Matrix M) { WorldInvTranspose->SetMatrix(reinterpret_cast<const float*>(&M)); }
 	void SetEyePosW(const Vector3& v) { EyePosW->SetRawValue(&v, 0, sizeof(Vector3)); }
 	void SetDLight(const LightData* data) { DirectionalLight->SetRawValue(data, 0, sizeof(DLightData)); }
+	void SetPLight(const LightData* data) { PointLight->SetRawValue(data, 0, sizeof(PLightData)); }
 	void SetMaterial(const Material* mat) { Mat->SetRawValue(mat, 0, sizeof(Material)); }
 
 	void SetDiffuseMap(ID3D11ShaderResourceView* d) { if(d) DiffuseMap->SetResource(d); }
@@ -32,6 +33,7 @@ public:
 	ID3DX11EffectMatrixVariable* WorldInvTranspose;
 	ID3DX11EffectVectorVariable* EyePosW;
 	ID3DX11EffectVariable* DirectionalLight;
+	ID3DX11EffectVariable* PointLight;
 	ID3DX11EffectVariable* Mat;
 
 	ID3DX11EffectShaderResourceVariable* DiffuseMap;

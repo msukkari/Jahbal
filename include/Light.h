@@ -10,17 +10,17 @@ class TransformComponent;
 
 class LightData
 {
+public:
+	Vector4 Ambient;
+	Vector4 Diffuse;
+	Vector4 Specular;
 };
 
 class DLightData : public LightData
 {
 public:
-
 	DLightData() {}
 
-	Vector4 Ambient;
-	Vector4 Diffuse;
-	Vector4 Specular;
 	Vector3 Direction;
 	float Pad; // Pad the last float so we can set an array of lights if we wanted.
 };
@@ -28,12 +28,7 @@ public:
 class PLightData : public LightData
 {
 public:
-
 	PLightData() {}
-
-	Vector4 Ambient;
-	Vector4 Diffuse;
-	Vector4 Specular;
 
 	// Packed into 4D vector: (Position, Range)
 	Vector3 Position;
@@ -49,10 +44,6 @@ class SLightData : public LightData
 public:
 
 	SLightData() {}
-
-	Vector4 Ambient;
-	Vector4 Diffuse;
-	Vector4 Specular;
 
 	// Packed into 4D vector: (Position, Range)
 	Vector3 Position;

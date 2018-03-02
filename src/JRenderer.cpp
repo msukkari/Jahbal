@@ -67,10 +67,15 @@ void JRenderer::DrawScene(Scene* scene)
 		activeTech->GetDesc(&techDesc);
 
 		Light* sun = nullptr;
-		if (!scene->GetLightList()->empty())
-			sun = scene->GetLightList()->at(0);
+		Light* point = nullptr;
+		sun = scene->GetLightList()->at(0);
+		if (scene->GetLightList()->size() >= 2)
+		{
+			point = scene->GetLightList()->at(1);
+		}
 
 		ShaderManager::GetInstance()->m_JGeneric->SetDLight((DLightData*)sun->m_LightData);
+		ShaderManager::GetInstance()->m_JGeneric->SetPLight((PLightData*)point->m_LightData);
 
 		UINT stride = sizeof(Vertex);
 		UINT offset = 0;

@@ -4,6 +4,7 @@
 cbuffer cbPerFrame
 {
 	DirectionalLight gDLight;
+	PointLight gPLight;
 	float3 gEyePosW;
 };
 
@@ -58,21 +59,29 @@ VOUT VS(VIN vin)
 
 float4 PS(VOUT pin) : SV_Target
 {
-	float4 material_diffuseC = gDiffuseMap.Sample(MeshTextureSampler, pin.UV);// gMaterial.diffuse;
-	float4 material_specC = gSpecMap.Sample(MeshTextureSampler, pin.UV); // gMaterial.specular;
-	float4 material_ambientC = material_diffuseC;
+	float4 mat_d = gDiffuseMap.Sample(MeshTextureSampler, pin.UV);
+	float4 mat_s = gSpecMap.Sample(MeshTextureSampler, pin.UV); 
+	float4 mat_a = mat_d;
 	
 	pin.NormalW = normalize(pin.NormalW);
 	float3 ptoeye = normalize(gEyePosW - pin.PosW); 
 
-	float4 dirLight_ambientC = float4(0.0f, 0.0f, 0.0f, 0.0f);
-	float4 dirLight_diffuseC = float4(0.0f, 0.0f, 0.0f, 0.0f);
-	float4 dirLight_specC = float4(0.0f, 0.0f, 0.0f, 0.0f);
-	computeDirectionalLight(gDLight, pin.NormalW, ptoeye, material_specC.w, dirLight_ambientC, dirLight_diffuseC, dirLight_specC);
+	float4 ambient = float4(0.0f, 0.0f, 0.0f, 0.0f);
+	float4 diffuse = float4(0.0f, 0.0f, 0.0f, 0.0f);
+	float4 spec = float4(0.0f, 0.0f, 0.0f, 0.0f);
 
-	float4 color = (dirLight_ambientC * material_ambientC) +
-				   (dirLight_diffuseC * material_diffuseC) + 
-				   (dirLight_specC * material_specC);
+	float4 a, d, s;
+	computeDirectionalLight(gDLight, pin.NormalW, ptoeye, mat_d, mat_s, a, d, s);
+	ambient += a;
+	diffuse += d;
+	spec += s;
+
+	computePointLight(gPLight, pin.NormalW, pin.PosW, ptoeye, mat_d, mat_s, a, d, s);
+	ambient += a;
+	diffuse += d;
+	spec += s;
+
+	float4 color = ambient + diffuse + spec;
 	color.a = gMaterial.ambient.a;
 
 	return color;
