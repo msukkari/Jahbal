@@ -37,7 +37,8 @@ struct VOUT
 
 SamplerState MeshTextureSampler
 {
-	Filter = MIN_MAG_MIP_LINEAR;
+	Filter = ANISOTROPIC;
+	MaxAnisotropy = 16;
 	AddressU = Wrap;
 	AddressV = Wrap;
 };

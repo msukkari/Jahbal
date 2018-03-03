@@ -12,8 +12,9 @@ using namespace DirectX;
 
 class Scene;
 
-enum BlendState {BSNONE, BSALPHA, BSSIZE};
-enum RasterizerState {RSWIREFRAME, RSSOLID, RSSIZE};
+enum BlendState {BSNOBLEND, BSNOTARGETWRITE, BSALPHA, BSSIZE};
+enum RasterizerState {RSWIREFRAME, RSSOLID, RSSOLIDBACK, RSSIZE};
+enum DepthStencilState {DSDEFAULT, DSMARKSTENCIL, DSSTENCILEQUAL, DSSIZE};
 
 class JRenderer
 {
@@ -35,6 +36,7 @@ private:
     bool InitDX11(HWND hMainWnd);
 	void InitRasterizerStates();
 	void InitBlendStates();
+	void InitDepthStencilStates();
 
     ID3D11Device* m_d3dDevice;
     ID3D11DeviceContext* m_d3dImmediateContext;
@@ -49,6 +51,7 @@ private:
 
 	std::vector<ID3D11RasterizerState*> m_rasterizerStates;
 	std::vector<ID3D11BlendState*> m_blendStates;
+	std::vector<ID3D11DepthStencilState*> m_depthStencilStates;
 
     int m_ClientWidth;
     int m_ClientHeight;

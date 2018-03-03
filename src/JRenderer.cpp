@@ -35,8 +35,10 @@ bool JRenderer::Init(int width, int height, HWND hMainWnd)
 
 	m_blendStates = std::vector<ID3D11BlendState*>(BSSIZE);
 	m_rasterizerStates = std::vector<ID3D11RasterizerState*>(RSSIZE);
+	m_depthStencilStates = std::vector<ID3D11DepthStencilState*>(DSSIZE);
 	InitRasterizerStates();
 	InitBlendStates();
+	InitDepthStencilStates();
 
     return true;
 }
@@ -50,30 +52,29 @@ void JRenderer::DrawScene(Scene* scene)
 	dc->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	Camera* cam = scene->GetActiveCamera();
+	Vector3 eyePos = Vector3(scene->GetActiveCamera()->m_position);
+	Light* sun = nullptr;
+	Light* point = nullptr;
+	sun = scene->GetLightList()->at(0);
+	if (scene->GetLightList()->size() >= 2)
+	{
+		point = scene->GetLightList()->at(1);
+	}
+
+	ID3DX11EffectTechnique* activeTech = ShaderManager::GetInstance()->m_JGeneric->Tech;
+	D3DX11_TECHNIQUE_DESC techDesc;
+	activeTech->GetDesc(&techDesc);
 
 	// Draw Scene
+	float blendFactors[] = { 0.0f, 0.0f, 0.0f, 0.0f }; // only used with D3D11_BLEND_BLEND_FACTOR
+	dc->RSSetState(m_rasterizerStates[RSSOLID]);
+	dc->OMSetBlendState(m_blendStates[BSNOBLEND], blendFactors, 0xffffffff);
+	dc->OMSetDepthStencilState(m_depthStencilStates[DSDEFAULT], 0);
 	for (unsigned int i = 0; i < scene->GetEntityList()->size(); i++)
 	{
 		Entity* entity = scene->GetEntityList()->at(i);
 
 		dc->IASetInputLayout(ShaderManager::GetInstance()->m_JGeneric->m_InputLayout);
-		dc->RSSetState(m_rasterizerStates[RSSOLID]);
-
-		float blendFactors[] = { 0.0f, 0.0f, 0.0f, 0.0f }; // only used with D3D11_BLEND_BLEND_FACTOR
-		dc->OMSetBlendState(m_blendStates[BSALPHA], blendFactors, 0xffffffff);
-
-		ID3DX11EffectTechnique* activeTech = ShaderManager::GetInstance()->m_JGeneric->Tech;
-		D3DX11_TECHNIQUE_DESC techDesc;
-		activeTech->GetDesc(&techDesc);
-
-		Light* sun = nullptr;
-		Light* point = nullptr;
-		sun = scene->GetLightList()->at(0);
-		if (scene->GetLightList()->size() >= 2)
-		{
-			point = scene->GetLightList()->at(1);
-		}
-
 		ShaderManager::GetInstance()->m_JGeneric->SetDLight((DLightData*)sun->m_LightData);
 		ShaderManager::GetInstance()->m_JGeneric->SetPLight((PLightData*)point->m_LightData);
 
@@ -92,9 +93,6 @@ void JRenderer::DrawScene(Scene* scene)
 			ShaderManager::GetInstance()->m_JGeneric->SetWorld(model);
 			ShaderManager::GetInstance()->m_JGeneric->SetWorldInvTranspose(modelInvTranspose);
 			ShaderManager::GetInstance()->m_JGeneric->SetMaterial(entity->m_VisualComponent->m_Material);
-
-			Vector4 camPosition = scene->GetActiveCamera()->m_position;
-			Vector3 eyePos = Vector3(camPosition);
 			ShaderManager::GetInstance()->m_JGeneric->SetEyePosW(eyePos);
 
 			for (unsigned int s = 0; s < entity->GetMesh()->m_subMeshList.size(); s++)
@@ -112,11 +110,29 @@ void JRenderer::DrawScene(Scene* scene)
 		}
 	}
 
+
+
 	HR(m_swapChain->Present(0, 0));
 }
 
 void JRenderer::InitBlendStates()
 {
+	m_blendStates[BSNOBLEND] = nullptr;
+
+	D3D11_BLEND_DESC noRenderTargetWritesDesc = { 0 };
+	noRenderTargetWritesDesc.AlphaToCoverageEnable = false;
+	noRenderTargetWritesDesc.IndependentBlendEnable = false;
+
+	noRenderTargetWritesDesc.RenderTarget[0].BlendEnable = false;
+	noRenderTargetWritesDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
+	noRenderTargetWritesDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ZERO;
+	noRenderTargetWritesDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	noRenderTargetWritesDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	noRenderTargetWritesDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	noRenderTargetWritesDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	noRenderTargetWritesDesc.RenderTarget[0].RenderTargetWriteMask = 0;
+	HR(m_d3dDevice->CreateBlendState(&noRenderTargetWritesDesc, &m_blendStates[BSNOTARGETWRITE]));
+
 	D3D11_BLEND_DESC alphaBlendDesc = { 0 };
 	alphaBlendDesc.AlphaToCoverageEnable			= false;
 	alphaBlendDesc.IndependentBlendEnable			= false;
@@ -131,7 +147,6 @@ void JRenderer::InitBlendStates()
 		D3D11_COLOR_WRITE_ENABLE_ALL;
 	HR(m_d3dDevice->CreateBlendState(&alphaBlendDesc, &m_blendStates[BSALPHA]));
 
-	m_blendStates[BSNONE] = nullptr;
 }
 
 void JRenderer::InitRasterizerStates()
@@ -145,16 +160,69 @@ void JRenderer::InitRasterizerStates()
 
 	HR(m_d3dDevice->CreateRasterizerState(&wireframeDesc, &m_rasterizerStates[RSWIREFRAME]));
 
-	ZeroMemory(&wireframeDesc, sizeof(D3D11_RASTERIZER_DESC));
-	wireframeDesc.FillMode = D3D11_FILL_SOLID;
-	wireframeDesc.CullMode = D3D11_CULL_BACK;
-	wireframeDesc.FrontCounterClockwise = false;
-	wireframeDesc.DepthClipEnable = true;
+	D3D11_RASTERIZER_DESC solidDesc;
+	ZeroMemory(&solidDesc, sizeof(D3D11_RASTERIZER_DESC));
+	solidDesc.FillMode = D3D11_FILL_SOLID;
+	solidDesc.CullMode = D3D11_CULL_BACK;
+	solidDesc.FrontCounterClockwise = false;
+	solidDesc.DepthClipEnable = true;
 
-	HR(m_d3dDevice->CreateRasterizerState(&wireframeDesc, &m_rasterizerStates[RSSOLID]));
+	HR(m_d3dDevice->CreateRasterizerState(&solidDesc, &m_rasterizerStates[RSSOLID]));
+
+	D3D11_RASTERIZER_DESC solidBackDesc;
+	ZeroMemory(&solidBackDesc, sizeof(D3D11_RASTERIZER_DESC));
+	solidBackDesc.FillMode = D3D11_FILL_SOLID;
+	solidBackDesc.CullMode = D3D11_CULL_FRONT;
+	solidBackDesc.FrontCounterClockwise = false;
+	solidBackDesc.DepthClipEnable = true;
+
+	HR(m_d3dDevice->CreateRasterizerState(&solidBackDesc, &m_rasterizerStates[RSSOLIDBACK]));
 }
 
+void JRenderer::InitDepthStencilStates()
+{
+	m_depthStencilStates[DSDEFAULT] = nullptr;
 
+	D3D11_DEPTH_STENCIL_DESC markStencilDesc;
+	markStencilDesc.DepthEnable = true;
+	markStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+	markStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+	markStencilDesc.StencilEnable = true;
+	markStencilDesc.StencilReadMask = 0xff;
+	markStencilDesc.StencilWriteMask = 0xff;
+
+	markStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	markStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	markStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_REPLACE;
+	markStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+	markStencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	markStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	markStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_REPLACE;
+	markStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+	HR(m_d3dDevice->CreateDepthStencilState(&markStencilDesc, &m_depthStencilStates[DSMARKSTENCIL]));
+
+	D3D11_DEPTH_STENCIL_DESC stencilEqualDesc;
+	stencilEqualDesc.DepthEnable = true; // having the depth test enabled might not actually be necessary here, since the stencil buffer marking pass already does a depth check
+	stencilEqualDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	stencilEqualDesc.DepthFunc = D3D11_COMPARISON_LESS;
+	stencilEqualDesc.StencilEnable = true;
+	stencilEqualDesc.StencilReadMask = 0xff;
+	stencilEqualDesc.StencilWriteMask = 0xff;
+
+	stencilEqualDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	stencilEqualDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	stencilEqualDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	stencilEqualDesc.FrontFace.StencilFunc = D3D11_COMPARISON_EQUAL;
+
+	stencilEqualDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	stencilEqualDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	stencilEqualDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	stencilEqualDesc.BackFace.StencilFunc = D3D11_COMPARISON_EQUAL;
+
+	HR(m_d3dDevice->CreateDepthStencilState(&stencilEqualDesc, &m_depthStencilStates[DSSTENCILEQUAL]));
+}
 
 void JRenderer::ShutDown()
 {
