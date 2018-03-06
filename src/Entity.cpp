@@ -8,7 +8,6 @@ Entity::Entity(JRenderer* renderer, Vector3 position) : Entity(renderer, positio
 
 Entity::Entity(JRenderer* renderer, Vector3 position, Vector3 rotationAngles)
 {
-	m_VisualComponent = new VisualComponent(this, renderer);
 	m_position = position;
 	m_rotationEuler = rotationAngles;
 }

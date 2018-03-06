@@ -31,6 +31,7 @@
     <ClCompile Include="src\Light.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
+    <ClCompile Include="src\MeshVisual.cpp" />
     <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\ShaderManager.cpp" />
@@ -52,6 +53,7 @@
     <ClInclude Include="include\Light.h" />
     <ClInclude Include="include\Material.h" />
     <ClInclude Include="include\Mesh.h" />
+    <ClInclude Include="include\MeshVisual.h" />
     <ClInclude Include="include\Scene.h" />
     <ClInclude Include="include\Shader.h" />
     <ClInclude Include="include\ShaderManager.h" />

@@ -4,6 +4,7 @@
 #include "Engine.h"
 #include "Mesh.h"
 #include "SubMesh.h"
+#include "JRenderer.h"
 #include "VisualComponent.h"
 #include "DirectXTK\WICTextureLoader.h"
 

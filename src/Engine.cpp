@@ -9,6 +9,7 @@
 #include <chrono>
 
 #include "Engine.h"
+#include "BaseEntity.h"
 #include "Entity.h"
 #include "Mesh.h"
 #include "SubMesh.h"
@@ -22,6 +23,7 @@
 #include "JGeneric.h"
 #include "GeometryGenerator.h"
 #include "InputManager.h"
+#include "MeshVisual.h"
 
 using namespace DirectX;
 
@@ -74,8 +76,10 @@ bool Engine::Init()
 			for (int j = 0; j < 1; j++)
 			{
 				Entity* e = new Entity(m_JRenderer, Vector3(i * 3.0f, -6.0f, j * 3.0f));
-				e->m_VisualComponent->m_Mesh = nanosuitMesh;
-				e->m_VisualComponent->m_Mesh->m_componentOwner = e->m_VisualComponent;
+				e->m_VisualComponent = new MeshVisual(e, m_JRenderer);
+				MeshVisual* meshVisual = (MeshVisual*)e->m_VisualComponent;
+				meshVisual->m_Mesh = nanosuitMesh;
+				meshVisual->m_Mesh->m_componentOwner = meshVisual;
 				e->m_VisualComponent->m_Shader = ShaderManager::GetInstance()->m_JGeneric;
 				e->m_VisualComponent->m_Material = material;
 				m_ActiveScene->GetEntityList()->push_back(e);
@@ -104,13 +108,17 @@ bool Engine::Init()
 		}
 
 		Entity* plane = new Entity(m_JRenderer, Vector3(0.0f, -6.0f, 0.0f));
-		plane->m_VisualComponent->m_Mesh = planeMesh;
-		plane->m_VisualComponent->m_Shader = ShaderManager::GetInstance()->m_JGeneric;
+		plane->m_VisualComponent = new MeshVisual(plane, m_JRenderer);
+		MeshVisual* plane1MeshVisual = (MeshVisual*)plane->m_VisualComponent;
+		plane1MeshVisual->m_Mesh = planeMesh;
+		plane1MeshVisual->m_Shader = ShaderManager::GetInstance()->m_JGeneric;
 		plane->m_VisualComponent->m_Material = material;
 
 		Entity* plane2 = new Entity(m_JRenderer, Vector3(22.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, M_PI / 2));
-		plane2->m_VisualComponent->m_Mesh = planeMesh;
-		plane2->m_VisualComponent->m_Shader = ShaderManager::GetInstance()->m_JGeneric;
+		plane2->m_VisualComponent = new MeshVisual(plane2, m_JRenderer);
+		MeshVisual* plane2MeshVisual = (MeshVisual*)plane2->m_VisualComponent;
+		plane2MeshVisual->m_Mesh = planeMesh;
+		plane2MeshVisual->m_Shader = ShaderManager::GetInstance()->m_JGeneric;
 		plane2->m_VisualComponent->m_Material = material;
 
 		m_ActiveScene->GetEntityList()->push_back(plane);

@@ -13,7 +13,7 @@ using namespace DirectX;
 class VisualComponent;
 
 
-class Entity : BaseEntity
+class Entity : public BaseEntity
 {
 public:
 	Entity(JRenderer* renderer);
@@ -23,7 +23,6 @@ public:
 
 	void Update(float dt) {}
 
-	Mesh* GetMesh() { return m_VisualComponent->m_Mesh; }
 	Material* GetMaterial() { return m_VisualComponent->m_Material; }
 	Shader* GetShader() { return m_VisualComponent->m_Shader; }
 

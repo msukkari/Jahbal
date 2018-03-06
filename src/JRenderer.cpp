@@ -9,6 +9,7 @@
 #include "Scene.h"
 #include "Entity.h"
 #include "VisualComponent.h"
+#include "MeshVisual.h"
 #include "Material.h"
 #include "Shader.h"
 #include "Mesh.h"
@@ -95,9 +96,11 @@ void JRenderer::DrawScene(Scene* scene)
 			ShaderManager::GetInstance()->m_JGeneric->SetMaterial(entity->m_VisualComponent->m_Material);
 			ShaderManager::GetInstance()->m_JGeneric->SetEyePosW(eyePos);
 
-			for (unsigned int s = 0; s < entity->GetMesh()->m_subMeshList.size(); s++)
+			MeshVisual* meshVisual = (MeshVisual*)entity->m_VisualComponent;
+			Mesh* mesh = meshVisual->m_Mesh;
+			for (unsigned int s = 0; s < mesh->m_subMeshList.size(); s++)
 			{
-				SubMesh* subMesh = &entity->GetMesh()->m_subMeshList[s];
+				SubMesh* subMesh = &mesh->m_subMeshList[s];
 				GetGFXDeviceContext()->IASetVertexBuffers(0, 1, &subMesh->m_VB, &stride, &offset);
 				GetGFXDeviceContext()->IASetIndexBuffer(subMesh->m_IB, DXGI_FORMAT_R32_UINT, 0);
 

@@ -16,6 +16,17 @@ enum BlendState {BSNOBLEND, BSNOTARGETWRITE, BSALPHA, BSSIZE};
 enum RasterizerState {RSWIREFRAME, RSSOLID, RSSOLIDBACK, RSSIZE};
 enum DepthStencilState {DSDEFAULT, DSMARKSTENCIL, DSSTENCILEQUAL, DSSIZE};
 
+struct Vertex
+{
+	Vertex(float px, float py, float pz, float nx, float ny, float nz, float u, float v)
+		: Position(px, py, pz), Normal(nx, ny, nz), UV(u, v) {}
+	Vertex() : Position(0.0f, 0.0f, 0.0f), Normal(0.0f, 0.0f, 0.0f), UV(0.0f, 0.0f) {}
+
+	Vector3 Position;
+	Vector3 Normal;
+	Vector2 UV;
+};
+
 class JRenderer
 {
 public:

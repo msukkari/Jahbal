@@ -1,4 +1,5 @@
 #include "GeometryGenerator.h"
+#include "JRenderer.h"
 
 void GeometryGenerator::CreatePlane(float width, float length, std::vector<Vertex>& v, std::vector<int>& i)
 {
