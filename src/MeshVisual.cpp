@@ -1,8 +1,9 @@
+#include "VisualComponent.h"
 #include "MeshVisual.h"
 #include "Mesh.h"
 
 MeshVisual::MeshVisual(BaseEntity* owner, JRenderer* renderer) :
-	VisualComponent(owner, renderer), m_Mesh(nullptr)
+	VisualComponent(owner, renderer, VisualType::MESH), m_Mesh(nullptr)
 {
 
 }
@@ -12,7 +13,7 @@ MeshVisual::~MeshVisual()
 
 }
 
-void MeshVisual::CreateMesh(std::vector<Vertex> vertexList, std::vector<int> indexList)
+void MeshVisual::CreateMesh(std::vector<MeshVertex> vertexList, std::vector<int> indexList)
 {
 	if (m_Mesh)
 	{

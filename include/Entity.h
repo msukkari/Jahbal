@@ -28,7 +28,6 @@ public:
 
 	VisualComponent* m_VisualComponent;
 
-	Vector3 m_position;
 	Vector3 m_rotationEuler;
 };
 

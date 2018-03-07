@@ -4,11 +4,12 @@
 #include "Engine.h"
 #include "Mesh.h"
 #include "SubMesh.h"
+#include "MeshVisual.h"
 #include "JRenderer.h"
 #include "VisualComponent.h"
 #include "DirectXTK\WICTextureLoader.h"
 
-Mesh::Mesh(VisualComponent* owner, std::vector<Vertex> vertexList, std::vector<int> indexList) :
+Mesh::Mesh(VisualComponent* owner, std::vector<MeshVertex> vertexList, std::vector<int> indexList) :
 	m_componentOwner(owner), m_meshFullPath(""), m_meshFolder("")
 {
 	m_subMeshList.push_back(SubMesh(vertexList, indexList));
@@ -33,7 +34,7 @@ Mesh::Mesh(VisualComponent* owner, std::string filename) :
 
 void Mesh::processMesh(aiMesh* mesh, const aiScene* scene)
 {
-	std::vector<Vertex> vertices;
+	std::vector<MeshVertex> vertices;
 	std::vector<int> indices;
 
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
@@ -44,9 +45,9 @@ void Mesh::processMesh(aiMesh* mesh, const aiScene* scene)
 		if (mesh->mTextureCoords[0])
 		{
 			aiVector3D t = mesh->mTextureCoords[0][i];
-			vertices.push_back(Vertex(v.x, v.y, v.z, n.x, n.y, n.z, t.x, t.y));
+			vertices.push_back(MeshVertex(v.x, v.y, v.z, n.x, n.y, n.z, t.x, t.y));
 		}
-		else vertices.push_back(Vertex(v.x, v.y, v.z, n.x, n.y, n.z, 0.0f, 0.0f));
+		else vertices.push_back(MeshVertex(v.x, v.y, v.z, n.x, n.y, n.z, 0.0f, 0.0f));
 
 	}
 

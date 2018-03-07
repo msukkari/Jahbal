@@ -5,8 +5,8 @@
 #include "Shader.h"
 
 
-VisualComponent::VisualComponent(BaseEntity* owner, JRenderer* renderer) : 
-		Component(owner)
+VisualComponent::VisualComponent(BaseEntity* owner, JRenderer* renderer, VisualType visualType) : 
+		Component(owner), m_visualType(visualType)
 {
 	m_Material = nullptr;
 	m_Shader = nullptr;

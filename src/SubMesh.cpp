@@ -4,8 +4,9 @@
 #include "JRenderer.h"
 #include "Mesh.h"
 #include "SubMesh.h"
+#include "MeshVisual.h"
 
-SubMesh::SubMesh(std::vector<Vertex> v, std::vector<int> i) :
+SubMesh::SubMesh(std::vector<MeshVertex> v, std::vector<int> i) :
 	m_vertexList(v), m_indexList(i), m_diffuseSRV(0), m_specSRV(0)
 {
 	SetupBuffers();
@@ -15,7 +16,7 @@ void SubMesh::SetupBuffers()
 {
 	D3D11_BUFFER_DESC vbd;
 	vbd.Usage = D3D11_USAGE_IMMUTABLE;
-	vbd.ByteWidth = sizeof(Vertex) * m_vertexList.size();
+	vbd.ByteWidth = sizeof(MeshVertex) * m_vertexList.size();
 	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	vbd.CPUAccessFlags = 0;
 	vbd.MiscFlags = 0;

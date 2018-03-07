@@ -13,7 +13,7 @@
 class VisualComponent;
 class SubMesh;
 
-struct Vertex;
+struct MeshVertex;
 
 using namespace DirectX;
 
@@ -26,7 +26,7 @@ struct Texture
 class Mesh
 {
 public:
-	Mesh(VisualComponent* owner, std::vector<Vertex> vertexList, std::vector<int> indexList);
+	Mesh(VisualComponent* owner, std::vector<MeshVertex> vertexList, std::vector<int> indexList);
 	Mesh(VisualComponent* owner, std::string filename);
 	~Mesh();
 

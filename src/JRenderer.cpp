@@ -53,7 +53,7 @@ void JRenderer::DrawScene(Scene* scene)
 	dc->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	Camera* cam = scene->GetActiveCamera();
-	Vector3 eyePos = Vector3(scene->GetActiveCamera()->m_position);
+	Vector3 eyePos = Vector3(cam->m_position);
 	Light* sun = nullptr;
 	Light* point = nullptr;
 	sun = scene->GetLightList()->at(0);
@@ -62,6 +62,14 @@ void JRenderer::DrawScene(Scene* scene)
 		point = scene->GetLightList()->at(1);
 	}
 
+	for (unsigned int i = 0; i < scene->GetEntityList()->size(); i++)
+	{
+		Entity* entity = scene->GetEntityList()->at(i);
+		
+		if (entity->m_VisualComponent->m_visualType == VisualType::MESH) DrawMeshEntity(entity, cam, sun, point);
+	}
+
+	/*
 	ID3DX11EffectTechnique* activeTech = ShaderManager::GetInstance()->m_JGeneric->Tech;
 	D3DX11_TECHNIQUE_DESC techDesc;
 	activeTech->GetDesc(&techDesc);
@@ -79,7 +87,7 @@ void JRenderer::DrawScene(Scene* scene)
 		ShaderManager::GetInstance()->m_JGeneric->SetDLight((DLightData*)sun->m_LightData);
 		ShaderManager::GetInstance()->m_JGeneric->SetPLight((PLightData*)point->m_LightData);
 
-		UINT stride = sizeof(Vertex);
+		UINT stride = sizeof(MeshVertex);
 		UINT offset = 0;
 
 		for (unsigned int p = 0; p < techDesc.Passes; p++)
@@ -112,10 +120,62 @@ void JRenderer::DrawScene(Scene* scene)
 			}
 		}
 	}
+	*/
 
 
 
 	HR(m_swapChain->Present(0, 0));
+}
+
+void JRenderer::DrawMeshEntity(Entity* entity, Camera* cam, Light* sun, Light* point)
+{
+	ID3D11DeviceContext* dc = GetGFXDeviceContext();
+	Vector3 eyePos = Vector3(cam->m_position);
+
+	dc->IASetInputLayout(ShaderManager::GetInstance()->m_JGeneric->m_InputLayout);
+	ShaderManager::GetInstance()->m_JGeneric->SetDLight((DLightData*)sun->m_LightData);
+	ShaderManager::GetInstance()->m_JGeneric->SetPLight((PLightData*)point->m_LightData);
+
+	UINT stride = sizeof(MeshVertex);
+	UINT offset = 0;
+
+	ID3DX11EffectTechnique* activeTech = ShaderManager::GetInstance()->m_JGeneric->Tech;
+	D3DX11_TECHNIQUE_DESC techDesc;
+	activeTech->GetDesc(&techDesc);
+
+	float blendFactors[] = { 0.0f, 0.0f, 0.0f, 0.0f }; // only used with D3D11_BLEND_BLEND_FACTOR
+	dc->RSSetState(m_rasterizerStates[RSSOLID]);
+	dc->OMSetBlendState(m_blendStates[BSNOBLEND], blendFactors, 0xffffffff);
+	dc->OMSetDepthStencilState(m_depthStencilStates[DSDEFAULT], 0);
+	for (unsigned int p = 0; p < techDesc.Passes; p++)
+	{
+		Matrix rotation = Matrix::CreateFromYawPitchRoll(entity->m_rotationEuler.x, entity->m_rotationEuler.y, entity->m_rotationEuler.z);
+		Matrix model = rotation * Matrix::CreateTranslation(entity->m_position);
+		Matrix modelInvTranspose = model; modelInvTranspose.Invert().Transpose();
+		Matrix view = cam->GetLookAtMatrix();
+		Matrix MVP = model * view * m_ProjectionMatrix;
+
+		ShaderManager::GetInstance()->m_JGeneric->SetWorldViewProj(MVP);
+		ShaderManager::GetInstance()->m_JGeneric->SetWorld(model);
+		ShaderManager::GetInstance()->m_JGeneric->SetWorldInvTranspose(modelInvTranspose);
+		ShaderManager::GetInstance()->m_JGeneric->SetMaterial(entity->m_VisualComponent->m_Material);
+		ShaderManager::GetInstance()->m_JGeneric->SetEyePosW(eyePos);
+
+		MeshVisual* meshVisual = (MeshVisual*)entity->m_VisualComponent;
+		Mesh* mesh = meshVisual->m_Mesh;
+		for (unsigned int s = 0; s < mesh->m_subMeshList.size(); s++)
+		{
+			SubMesh* subMesh = &mesh->m_subMeshList[s];
+			GetGFXDeviceContext()->IASetVertexBuffers(0, 1, &subMesh->m_VB, &stride, &offset);
+			GetGFXDeviceContext()->IASetIndexBuffer(subMesh->m_IB, DXGI_FORMAT_R32_UINT, 0);
+
+			ShaderManager::GetInstance()->m_JGeneric->SetDiffuseMap(subMesh->m_diffuseSRV);
+			ShaderManager::GetInstance()->m_JGeneric->SetSpecMap(subMesh->m_specSRV);
+
+			activeTech->GetPassByIndex(p)->Apply(0, GetGFXDeviceContext());
+			GetGFXDeviceContext()->DrawIndexed(subMesh->m_indexList.size(), 0, 0);
+		}
+	}
 }
 
 void JRenderer::InitBlendStates()

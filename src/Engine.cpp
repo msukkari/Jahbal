@@ -24,6 +24,7 @@
 #include "GeometryGenerator.h"
 #include "InputManager.h"
 #include "MeshVisual.h"
+#include "BillBoardVisual.h"
 
 using namespace DirectX;
 
@@ -88,7 +89,7 @@ bool Engine::Init()
 
 		Mesh* planeMesh;
 		{
-			std::vector<Vertex> planeV;
+			std::vector<MeshVertex> planeV;
 			std::vector<int> planeI;
 			GeometryGenerator::CreatePlane(40.0f, 40.0f, planeV, planeI);
 			planeMesh = new Mesh(nullptr, planeV, planeI);
@@ -108,87 +109,26 @@ bool Engine::Init()
 		}
 
 		Entity* plane = new Entity(m_JRenderer, Vector3(0.0f, -6.0f, 0.0f));
-		plane->m_VisualComponent = new MeshVisual(plane, m_JRenderer);
-		MeshVisual* plane1MeshVisual = (MeshVisual*)plane->m_VisualComponent;
+		MeshVisual* plane1MeshVisual = new MeshVisual(plane, m_JRenderer);
 		plane1MeshVisual->m_Mesh = planeMesh;
 		plane1MeshVisual->m_Shader = ShaderManager::GetInstance()->m_JGeneric;
-		plane->m_VisualComponent->m_Material = material;
+		plane1MeshVisual->m_Material = material;
+		plane->m_VisualComponent = plane1MeshVisual;
 
 		Entity* plane2 = new Entity(m_JRenderer, Vector3(22.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, M_PI / 2));
-		plane2->m_VisualComponent = new MeshVisual(plane2, m_JRenderer);
-		MeshVisual* plane2MeshVisual = (MeshVisual*)plane2->m_VisualComponent;
+		MeshVisual* plane2MeshVisual = new MeshVisual(plane2, m_JRenderer);
 		plane2MeshVisual->m_Mesh = planeMesh;
 		plane2MeshVisual->m_Shader = ShaderManager::GetInstance()->m_JGeneric;
-		plane2->m_VisualComponent->m_Material = material;
+		plane2MeshVisual->m_Material = material;
+		plane2->m_VisualComponent = plane2MeshVisual;
 
 		m_ActiveScene->GetEntityList()->push_back(plane);
 		m_ActiveScene->GetEntityList()->push_back(plane2);
 
-		/*
-		Entity* entity3 = new Entity(m_JRenderer);
-		entity3->m_VisualComponent->CreateMesh("resources/objects/nanosuit/nanosuit.obj");
-		entity3->m_VisualComponent->CreateMaterial();
-		entity3->m_VisualComponent->m_Shader = ShaderManager::GetInstance()->m_JGeneric;
-		entity3->m_VisualComponent->m_Material = material;
-		m_ActiveScene->GetEntityList()->push_back(entity3);
-		*/
-
-		/*
-		Entity* entity = new Entity(m_JRenderer);
-
-		// Mesh
-		std::ifstream fin("Models/skull.txt");
-
-		if (!fin)
-		{
-			MessageBox(0, L"Models/skull.txt not found.", 0, 0);
-			return false;
-		}
-
-		UINT vcount = 0;
-		UINT tcount = 0;
-		std::string ignore;
-
-		fin >> ignore >> vcount;
-		fin >> ignore >> tcount;
-		fin >> ignore >> ignore >> ignore >> ignore;
-
-		std::vector<Vertex> vertices(vcount);
-		for (Uunsigned int i = 0; i < vcount; ++i)
-		{
-			fin >> vertices[i].Position.x >> vertices[i].Position.y >> vertices[i].Position.z;
-			fin >> vertices[i].Normal.x >> vertices[i].Normal.y >> vertices[i].Normal.z;
-		}
-
-		fin >> ignore;
-		fin >> ignore;
-		fin >> ignore;
-
-		std::vector<int> indices(3 * tcount);
-		for (Uunsigned int i = 0; i < tcount; ++i)
-		{
-			fin >> indices[i * 3 + 0] >> indices[i * 3 + 1] >> indices[i * 3 + 2];
-		}
-
-		fin.close();
-
-		entity->m_VisualComponent->CreateMesh(vertices, indices);
-		entity->m_VisualComponent->CreateMaterial();
-		entity->m_VisualComponent->m_Shader = ShaderManager::GetInstance()->m_JGeneric;
-		entity->m_VisualComponent->m_Material = material;
-		m_ActiveScene->GetEntityList()->push_back(entity);
-
-		Entity* entity2 = new Entity(m_JRenderer, Vector3(10.0f, 0.0f, 0.0f));
-		std::vector<Vertex> v2;
-		std::vector<int> i2;
-		GeometryGenerator::CreateBox(10.0f, 10.0f, 10.0f, v2, i2);
-		entity2->m_VisualComponent->CreateMesh(v2, i2);
-		entity2->m_VisualComponent->CreateMaterial();
-		entity2->m_VisualComponent->m_Shader = ShaderManager::GetInstance()->m_JGeneric;
-		entity2->m_VisualComponent->m_Material = material;
-		m_ActiveScene->GetEntityList()->push_back(entity2);
-		*/
-
+		Entity* board = new Entity(m_JRenderer, Vector3(-20.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f));
+		BillBoardVisual* boardVisual = new BillBoardVisual(board, m_JRenderer, 5.0f);
+		boardVisual->m_Material = material;
+		boardVisual->m_diffuseSRV = planeMesh->m_subMeshList[0].m_diffuseSRV;
 
 		// Camera
 		Camera* camera = new Camera(50.0f);

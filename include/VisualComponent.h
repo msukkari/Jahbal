@@ -8,20 +8,26 @@
 class Mesh;
 class Shader;
 class Material;
-struct Vertex;
+
+struct MeshVertex;
+
+enum VisualType {MESH, BILLBOARD};
 
 class VisualComponent : public Component
 {
 public:
-	VisualComponent(BaseEntity* owner, JRenderer* renderer);
+
+	VisualComponent(BaseEntity* owner, JRenderer* renderer, VisualType visualType);
 	~VisualComponent();
 	void CreateMaterial();
 
 	ID3D11Device* GetGFXDevice() { return m_Renderer->GetGFXDevice(); }
+	
 	Shader* m_Shader;
 	Material* m_Material;
-
 	JRenderer* m_Renderer;
+
+	VisualType m_visualType;
 
 };
 

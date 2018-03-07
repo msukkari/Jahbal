@@ -9,16 +9,16 @@
 
 using namespace DirectX;
 
-struct Vertex;
+struct MeshVertex;
 
 class SubMesh
 {
 public:
-	SubMesh(std::vector<Vertex> v, std::vector<int> i);
+	SubMesh(std::vector<MeshVertex> v, std::vector<int> i);
 
 	void SetupBuffers();
 
-	std::vector<Vertex> m_vertexList;
+	std::vector<MeshVertex> m_vertexList;
 	std::vector<int> m_indexList;
 
 	ID3D11Buffer* m_VB;
