@@ -4,6 +4,7 @@
 
 
 class JGeneric;
+class JBillboard;
 
 class ShaderManager
 {
@@ -12,6 +13,8 @@ public:
 	void ShutDown();
 
 	JGeneric* m_JGeneric;
+	JBillboard* m_JBillboard;
+
 
 	static ShaderManager* GetInstance()
 	{

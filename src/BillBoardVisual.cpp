@@ -1,17 +1,17 @@
-#include "BillBoardVisual.h"
+#include "BillboardVisual.h"
 #include "BaseEntity.h"
 #include "Engine.h"
 #include "JRenderer.h"
 
-BillBoardVisual::BillBoardVisual(BaseEntity* owner, JRenderer* renderer, float size) :
-	VisualComponent(owner, renderer, VisualType::BILLBOARD), m_vertex(owner->m_position, size)
+BillboardVisual::BillboardVisual(BaseEntity* owner, JRenderer* renderer, float sx, float sy) :
+	VisualComponent(owner, renderer, VisualType::BILLBOARD), m_vertex(owner->m_position, sx, sy)
 {
 	SetupBuffers();
 }
 
-BillBoardVisual::~BillBoardVisual() {}
+BillboardVisual::~BillboardVisual() {}
 
-void BillBoardVisual::SetupBuffers()
+void BillboardVisual::SetupBuffers()
 {
 	D3D11_BUFFER_DESC vbd;
 	vbd.Usage = D3D11_USAGE_IMMUTABLE;

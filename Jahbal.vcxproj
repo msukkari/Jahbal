@@ -27,6 +27,7 @@
     <ClCompile Include="src\Entity.cpp" />
     <ClCompile Include="src\GeometryGenerator.cpp" />
     <ClCompile Include="src\InputManager.cpp" />
+    <ClCompile Include="src\JBillboard.cpp" />
     <ClCompile Include="src\JGeneric.cpp" />
     <ClCompile Include="src\JRenderer.cpp" />
     <ClCompile Include="src\Light.cpp" />
@@ -42,7 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\BaseEntity.h" />
-    <ClInclude Include="include\BillBoardVisual.h" />
+    <ClInclude Include="include\BillboardVisual.h" />
     <ClInclude Include="include\Camera.h" />
     <ClInclude Include="include\Component.h" />
     <ClInclude Include="include\dxerr.h" />
@@ -50,6 +51,7 @@
     <ClInclude Include="include\Entity.h" />
     <ClInclude Include="include\GeometryGenerator.h" />
     <ClInclude Include="include\InputManager.h" />
+    <ClInclude Include="include\JBillboard.h" />
     <ClInclude Include="include\JGeneric.h" />
     <ClInclude Include="include\JRenderer.h" />
     <ClInclude Include="include\Light.h" />
@@ -89,6 +91,12 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <CustomBuild Include="FX\Billboard.fx">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">fxc /Fc /Od /Zi /T fx_5_0 /Fo "%(RelativeDir)\%(Filename).fxo" "%(FullPath)"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">fxc compile for debug: %(FullPath)</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RelativeDir)\%(Filename).fxo</Outputs>
+    </CustomBuild>
     <FxCompile Include="FX\LightFuncs.fx">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Effect</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Effect</ShaderType>

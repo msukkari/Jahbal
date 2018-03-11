@@ -24,7 +24,7 @@
 #include "GeometryGenerator.h"
 #include "InputManager.h"
 #include "MeshVisual.h"
-#include "BillBoardVisual.h"
+#include "BillboardVisual.h"
 
 using namespace DirectX;
 
@@ -125,10 +125,12 @@ bool Engine::Init()
 		m_ActiveScene->GetEntityList()->push_back(plane);
 		m_ActiveScene->GetEntityList()->push_back(plane2);
 
-		Entity* board = new Entity(m_JRenderer, Vector3(-20.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f));
-		BillBoardVisual* boardVisual = new BillBoardVisual(board, m_JRenderer, 5.0f);
+		Entity* board = new Entity(m_JRenderer, Vector3(-10.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f));
+		BillboardVisual* boardVisual = new BillboardVisual(board, m_JRenderer, 10.0f, 10.0f);
 		boardVisual->m_Material = material;
 		boardVisual->m_diffuseSRV = planeMesh->m_subMeshList[0].m_diffuseSRV;
+		board->m_VisualComponent = boardVisual;
+		m_ActiveScene->GetEntityList()->push_back(board);
 
 		// Camera
 		Camera* camera = new Camera(50.0f);
@@ -279,7 +281,7 @@ void Engine::Run()
 
 
 			std::string s = ss.str();
-			OutputDebugString(std::wstring(s.begin(), s.end()).c_str());
+			//OutputDebugString(std::wstring(s.begin(), s.end()).c_str());
             HandleEvents();
             Update(frameTime);
             DrawScene(m_ActiveScene);

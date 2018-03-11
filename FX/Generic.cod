@@ -111,7 +111,7 @@ fxgroup
                 //   o1.x <- <VS return value>.PosW.x; o1.y <- <VS return value>.PosW.y; o1.z <- <VS return value>.PosW.z; o1.w <- <VS return value>.PosW.w; 
                 //   o0.x <- <VS return value>.PosH.x; o0.y <- <VS return value>.PosH.y; o0.z <- <VS return value>.PosH.z; o0.w <- <VS return value>.PosH.w
                 //
-                #line 53 "C:\Users\msukka1\Documents\Jahbal\fx\Generic.fx"
+                #line 53 "C:\Users\user\Documents\Jahbal\fx\Generic.fx"
                 mov r0.xyz, v0.xyzx
                 mov r0.w, l(1.000000)
                 dp4 r1.x, r0.xyzw, cb0[4].xyzw  // r1.x <- vout.PosW.x
@@ -235,7 +235,7 @@ fxgroup
                 //   v3.x <- pin.UV.x; v3.y <- pin.UV.y; 
                 //   o0.x <- <PS return value>.x; o0.y <- <PS return value>.y; o0.z <- <PS return value>.z; o0.w <- <PS return value>.w
                 //
-                #line 63 "C:\Users\msukka1\Documents\Jahbal\fx\Generic.fx"
+                #line 63 "C:\Users\user\Documents\Jahbal\fx\Generic.fx"
                 sample_indexable(texture2d)(float,float,float,float) r0.xyz, v3.xyxx, t0.xyzw, s0
                 mov r0.xyz, r0.xyzx  // r0.x <- mat_d.x; r0.y <- mat_d.y; r0.z <- mat_d.z
                 sample_indexable(texture2d)(float,float,float,float) r1.xyz, v3.xyxx, t1.xyzw, s0
@@ -266,7 +266,7 @@ fxgroup
                 mov r0.xyz, r0.xyzx
                 mov r1.xyz, r1.xyzx
                 
-                #line 7 "C:\Users\msukka1\Documents\Jahbal\fx\LightFuncs.fx"
+                #line 7 "C:\Users\user\Documents\Jahbal\fx\LightFuncs.fx"
                 mov r11.xyz, l(0,0,0,0)  // r11.x <- spec.x; r11.y <- spec.y; r11.z <- spec.z
                 dp3 r1.w, r10.xyzx, r2.xyzx
                 add r1.w, r1.w, r1.w
@@ -295,7 +295,7 @@ fxgroup
                 endif 
                 mul r7.xyz, r7.xyzx, r0.xyzx  // r7.x <- ambient.x; r7.y <- ambient.y; r7.z <- ambient.z
                 
-                #line 75 "C:\Users\msukka1\Documents\Jahbal\fx\Generic.fx"
+                #line 75 "C:\Users\user\Documents\Jahbal\fx\Generic.fx"
                 mov r7.xyz, r7.xyzx  // r7.x <- a.x; r7.y <- a.y; r7.z <- a.z
                 mov r8.xyz, r8.xyzx  // r8.x <- d.x; r8.y <- d.y; r8.z <- d.z
                 mov r11.xyz, r11.xyzx  // r11.x <- s.x; r11.y <- s.y; r11.z <- s.z
@@ -316,7 +316,7 @@ fxgroup
                 mov r0.xyz, r0.xyzx
                 mov r1.xyz, r1.xyzx
                 
-                #line 28 "C:\Users\msukka1\Documents\Jahbal\fx\LightFuncs.fx"
+                #line 28 "C:\Users\user\Documents\Jahbal\fx\LightFuncs.fx"
                 mov r13.xyz, l(0,0,0,0)  // r13.x <- ambient.x; r13.y <- ambient.y; r13.z <- ambient.z
                 mov r14.xyz, l(0,0,0,0)  // r14.x <- diffuse.x; r14.y <- diffuse.y; r14.z <- diffuse.z
                 mov r15.xyz, l(0,0,0,0)  // r15.x <- spec.x; r15.y <- spec.y; r15.z <- spec.z
@@ -360,7 +360,7 @@ fxgroup
                   endif 
                 endif 
                 
-                #line 80 "C:\Users\msukka1\Documents\Jahbal\fx\Generic.fx"
+                #line 80 "C:\Users\user\Documents\Jahbal\fx\Generic.fx"
                 mov r13.xyz, r13.xyzx  // r13.x <- a.x; r13.y <- a.y; r13.z <- a.z
                 mov r14.xyz, r14.xyzx  // r14.x <- d.x; r14.y <- d.y; r14.z <- d.z
                 mov r15.xyz, r15.xyzx  // r15.x <- s.x; r15.y <- s.y; r15.z <- s.z

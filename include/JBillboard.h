@@ -1,30 +1,25 @@
 #pragma once
 
-#include <DirectXMath.h>
-
 #include "Shader.h"
-#include "DirectXTK/SimpleMath.h"
+#include "DirectXTK\SimpleMath.h"
 #include "Light.h"
 #include "Material.h"
 
 using namespace DirectX;
 
-class JGeneric : public Shader
+class JBillboard : public Shader
 {
-public:
-	JGeneric(ID3D11Device* device);
-	~JGeneric();
+public: 
+	JBillboard(ID3D11Device* device);
+	~JBillboard();
 
-	WVP_DEC
-	WORLD_DEC
-	WOLRDINV_DEC
+	VP_DEC
+	MAT_DEC
 	EYEPOS_DEC
 	DLIGHT_DEC
 	PLIGHT_DEC
-	MAT_DEC
 
 	DIFFUSE_DEC
-	SPEC_DEC
 
 	/*
 	From Shader:

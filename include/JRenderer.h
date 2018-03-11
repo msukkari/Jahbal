@@ -29,7 +29,7 @@ public:
     void OnResize();
 	void DrawScene(Scene* scene);
 	void DrawMeshEntity(Entity* entity, Camera* cam, Light* sun, Light* point);
-
+	void DrawBillboardEntity(Entity* entity, Camera* cam, Light* sun, Light* point);
 	void ShutDown();
 
 

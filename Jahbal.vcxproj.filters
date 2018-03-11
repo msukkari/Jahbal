@@ -78,6 +78,9 @@
     <ClCompile Include="src\BillBoardVisual.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\JBillboard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\BaseEntity.h">
@@ -140,7 +143,10 @@
     <ClInclude Include="include\MeshVisual.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BillBoardVisual.h">
+    <ClInclude Include="include\JBillboard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BillboardVisual.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -149,6 +155,9 @@
       <Filter>FX</Filter>
     </CustomBuild>
     <CustomBuild Include="FX\Defs.fx">
+      <Filter>FX</Filter>
+    </CustomBuild>
+    <CustomBuild Include="FX\Billboard.fx">
       <Filter>FX</Filter>
     </CustomBuild>
   </ItemGroup>

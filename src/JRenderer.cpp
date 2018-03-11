@@ -10,6 +10,7 @@
 #include "Entity.h"
 #include "VisualComponent.h"
 #include "MeshVisual.h"
+#include "BillboardVisual.h"
 #include "Material.h"
 #include "Shader.h"
 #include "Mesh.h"
@@ -19,6 +20,7 @@
 #include "ShaderManager.h"
 #include "Shader.h"
 #include "JGeneric.h"
+#include "JBillboard.h"
 #include "Light.h"
 
 using namespace DirectX;
@@ -50,7 +52,6 @@ void JRenderer::DrawScene(Scene* scene)
 
 	dc->ClearRenderTargetView(m_renderTargetView, reinterpret_cast<const float*>(&m_ClearColor));
 	dc->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-	dc->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	Camera* cam = scene->GetActiveCamera();
 	Vector3 eyePos = Vector3(cam->m_position);
@@ -67,6 +68,7 @@ void JRenderer::DrawScene(Scene* scene)
 		Entity* entity = scene->GetEntityList()->at(i);
 		
 		if (entity->m_VisualComponent->m_visualType == VisualType::MESH) DrawMeshEntity(entity, cam, sun, point);
+		else if (entity->m_VisualComponent->m_visualType == VisualType::BILLBOARD) DrawBillboardEntity(entity, cam, sun, point);
 	}
 
 	HR(m_swapChain->Present(0, 0));
@@ -75,6 +77,8 @@ void JRenderer::DrawScene(Scene* scene)
 void JRenderer::DrawMeshEntity(Entity* entity, Camera* cam, Light* sun, Light* point)
 {
 	ID3D11DeviceContext* dc = GetGFXDeviceContext();
+	dc->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
 	Vector3 eyePos = Vector3(cam->m_position);
 
 	dc->IASetInputLayout(ShaderManager::GetInstance()->m_JGeneric->m_InputLayout);
@@ -120,6 +124,46 @@ void JRenderer::DrawMeshEntity(Entity* entity, Camera* cam, Light* sun, Light* p
 			activeTech->GetPassByIndex(p)->Apply(0, GetGFXDeviceContext());
 			GetGFXDeviceContext()->DrawIndexed(subMesh->m_indexList.size(), 0, 0);
 		}
+	}
+}
+
+void JRenderer::DrawBillboardEntity(Entity* entity, Camera* cam, Light* sun, Light* point)
+{
+	ID3D11DeviceContext* dc = GetGFXDeviceContext();
+	dc->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+	Vector3 eyePos = Vector3(cam->m_position);
+
+	dc->IASetInputLayout(ShaderManager::GetInstance()->m_JBillboard->m_InputLayout);
+	ShaderManager::GetInstance()->m_JBillboard->SetDLight((DLightData*)sun->m_LightData);
+	ShaderManager::GetInstance()->m_JBillboard->SetPLight((PLightData*)point->m_LightData);
+
+	float blendFactors[] = { 0.0f, 0.0f, 0.0f, 0.0f }; // only used with D3D11_BLEND_BLEND_FACTOR
+	dc->RSSetState(m_rasterizerStates[RSSOLID]);
+	dc->OMSetBlendState(m_blendStates[BSNOBLEND], blendFactors, 0xffffffff);
+	dc->OMSetDepthStencilState(m_depthStencilStates[DSDEFAULT], 0);
+
+	ID3DX11EffectTechnique* activeTech = ShaderManager::GetInstance()->m_JBillboard->Tech;
+	D3DX11_TECHNIQUE_DESC techDesc;
+	activeTech->GetDesc(&techDesc);
+	for (unsigned int p = 0; p < techDesc.Passes; p++)
+	{
+		Matrix view = cam->GetLookAtMatrix();
+		Matrix VP = view * m_ProjectionMatrix;
+
+		ShaderManager::GetInstance()->m_JBillboard->SetViewProj(VP);
+		ShaderManager::GetInstance()->m_JBillboard->SetMaterial(entity->m_VisualComponent->m_Material);
+		ShaderManager::GetInstance()->m_JBillboard->SetEyePosW(eyePos);
+
+		BillboardVisual* boardVisual = (BillboardVisual*)entity->m_VisualComponent;
+
+		UINT stride = sizeof(BillBoardVertex);
+		UINT offset = 0;
+		GetGFXDeviceContext()->IASetVertexBuffers(0, 1, &boardVisual->m_VB, &stride, &offset);
+
+		ShaderManager::GetInstance()->m_JBillboard->SetDiffuseMap(boardVisual->m_diffuseSRV);
+
+		activeTech->GetPassByIndex(p)->Apply(0, GetGFXDeviceContext());
+		GetGFXDeviceContext()->Draw(1, 0);
 	}
 }
 

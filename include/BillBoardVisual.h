@@ -3,21 +3,21 @@
 
 struct BillBoardVertex
 {
-	BillBoardVertex(float px, float py, float pz, float s)
-		: position(px, py, pz), size(s){}
-	BillBoardVertex(Vector3 pos, float s)
-		: position(pos), size(s) {}
-	BillBoardVertex() : position(0.0f, 0.0f, 0.0f), size(2.0f) {}
+	BillBoardVertex(float px, float py, float pz, float sx, float sy)
+		: position(px, py, pz), size(sx, sy) {}
+	BillBoardVertex(Vector3 pos, float sx, float sy)
+		: position(pos), size(sx, sy) {}
+	BillBoardVertex() : position(0.0f, 0.0f, 0.0f), size(2.0f, 2.0f) {}
 
 	Vector3 position;
-	float size;
+	Vector2 size;
 };
 
-class BillBoardVisual : public VisualComponent
+class BillboardVisual : public VisualComponent
 {
 public:
-	BillBoardVisual(BaseEntity* owner, JRenderer* renderer, float size);
-	~BillBoardVisual();
+	BillboardVisual(BaseEntity* owner, JRenderer* renderer, float sx, float sy);
+	~BillboardVisual();
 
 	void SetupBuffers();
 
