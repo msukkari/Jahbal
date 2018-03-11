@@ -105,6 +105,8 @@ float4 PS(GOUT pin)	: SV_TARGET
 	float4 mat_s = 0;
 	float4 mat_a = mat_d;
 
+	clip(mat_d.xyz == float3(0.0f, 0.0f, 0.0f) ? -1.0f : 1.0f);
+
 	pin.normalW = normalize(pin.normalW);
 	float3 ptoeye = normalize(gEyePosW - pin.posW);
 

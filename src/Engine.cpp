@@ -108,6 +108,16 @@ bool Engine::Init()
 			//planeMesh->m_subMeshList[0].m_specSRV = nullptr;
 		}
 
+		// load tree billboard texture
+		ID3D11ShaderResourceView* treeSRV;
+		ID3D11Resource* texResource = nullptr;
+		CreateWICTextureFromFile(
+			Engine::GetInstance()->GetRenderer()->GetGFXDevice(),
+			Engine::GetInstance()->GetRenderer()->GetGFXDeviceContext(),
+			L"resources/textures/tree0.dds",
+			&texResource, &treeSRV);
+		ReleaseCOM(texResource);
+
 		Entity* plane = new Entity(m_JRenderer, Vector3(0.0f, -6.0f, 0.0f));
 		MeshVisual* plane1MeshVisual = new MeshVisual(plane, m_JRenderer);
 		plane1MeshVisual->m_Mesh = planeMesh;
@@ -125,12 +135,19 @@ bool Engine::Init()
 		m_ActiveScene->GetEntityList()->push_back(plane);
 		m_ActiveScene->GetEntityList()->push_back(plane2);
 
-		Entity* board = new Entity(m_JRenderer, Vector3(-10.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f));
-		BillboardVisual* boardVisual = new BillboardVisual(board, m_JRenderer, 10.0f, 10.0f);
-		boardVisual->m_Material = material;
-		boardVisual->m_diffuseSRV = planeMesh->m_subMeshList[0].m_diffuseSRV;
-		board->m_VisualComponent = boardVisual;
-		m_ActiveScene->GetEntityList()->push_back(board);
+		srand(time(NULL));
+		for (int i = 0; i < 10; i++)
+		{
+			for (int j = 0; j < 10; j++)
+			{
+				Entity* board = new Entity(m_JRenderer, Vector3(rand() % 40, 0.0f, 20.0f + (rand() % 40)), Vector3(0.0f, 0.0f, 0.0f));
+				BillboardVisual* boardVisual = new BillboardVisual(board, m_JRenderer, 10.0f, 10.0f);
+				boardVisual->m_Material = material;
+				boardVisual->m_diffuseSRV = treeSRV;
+				board->m_VisualComponent = boardVisual;
+				m_ActiveScene->GetEntityList()->push_back(board);
+			}
+		}
 
 		// Camera
 		Camera* camera = new Camera(50.0f);

@@ -29,6 +29,7 @@ bool JRenderer::Init(int width, int height, HWND hMainWnd)
 {
     m_ClientWidth = width;
     m_ClientHeight = height;
+	m_Enable4xMSAA = true;
 
 	// Calculate projection matrix
 	m_ProjectionMatrix = Matrix::CreatePerspectiveFieldOfViewLH(0.25f*(3.14f), (float)m_ClientWidth / (float)m_ClientHeight, 1.0f, 1000.0f);
@@ -139,7 +140,7 @@ void JRenderer::DrawBillboardEntity(Entity* entity, Camera* cam, Light* sun, Lig
 
 	float blendFactors[] = { 0.0f, 0.0f, 0.0f, 0.0f }; // only used with D3D11_BLEND_BLEND_FACTOR
 	dc->RSSetState(m_rasterizerStates[RSSOLID]);
-	dc->OMSetBlendState(m_blendStates[BSNOBLEND], blendFactors, 0xffffffff);
+	dc->OMSetBlendState(m_blendStates[BSALPHACOVERAGE], blendFactors, 0xffffffff);
 	dc->OMSetDepthStencilState(m_depthStencilStates[DSDEFAULT], 0);
 
 	ID3DX11EffectTechnique* activeTech = ShaderManager::GetInstance()->m_JBillboard->Tech;
@@ -171,10 +172,16 @@ void JRenderer::InitBlendStates()
 {
 	m_blendStates[BSNOBLEND] = nullptr;
 
+	D3D11_BLEND_DESC alphaCoverageDesc = { 0 };
+	alphaCoverageDesc.AlphaToCoverageEnable = true;
+	alphaCoverageDesc.IndependentBlendEnable = false;
+	alphaCoverageDesc.RenderTarget[0].BlendEnable = false;
+	alphaCoverageDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+	HR(m_d3dDevice->CreateBlendState(&alphaCoverageDesc, &m_blendStates[BSALPHACOVERAGE]));
+
 	D3D11_BLEND_DESC noRenderTargetWritesDesc = { 0 };
 	noRenderTargetWritesDesc.AlphaToCoverageEnable = false;
 	noRenderTargetWritesDesc.IndependentBlendEnable = false;
-
 	noRenderTargetWritesDesc.RenderTarget[0].BlendEnable = false;
 	noRenderTargetWritesDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_ONE;
 	noRenderTargetWritesDesc.RenderTarget[0].DestBlend = D3D11_BLEND_ZERO;
