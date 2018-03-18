@@ -1,0 +1,16 @@
+//
+// FX Version: fx_5_0
+//
+// 2 local buffer(s)
+//
+cbuffer cbPerFrame
+{
+    float3  gEyePosW;                   // Offset:    0, size:   12
+}
+
+cbuffer cbPerObject
+{
+    float4x4 gWorld;                    // Offset:    0, size:   64
+    float4x4 gWorldViewProj;            // Offset:   64, size:   64
+}
+

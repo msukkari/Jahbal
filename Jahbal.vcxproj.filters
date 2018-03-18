@@ -81,6 +81,9 @@
     <ClCompile Include="src\JBillboard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\TerrainVisual.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\BaseEntity.h">
@@ -149,6 +152,9 @@
     <ClInclude Include="include\BillboardVisual.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\TerrainVisual.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="fx\Generic.fx">
@@ -158,6 +164,9 @@
       <Filter>FX</Filter>
     </CustomBuild>
     <CustomBuild Include="FX\Billboard.fx">
+      <Filter>FX</Filter>
+    </CustomBuild>
+    <CustomBuild Include="FX\QuadTess.fx">
       <Filter>FX</Filter>
     </CustomBuild>
   </ItemGroup>

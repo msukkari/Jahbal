@@ -11,7 +11,7 @@ class Material;
 
 struct MeshVertex;
 
-enum VisualType {MESH, BILLBOARD};
+enum VisualType {MESH, BILLBOARD, TERRAIN};
 
 class VisualComponent : public Component
 {
