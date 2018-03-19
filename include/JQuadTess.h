@@ -4,6 +4,8 @@
 
 #include "Shader.h"
 #include "DirectXTK/SimpleMath.h"
+#include "Material.h"
+#include "Light.h"
 
 using namespace DirectX;
 
@@ -13,8 +15,8 @@ public:
 	JQuadTess(ID3D11Device* device);
 	~JQuadTess();
 
-	WVP_DEC
 	WORLD_DEC
+	WVP_DEC
 	EYEPOS_DEC
 
 	/*

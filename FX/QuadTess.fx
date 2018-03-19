@@ -9,63 +9,61 @@ cbuffer cbPerObject
 	float4x4 gWorldViewProj;
 };
 
-struct VIN
+struct VertexIn
 {
-	float3 posL	: POSITION;
+	float3 PosL    : POSITION;
 };
 
-struct VOUT
+struct VertexOut
 {
-	float3 posL	: POSITION;
+	float3 PosL    : POSITION;
 };
 
-struct PatchTess
+VertexOut VS(VertexIn vin)
 {
-	float EdgeTess[4]	:	SV_TessFactor;
-	float InsideTess[2]	:	SV_InsideTessFactor;
-};
+	VertexOut vout;
 
-struct HullOUT
-{
-	float3 posL : POSITION;
-};
-
-struct DomainOUT
-{
-	float4 posH : SV_POSITION;
-};
-
-VOUT VS(VIN vin)
-{
-	VOUT vout;
-	vout.posL = vin.posL;
+	vout.PosL = vin.PosL;
 
 	return vout;
 }
 
-PatchTess ConstantHS(InputPatch<VOUT, 4> patch, uint patchID : SV_PrimitiveID)
+struct PatchTess
+{
+	float EdgeTess[4]   : SV_TessFactor;
+	float InsideTess[2] : SV_InsideTessFactor;
+};
+
+PatchTess ConstantHS(InputPatch<VertexOut, 4> patch, uint patchID : SV_PrimitiveID)
 {
 	PatchTess pt;
 
-	float3 centerL = 0.25f * (patch[0].posL + patch[1].posL + patch[2].posL + patch[3].posL);
+	float3 centerL = 0.25f*(patch[0].PosL + patch[1].PosL + patch[2].PosL + patch[3].PosL);
 	float3 centerW = mul(float4(centerL, 1.0f), gWorld).xyz;
 
 	float d = distance(centerW, gEyePosW);
 
 	const float d0 = 20.0f;
 	const float d1 = 100.0f;
-	float tess = 64.0f * saturate((d1 - d) / (d1 - d0));
+	float tess = 64.0f*saturate((d1 - d) / (d1 - d0));
 
-	pt.EdgeTess[0] = 4;
-	pt.EdgeTess[1] = 4;
-	pt.EdgeTess[2] = 4;
-	pt.EdgeTess[3] = 4;
+	// Uniformly tessellate the patch.
 
-	pt.InsideTess[0] = 4;
-	pt.InsideTess[1] = 4;
+	pt.EdgeTess[0] = tess;
+	pt.EdgeTess[1] = tess;
+	pt.EdgeTess[2] = tess;
+	pt.EdgeTess[3] = tess;
+
+	pt.InsideTess[0] = tess;
+	pt.InsideTess[1] = tess;
 
 	return pt;
 }
+
+struct HullOut
+{
+	float3 PosL : POSITION;
+};
 
 [domain("quad")]
 [partitioning("integer")]
@@ -73,40 +71,48 @@ PatchTess ConstantHS(InputPatch<VOUT, 4> patch, uint patchID : SV_PrimitiveID)
 [outputcontrolpoints(4)]
 [patchconstantfunc("ConstantHS")]
 [maxtessfactor(64.0f)]
-HullOUT HS(InputPatch<VOUT, 4> p,
+HullOut HS(InputPatch<VertexOut, 4> p,
 	uint i : SV_OutputControlPointID,
-	uint patchID : SV_PrimitiveID)
+	uint patchId : SV_PrimitiveID)
 {
-	HullOUT hout;
-	hout.posL = p[i].posL;
+	HullOut hout;
+
+	hout.PosL = p[i].PosL;
 
 	return hout;
 }
 
-[domain("quad")]
-DomainOUT DS(PatchTess patchTess,
-	float2 uv : SV_DomainLocation,
-	const OutputPatch<HullOUT, 4> quad)
+struct DomainOut
 {
-	DomainOUT dout;
+	float4 PosH : SV_POSITION;
+};
 
-	float3 v1 = lerp(quad[0].posL, quad[1].posL, uv.x);
-	float3 v2 = lerp(quad[2].posL, quad[3].posL, uv.x);
+[domain("quad")]
+DomainOut DS(PatchTess patchTess,
+	float2 uv : SV_DomainLocation,
+	const OutputPatch<HullOut, 4> quad)
+{
+	DomainOut dout;
+
+	// Bilinear interpolation.
+	float3 v1 = lerp(quad[0].PosL, quad[1].PosL, uv.x);
+	float3 v2 = lerp(quad[2].PosL, quad[3].PosL, uv.x);
 	float3 p = lerp(v1, v2, uv.y);
 
-	//p.y = 0.3f * (p.z*sin(p.x) + p.x*cos(p.z));
+	// Displacement mapping
+	p.y = 0.3f*(p.z*sin(p.x) + p.x*cos(p.z));
 
-	dout.posH = mul(float4(p, 1.0f), gWorldViewProj);
+	dout.PosH = mul(float4(p, 1.0f), gWorldViewProj);
 
 	return dout;
 }
 
-float4 PS(DomainOUT pin) : SV_Target
+float4 PS(DomainOut pin) : SV_Target
 {
 	return float4(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
-technique11 Tech
+technique11 Tess
 {
 	pass P0
 	{

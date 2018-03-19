@@ -150,8 +150,8 @@ bool Engine::Init()
 			}
 		}
 
-		Entity* quadPatch = new Entity(m_JRenderer, Vector3(15.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f));
-		TerrainVisual* terrainVisual = new TerrainVisual(quadPatch, m_JRenderer, 5.0f, 5.0f);
+		Entity* quadPatch = new Entity(m_JRenderer, Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f));
+		TerrainVisual* terrainVisual = new TerrainVisual(quadPatch, m_JRenderer, 10.0f, 10.0f);
 		quadPatch->m_VisualComponent = terrainVisual;
 		m_ActiveScene->GetEntityList()->push_back(quadPatch);
 

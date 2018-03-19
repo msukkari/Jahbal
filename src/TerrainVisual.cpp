@@ -21,12 +21,12 @@ void TerrainVisual::SetupBuffers()
 {
 	D3D11_BUFFER_DESC vbd;
 	vbd.Usage = D3D11_USAGE_IMMUTABLE;
-	vbd.ByteWidth = sizeof(TerrainVertex) * m_vertices.size();
+	vbd.ByteWidth = sizeof(TerrainVertex) * 4;
 	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	vbd.CPUAccessFlags = 0;
 	vbd.MiscFlags = 0;
 	D3D11_SUBRESOURCE_DATA vinitData;
-	vinitData.pSysMem = &m_vertices;
+	vinitData.pSysMem = &m_vertices[0];
 	HR(Engine::GetInstance()->GetRenderer()->GetGFXDevice()->CreateBuffer(&vbd, &vinitData, &m_VB));
 }
 

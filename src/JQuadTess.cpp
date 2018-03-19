@@ -5,7 +5,7 @@ JQuadTess::JQuadTess(ID3D11Device* device)
 	: Shader(device)
 {
 	loadFX("./FX/QuadTess.fxo");
-	Tech = m_FX->GetTechniqueByName("Tech");
+	Tech = m_FX->GetTechniqueByName("Tess");
 
 	// cbPerObject
 	WorldViewProj = m_FX->GetVariableByName("gWorldViewProj")->AsMatrix();
