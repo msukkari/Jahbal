@@ -136,6 +136,8 @@ technique11 Tech
 	pass P0
 	{
 		SetVertexShader(CompileShader(vs_5_0, VS()));
+		SetHullShader(NULL);
+		SetDomainShader(NULL);
 		SetGeometryShader(CompileShader(gs_5_0, GS()));
 		SetPixelShader(CompileShader(ps_5_0, PS()));
 	}

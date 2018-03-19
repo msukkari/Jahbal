@@ -100,7 +100,7 @@ DomainOut DS(PatchTess patchTess,
 	float3 p = lerp(v1, v2, uv.y);
 
 	// Displacement mapping
-	p.y = 0.3f*(p.z*sin(p.x) + p.x*cos(p.z));
+	//p.y = 0.3f*(p.z*sin(p.x) + p.x*cos(p.z));
 
 	dout.PosH = mul(float4(p, 1.0f), gWorldViewProj);
 
@@ -119,6 +119,7 @@ technique11 Tess
 		SetVertexShader(CompileShader(vs_5_0, VS()));
 		SetHullShader(CompileShader(hs_5_0, HS()));
 		SetDomainShader(CompileShader(ds_5_0, DS()));
+		SetGeometryShader(NULL);
 		SetPixelShader(CompileShader(ps_5_0, PS()));
 	}
 }
