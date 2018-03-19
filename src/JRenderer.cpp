@@ -11,6 +11,7 @@
 #include "VisualComponent.h"
 #include "MeshVisual.h"
 #include "BillboardVisual.h"
+#include "TerrainVisual.h"
 #include "Material.h"
 #include "Shader.h"
 #include "Mesh.h"
@@ -21,6 +22,7 @@
 #include "Shader.h"
 #include "JGeneric.h"
 #include "JBillboard.h"
+#include "JQuadTess.h"
 #include "Light.h"
 
 using namespace DirectX;
@@ -70,6 +72,7 @@ void JRenderer::DrawScene(Scene* scene)
 		
 		if (entity->m_VisualComponent->m_visualType == VisualType::MESH) DrawMeshEntity(entity, cam, sun, point);
 		else if (entity->m_VisualComponent->m_visualType == VisualType::BILLBOARD) DrawBillboardEntity(entity, cam, sun, point);
+		//else if (entity->m_VisualComponent->m_visualType == VisualType::TERRAIN) DrawTerrainEntity(entity, cam);
 	}
 
 	HR(m_swapChain->Present(0, 0));
@@ -126,6 +129,10 @@ void JRenderer::DrawMeshEntity(Entity* entity, Camera* cam, Light* sun, Light* p
 			GetGFXDeviceContext()->DrawIndexed(subMesh->m_indexList.size(), 0, 0);
 		}
 	}
+
+	dc->RSSetState(0);
+	dc->OMSetBlendState(0, blendFactors, 0xffffffff);
+	dc->OMSetDepthStencilState(0, 0);
 }
 
 void JRenderer::DrawBillboardEntity(Entity* entity, Camera* cam, Light* sun, Light* point)
@@ -166,6 +173,52 @@ void JRenderer::DrawBillboardEntity(Entity* entity, Camera* cam, Light* sun, Lig
 		activeTech->GetPassByIndex(p)->Apply(0, GetGFXDeviceContext());
 		GetGFXDeviceContext()->Draw(1, 0);
 	}
+
+	dc->RSSetState(0);
+	dc->OMSetBlendState(0, blendFactors, 0xffffffff);
+	dc->OMSetDepthStencilState(0, 0);
+}
+
+void JRenderer::DrawTerrainEntity(Entity* entity, Camera* cam)
+{
+	ID3D11DeviceContext* dc = GetGFXDeviceContext();
+	dc->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST);
+
+	dc->IASetInputLayout(ShaderManager::GetInstance()->m_JQuadTess->m_InputLayout);
+
+	float blendFactors[] = { 0.0f, 0.0f, 0.0f, 0.0f }; // only used with D3D11_BLEND_BLEND_FACTOR
+	dc->RSSetState(m_rasterizerStates[RSSOLID]);
+	dc->OMSetBlendState(m_blendStates[BSNOBLEND], blendFactors, 0xffffffff);
+	dc->OMSetDepthStencilState(m_depthStencilStates[DSDEFAULT], 0);
+
+	ID3DX11EffectTechnique* activeTech = ShaderManager::GetInstance()->m_JQuadTess->Tech;
+	D3DX11_TECHNIQUE_DESC techDesc;
+	activeTech->GetDesc(&techDesc);
+	for (unsigned int p = 0; p < techDesc.Passes; p++)
+	{
+		TerrainVisual* terrainVisual = (TerrainVisual*)entity->m_VisualComponent;
+
+		UINT stride = sizeof(TerrainVertex);
+		UINT offset = 0;
+		GetGFXDeviceContext()->IASetVertexBuffers(0, 1, &terrainVisual->m_VB, &stride, &offset);
+
+		Vector3 eyePos = Vector3(cam->m_position);
+		Matrix rotation = Matrix::CreateFromYawPitchRoll(entity->m_rotationEuler.x, entity->m_rotationEuler.y, entity->m_rotationEuler.z);
+		Matrix model = rotation * Matrix::CreateTranslation(entity->m_position);
+		Matrix view = cam->GetLookAtMatrix();
+		Matrix MVP = model * view * m_ProjectionMatrix;
+
+		ShaderManager::GetInstance()->m_JQuadTess->SetEyePosW(eyePos);
+		ShaderManager::GetInstance()->m_JQuadTess->SetWorld(model);
+		ShaderManager::GetInstance()->m_JQuadTess->SetWorldViewProj(MVP);
+
+		activeTech->GetPassByIndex(p)->Apply(0, GetGFXDeviceContext());
+		GetGFXDeviceContext()->Draw(4, 0);
+	}
+
+	dc->RSSetState(0);
+	dc->OMSetBlendState(0, blendFactors, 0xffffffff);
+	dc->OMSetDepthStencilState(0, 0);
 }
 
 void JRenderer::InitBlendStates()

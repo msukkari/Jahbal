@@ -29,6 +29,7 @@
     <ClCompile Include="src\InputManager.cpp" />
     <ClCompile Include="src\JBillboard.cpp" />
     <ClCompile Include="src\JGeneric.cpp" />
+    <ClCompile Include="src\JQuadTess.cpp" />
     <ClCompile Include="src\JRenderer.cpp" />
     <ClCompile Include="src\Light.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -54,6 +55,7 @@
     <ClInclude Include="include\InputManager.h" />
     <ClInclude Include="include\JBillboard.h" />
     <ClInclude Include="include\JGeneric.h" />
+    <ClInclude Include="include\JQuadTess.h" />
     <ClInclude Include="include\JRenderer.h" />
     <ClInclude Include="include\Light.h" />
     <ClInclude Include="include\Material.h" />

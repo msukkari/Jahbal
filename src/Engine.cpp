@@ -25,6 +25,7 @@
 #include "InputManager.h"
 #include "MeshVisual.h"
 #include "BillboardVisual.h"
+#include "TerrainVisual.h"
 
 using namespace DirectX;
 
@@ -148,6 +149,11 @@ bool Engine::Init()
 				m_ActiveScene->GetEntityList()->push_back(board);
 			}
 		}
+
+		Entity* quadPatch = new Entity(m_JRenderer, Vector3(15.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f));
+		TerrainVisual* terrainVisual = new TerrainVisual(quadPatch, m_JRenderer, 5.0f, 5.0f);
+		quadPatch->m_VisualComponent = terrainVisual;
+		m_ActiveScene->GetEntityList()->push_back(quadPatch);
 
 		// Camera
 		Camera* camera = new Camera(50.0f);

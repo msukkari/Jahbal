@@ -6,7 +6,7 @@
 TerrainVisual::TerrainVisual(BaseEntity* owner, JRenderer* renderer, float sx, float sy) :
 	VisualComponent(owner, renderer, VisualType::TERRAIN)
 {
-	m_vertices.reserve(4);
+	m_vertices = std::vector<TerrainVertex>(4);
 	m_vertices[0] = TerrainVertex(-sx, 0.0f, sy);
 	m_vertices[1] = TerrainVertex(sx, 0.0f, sy);
 	m_vertices[2] = TerrainVertex(-sx, 0.0f, -sy);

@@ -35,6 +35,14 @@ struct DomainOUT
 	float4 posH : SV_POSITION;
 };
 
+VOUT VS(VIN vin)
+{
+	VOUT vout;
+	vout.posL = vin.posL;
+
+	return vout;
+}
+
 PatchTess ConstantHS(InputPatch<VOUT, 4> patch, uint patchID : SV_PrimitiveID)
 {
 	PatchTess pt;
@@ -48,20 +56,19 @@ PatchTess ConstantHS(InputPatch<VOUT, 4> patch, uint patchID : SV_PrimitiveID)
 	const float d1 = 100.0f;
 	float tess = 64.0f * saturate((d1 - d) / (d1 - d0));
 
-	pt.EdgeTess[0] = tess;
-	pt.EdgeTess[1] = tess;
-	pt.EdgeTess[2] = tess;
-	pt.EdgeTess[3] = tess;
+	pt.EdgeTess[0] = 4;
+	pt.EdgeTess[1] = 4;
+	pt.EdgeTess[2] = 4;
+	pt.EdgeTess[3] = 4;
 
-	pt.InsideTess[0] = tess;
-	pt.InsideTess[1] = tess;
+	pt.InsideTess[0] = 4;
+	pt.InsideTess[1] = 4;
 
 	return pt;
 }
 
-
 [domain("quad")]
-[paritioning("integer")]
+[partitioning("integer")]
 [outputtopology("triangle_cw")]
 [outputcontrolpoints(4)]
 [patchconstantfunc("ConstantHS")]
@@ -76,6 +83,7 @@ HullOUT HS(InputPatch<VOUT, 4> p,
 	return hout;
 }
 
+[domain("quad")]
 DomainOUT DS(PatchTess patchTess,
 	float2 uv : SV_DomainLocation,
 	const OutputPatch<HullOUT, 4> quad)
@@ -86,9 +94,25 @@ DomainOUT DS(PatchTess patchTess,
 	float3 v2 = lerp(quad[2].posL, quad[3].posL, uv.x);
 	float3 p = lerp(v1, v2, uv.y);
 
-	p.y = 0.3f * (p.z*sin(p.x) + p.x*cos(p.z));
+	//p.y = 0.3f * (p.z*sin(p.x) + p.x*cos(p.z));
 
 	dout.posH = mul(float4(p, 1.0f), gWorldViewProj);
 
 	return dout;
+}
+
+float4 PS(DomainOUT pin) : SV_Target
+{
+	return float4(1.0f, 1.0f, 1.0f, 1.0f);
+}
+
+technique11 Tech
+{
+	pass P0
+	{
+		SetVertexShader(CompileShader(vs_5_0, VS()));
+		SetHullShader(CompileShader(hs_5_0, HS()));
+		SetDomainShader(CompileShader(ds_5_0, DS()));
+		SetPixelShader(CompileShader(ps_5_0, PS()));
+	}
 }

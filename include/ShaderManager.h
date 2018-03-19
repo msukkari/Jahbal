@@ -5,6 +5,7 @@
 
 class JGeneric;
 class JBillboard;
+class JQuadTess;
 
 class ShaderManager
 {
@@ -14,7 +15,7 @@ public:
 
 	JGeneric* m_JGeneric;
 	JBillboard* m_JBillboard;
-
+	JQuadTess* m_JQuadTess;
 
 	static ShaderManager* GetInstance()
 	{

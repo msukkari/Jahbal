@@ -30,6 +30,7 @@ public:
 	void DrawScene(Scene* scene);
 	void DrawMeshEntity(Entity* entity, Camera* cam, Light* sun, Light* point);
 	void DrawBillboardEntity(Entity* entity, Camera* cam, Light* sun, Light* point);
+	void DrawTerrainEntity(Entity* entity, Camera* cam);
 	void ShutDown();
 
 

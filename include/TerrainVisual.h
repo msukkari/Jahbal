@@ -5,7 +5,8 @@ struct TerrainVertex
 {
 	TerrainVertex(float px, float py, float pz)
 		: position(px, py, pz) {}
-
+	TerrainVertex()
+		: position(0.0f, 0.0f, 0.0f) {}
 	Vector3 position;
 };
 
