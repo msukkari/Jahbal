@@ -183,10 +183,10 @@ fxgroup
                 sqrt r0.x, r0.x  // r0.x <- d
                 
                 #line 47
-                mov r0.y, l(100.000000)  // r0.y <- d1
+                mov r0.y, l(1000.000000)  // r0.y <- d1
                 mov r0.x, -r0.x
                 add r0.x, r0.x, r0.y
-                div r0.x, r0.x, l(80.000000)
+                div r0.x, r0.x, l(800.000000)
                 max r0.x, r0.x, l(0.000000)
                 min r0.x, r0.x, l(1.000000)
                 mul r0.w, r0.x, l(64.000000)  // r0.w <- tess
@@ -346,7 +346,7 @@ fxgroup
                 //   o0.x <- <PS return value>.x; o0.y <- <PS return value>.y; o0.z <- <PS return value>.z; o0.w <- <PS return value>.w
                 //
                 #line 112 "C:\Users\msukka1\Documents\Jahbal\FX\QuadTess.fx"
-                mov o0.xyzw, l(1.000000,1.000000,1.000000,1.000000)
+                mov o0.xyzw, l(1.000000,0,0.505882,1.000000)
                 ret 
                 // Approximately 2 instruction slots used
                             

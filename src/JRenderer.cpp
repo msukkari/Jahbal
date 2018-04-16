@@ -72,7 +72,7 @@ void JRenderer::DrawScene(Scene* scene)
 		
 		if (entity->m_VisualComponent->m_visualType == VisualType::MESH) DrawMeshEntity(entity, cam, sun, point);
 		else if (entity->m_VisualComponent->m_visualType == VisualType::BILLBOARD) DrawBillboardEntity(entity, cam, sun, point);
-		else if (entity->m_VisualComponent->m_visualType == VisualType::TERRAIN) DrawTerrainEntity(entity, cam);
+		//else if (entity->m_VisualComponent->m_visualType == VisualType::TERRAIN) DrawTerrainEntity(entity, cam);
 	}
 
 	HR(m_swapChain->Present(0, 0));

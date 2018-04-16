@@ -43,8 +43,8 @@ PatchTess ConstantHS(InputPatch<VertexOut, 4> patch, uint patchID : SV_Primitive
 
 	float d = distance(centerW, gEyePosW);
 
-	const float d0 = 20.0f;
-	const float d1 = 100.0f;
+	const float d0 = 200.0f;
+	const float d1 = 1000.0f;
 	float tess = 64.0f*saturate((d1 - d) / (d1 - d0));
 
 	// Uniformly tessellate the patch.
@@ -109,7 +109,7 @@ DomainOut DS(PatchTess patchTess,
 
 float4 PS(DomainOut pin) : SV_Target
 {
-	return float4(1.0f, 1.0f, 1.0f, 1.0f);
+	return float4(1.0f, 0.0f, (129.0f/255.0f), 1.0f);
 }
 
 technique11 Tess
