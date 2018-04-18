@@ -80,7 +80,7 @@ fxgroup
                 //   o1.x <- <VS return value>.size.x; o1.y <- <VS return value>.size.y; 
                 //   o0.x <- <VS return value>.centerW.x; o0.y <- <VS return value>.centerW.y; o0.z <- <VS return value>.centerW.z
                 //
-                #line 63 "C:\Users\msukka1\Documents\Jahbal\FX\Billboard.fx"
+                #line 63 "D:\michael_sukkarieh\Jahbal\FX\Billboard.fx"
                 mov r0.xyz, v0.xyzx  // r0.x <- vout.centerW.x; r0.y <- vout.centerW.y; r0.z <- vout.centerW.z
                 mov r1.xy, v1.xyxx  // r1.x <- vout.size.x; r1.y <- vout.size.y
                 mov o0.xyz, r0.xyzx
@@ -212,7 +212,7 @@ fxgroup
                 //   v[0][1].x <- gin[0].size.x; v[0][1].y <- gin[0].size.y; 
                 //   x0 <- v
                 //
-                #line 74 "C:\Users\msukka1\Documents\Jahbal\FX\Billboard.fx"
+                #line 74 "D:\michael_sukkarieh\Jahbal\FX\Billboard.fx"
                 mov r0.xyz, l(0,1.000000,0,0)  // r0.x <- up.x; r0.y <- up.y; r0.z <- up.z
                 mov r1.xy, -v[0][0].xzxx
                 add r1.xz, r1.xxyx, cb0[9].xxzx  // r1.x <- lookat.x; r1.z <- lookat.z
@@ -421,7 +421,7 @@ fxgroup
                 //   v4.x <- pin.primID; 
                 //   o0.x <- <PS return value>.x; o0.y <- <PS return value>.y; o0.z <- <PS return value>.z; o0.w <- <PS return value>.w
                 //
-                #line 104 "C:\Users\msukka1\Documents\Jahbal\FX\Billboard.fx"
+                #line 104 "D:\michael_sukkarieh\Jahbal\FX\Billboard.fx"
                 sample_indexable(texture2d)(float,float,float,float) r0.xyz, v3.xyxx, t0.xyzw, s0
                 mov r0.xyz, r0.xyzx  // r0.x <- mat_d.x; r0.y <- mat_d.y; r0.z <- mat_d.z
                 itof r1.xyz, l(0, 0, 0, 0)  // r1.x <- mat_s.x; r1.y <- mat_s.y; r1.z <- mat_s.z
@@ -458,7 +458,7 @@ fxgroup
                 mov r0.xyz, r0.xyzx
                 mov r1.xyz, r1.xyzx
                 
-                #line 7 "C:\Users\msukka1\Documents\Jahbal\FX\LightFuncs.fx"
+                #line 7 "D:\michael_sukkarieh\Jahbal\FX\LightFuncs.fx"
                 mov r11.xyz, l(0,0,0,0)  // r11.x <- spec.x; r11.y <- spec.y; r11.z <- spec.z
                 dp3 r1.w, r10.xyzx, r2.xyzx
                 add r1.w, r1.w, r1.w
@@ -487,7 +487,7 @@ fxgroup
                 endif 
                 mul r7.xyz, r7.xyzx, r0.xyzx  // r7.x <- ambient.x; r7.y <- ambient.y; r7.z <- ambient.z
                 
-                #line 118 "C:\Users\msukka1\Documents\Jahbal\FX\Billboard.fx"
+                #line 118 "D:\michael_sukkarieh\Jahbal\FX\Billboard.fx"
                 mov r7.xyz, r7.xyzx  // r7.x <- a.x; r7.y <- a.y; r7.z <- a.z
                 mov r8.xyz, r8.xyzx  // r8.x <- d.x; r8.y <- d.y; r8.z <- d.z
                 mov r11.xyz, r11.xyzx  // r11.x <- s.x; r11.y <- s.y; r11.z <- s.z
@@ -508,7 +508,7 @@ fxgroup
                 mov r0.xyz, r0.xyzx
                 mov r1.xyz, r1.xyzx
                 
-                #line 28 "C:\Users\msukka1\Documents\Jahbal\FX\LightFuncs.fx"
+                #line 28 "D:\michael_sukkarieh\Jahbal\FX\LightFuncs.fx"
                 mov r13.xyz, l(0,0,0,0)  // r13.x <- ambient.x; r13.y <- ambient.y; r13.z <- ambient.z
                 mov r14.xyz, l(0,0,0,0)  // r14.x <- diffuse.x; r14.y <- diffuse.y; r14.z <- diffuse.z
                 mov r15.xyz, l(0,0,0,0)  // r15.x <- spec.x; r15.y <- spec.y; r15.z <- spec.z
@@ -552,7 +552,7 @@ fxgroup
                   endif 
                 endif 
                 
-                #line 123 "C:\Users\msukka1\Documents\Jahbal\FX\Billboard.fx"
+                #line 123 "D:\michael_sukkarieh\Jahbal\FX\Billboard.fx"
                 mov r13.xyz, r13.xyzx  // r13.x <- a.x; r13.y <- a.y; r13.z <- a.z
                 mov r14.xyz, r14.xyzx  // r14.x <- d.x; r14.y <- d.y; r14.z <- d.z
                 mov r15.xyz, r15.xyzx  // r15.x <- s.x; r15.y <- s.y; r15.z <- s.z

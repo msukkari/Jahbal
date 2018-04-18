@@ -40,8 +40,8 @@ bool Engine::Init()
     m_Minimized = false;
     m_Maximized = false;
     m_Resizing = false;
-    m_ClientWidth = 1920;
-    m_ClientHeight = 1080;
+    m_ClientWidth = 1280;
+    m_ClientHeight = 720;
 
     m_MainWndCaption = L"Jahbal";
 
@@ -160,9 +160,9 @@ bool Engine::Init()
 		Entity* terrain = new Entity(m_JRenderer, Vector3(0.0f, -6.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f));
 
 		TerrainInfo terrainInfo(L"resources/textures/terrain.raw", 2049, 2049, 10, 1);
-		TerrainVisual* terrainVisual = new TerrainVisual(terrain, m_JRenderer, terrainInfo);
-		terrain->m_VisualComponent = terrainVisual;
-		m_ActiveScene->GetEntityList()->push_back(terrain);
+		//TerrainVisual* terrainVisual = new TerrainVisual(terrain, m_JRenderer, terrainInfo);
+		//terrain->m_VisualComponent = terrainVisual;
+		//m_ActiveScene->GetEntityList()->push_back(terrain);
 
 		// Camera
 		Camera* camera = new Camera(50.0f);
@@ -293,7 +293,11 @@ void Engine::Run()
 {
     MSG msg = { 0 };
 
-	auto currentTime = getCurTime();
+	double currentTime = getCurTime(), newTime = getCurTime(), frameTime;
+		
+	double fpsCounter = 0;
+	double frameCount = 0;
+
     while (m_Running)
     {
         if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
@@ -301,22 +305,31 @@ void Engine::Run()
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
-        else
-        {
-			double newTime = getCurTime();
-			
-			std::stringstream ss;
-			ss << currentTime << " " << newTime << std::endl;
+		else
+		{
+			newTime = getCurTime();
 
-			double frameTime = newTime - currentTime;
+			frameTime = newTime - currentTime;
 			currentTime = newTime;
+			fpsCounter += frameTime;
+
+			if (fpsCounter >= 1000)
+			{
+				double fps = frameCount / (fpsCounter / 1000.0);
+
+				std::string title = "Jahbal - " + std::to_string(fps);
+				SetWindowText(m_hMainWnd, std::wstring(title.begin(), title.end()).c_str());
+
+				frameCount = 0;
+				fpsCounter = 0;
+			}
 
 
-			std::string s = ss.str();
-			//OutputDebugString(std::wstring(s.begin(), s.end()).c_str());
             HandleEvents();
             Update(frameTime);
             DrawScene(m_ActiveScene);
+
+			frameCount++;
         }
     }
 
