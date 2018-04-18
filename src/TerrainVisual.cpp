@@ -1,5 +1,7 @@
 #include <iostream>
 #include <fstream>
+#include <algorithm>
+#include <DirectXMath.h>
 
 #include "TerrainVisual.h"
 #include "BaseEntity.h"
@@ -9,8 +11,14 @@
 TerrainVisual::TerrainVisual(BaseEntity* owner, JRenderer* renderer, TerrainInfo info) :
 	VisualComponent(owner, renderer, VisualType::TERRAIN), m_terrainInfo(info)
 {
+	m_numPatchCols = ((info.width - 1) / sCellsPerPatch) + 1;
+	m_numPatchRows = ((info.height - 1) / sCellsPerPatch) + 1;
+	m_numPatchVertices = m_numPatchCols * m_numPatchRows;
+	m_numPatchQuadFaces = (m_numPatchCols - 1) * (m_numPatchRows - 1);
+
 	InitHeightMap();
 	SmoothHeightMap();
+	InitHeightMapSRV();
 
 	//SetupBuffers();
 }
@@ -38,19 +46,6 @@ void TerrainVisual::InitHeightMap()
 	}
 }
 
-void TerrainVisual::SetupBuffers()
-{
-	D3D11_BUFFER_DESC vbd;
-	vbd.Usage = D3D11_USAGE_IMMUTABLE;
-	vbd.ByteWidth = sizeof(TerrainVertex) * 4;
-	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	vbd.CPUAccessFlags = 0;
-	vbd.MiscFlags = 0;
-	D3D11_SUBRESOURCE_DATA vinitData;
-	vinitData.pSysMem = &m_vertices[0];
-	HR(Engine::GetInstance()->GetRenderer()->GetGFXDevice()->CreateBuffer(&vbd, &vinitData, &m_VB));
-}
-
 void TerrainVisual::SmoothHeightMap()
 {
 	if (m_heightMapData.size() == 0)
@@ -65,18 +60,18 @@ void TerrainVisual::SmoothHeightMap()
 	m_heightMapData = smoothedData;
 }
 
-float TerrainVisual::ComputeHeightAverage(int x, int y)
+float TerrainVisual::ComputeHeightAverage(int i, int j)
 {
 	float sum = 0;
 	int count = 0;
 
-	for (int i = -1; i <= 1; i++)
+	for (int r = i - 1; r <= (i + 1); r++)
 	{
-		for (int j = -1; j <= 1; j++)
+		for (int c = j - 1; c <= (j + 1); c++)
 		{
-			if (isWithinHeightMap(x + i, y + j))
+			if (isWithinHeightMap(r, c))
 			{
-				sum += m_heightMapData[(x + i) + ((y + j) * m_terrainInfo.width)];
+				sum += m_heightMapData[(r * m_terrainInfo.width) + c];
 				count++;
 			}
 		}
@@ -85,8 +80,58 @@ float TerrainVisual::ComputeHeightAverage(int x, int y)
 	return sum / float(count);
 }
 
-boolean TerrainVisual::isWithinHeightMap(int x, int y)
+boolean TerrainVisual::isWithinHeightMap(int i, int j)
 {
-	return (x >= 0) && (x < m_terrainInfo.width) && (y >= 0) && (y < m_terrainInfo.height);
+	return (i >= 0) && (i < m_terrainInfo.height) && (j >= 0) && (j < m_terrainInfo.width);
 }
 
+void TerrainVisual::InitHeightMapSRV()
+{
+	D3D11_TEXTURE2D_DESC texDesc;
+	texDesc.Width = m_terrainInfo.width;
+	texDesc.Height = m_terrainInfo.height;
+	texDesc.MipLevels = 1;
+	texDesc.ArraySize = 1;
+	texDesc.Format = DXGI_FORMAT_R16_FLOAT;
+	texDesc.SampleDesc.Count = 1;
+	texDesc.SampleDesc.Quality = 0;
+	texDesc.Usage = D3D11_USAGE_DEFAULT;
+	texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	texDesc.CPUAccessFlags = 0;
+	texDesc.MiscFlags = 0;
+
+	std::vector<DirectX::PackedVector::HALF> hmap(m_heightMapData.size());
+	std::transform(m_heightMapData.begin(), m_heightMapData.end(), hmap.begin(), DirectX::PackedVector::XMConvertFloatToHalf);
+
+	D3D11_SUBRESOURCE_DATA data;
+	data.pSysMem = &hmap[0];
+	data.SysMemPitch = m_terrainInfo.width * sizeof(DirectX::PackedVector::HALF);
+	data.SysMemSlicePitch = 0;
+	ID3D11Texture2D* hmapTex = 0;
+	HR(m_Renderer->GetGFXDevice()->CreateTexture2D(&texDesc, &data, &hmapTex));
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+	srvDesc.Format = texDesc.Format;
+	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MostDetailedMip = 0;
+	srvDesc.Texture2D.MipLevels = -1;
+	HR(m_Renderer->GetGFXDevice()->CreateShaderResourceView(hmapTex, &srvDesc, &m_heightMapSRV));
+
+	ReleaseCOM(hmapTex);
+}
+
+void TerrainVisual::SetupBuffers()
+{
+	InitVB();
+	InitIB();
+}
+
+void TerrainVisual::InitVB()
+{
+
+}
+
+void TerrainVisual::InitIB()
+{
+
+}

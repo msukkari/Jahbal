@@ -159,7 +159,7 @@ bool Engine::Init()
 
 		Entity* terrain = new Entity(m_JRenderer, Vector3(0.0f, -6.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f));
 
-		TerrainInfo terrainInfo(L"resources/textures/terrain.raw", 100, 100, 10, 1);
+		TerrainInfo terrainInfo(L"resources/textures/terrain.raw", 2049, 2049, 10, 1);
 		TerrainVisual* terrainVisual = new TerrainVisual(terrain, m_JRenderer, terrainInfo);
 		terrain->m_VisualComponent = terrainVisual;
 		m_ActiveScene->GetEntityList()->push_back(terrain);
