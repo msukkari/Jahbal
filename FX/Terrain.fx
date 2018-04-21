@@ -71,7 +71,8 @@ float calcTessFactor(float3 p)
 	float d = distance(p, gEyePosW);
 
 	float s = saturate((d - gTessParams.x) / (gTessParams.y - gTessParams.x));
-	return pow(2, lerp(gTessParams.w, gTessParams.z, s));
+	//return pow(2, lerp(gTessParams.w, gTessParams.z, s));
+	return 4;
 }
 
 PatchTess ConstantHS(InputPatch<VOUT, 4> patch, uint patchID : SV_PrimitiveID)
@@ -84,13 +85,13 @@ PatchTess ConstantHS(InputPatch<VOUT, 4> patch, uint patchID : SV_PrimitiveID)
 	float3 e3 = 0.5f * (patch[2].posW + patch[3].posW);
 	float3 c = 0.25f * (patch[0].posW + patch[1].posW + patch[2].posW + patch[3].posW);
 
-	pt.EdgeTess[0] = 64; calcTessFactor(e0);
-	pt.EdgeTess[1] = 46; calcTessFactor(e1);
-	pt.EdgeTess[2] = 64; calcTessFactor(e2);
-	pt.EdgeTess[3] = 64; calcTessFactor(e3);
+	pt.EdgeTess[0] = calcTessFactor(e0);
+	pt.EdgeTess[1] = calcTessFactor(e1);
+	pt.EdgeTess[2] = calcTessFactor(e2);
+	pt.EdgeTess[3] = calcTessFactor(e3);
 
-	pt.InsideTess[0] = 64; calcTessFactor(c);
-	pt.InsideTess[1] = 64; pt.InsideTess[0];
+	pt.InsideTess[0] = calcTessFactor(c);
+	pt.InsideTess[1] = pt.InsideTess[0];
 
 	return pt;
 }
@@ -119,11 +120,15 @@ DOUT DS(PatchTess patchTess, float2 uv : SV_DomainLocation,
 {
 	DOUT dout;
 
-	dout.posW = lerp(lerp(quad[0].posW, quad[1].posW, uv.x),
-		lerp(quad[2].posW, quad[3].posW, uv.x), uv.y);
+	dout.posW = lerp(
+		lerp(quad[0].posW, quad[1].posW, uv.x),
+		lerp(quad[2].posW, quad[3].posW, uv.x), 
+		uv.y);
 
-	dout.tex = lerp(lerp(quad[0].tex, quad[1].tex, uv.x),
-		lerp(quad[2].tex, quad[3].tex, uv.x), uv.y);
+	dout.tex = lerp(
+		lerp(quad[0].tex, quad[1].tex, uv.x),
+		lerp(quad[2].tex, quad[3].tex, uv.x), 
+		uv.y);
 
 	dout.tiledTex = dout.tex * 50.0f;
 
@@ -136,7 +141,7 @@ DOUT DS(PatchTess patchTess, float2 uv : SV_DomainLocation,
 
 float PS(DOUT pin) : SV_Target
 {
-	return float4(1.0f, 0.0f, (129.0f / 255.0f), 1.0f);
+	return float4(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
 technique11 Tess

@@ -73,7 +73,7 @@ void JRenderer::DrawScene(Scene* scene)
 		
 		if (entity->m_VisualComponent->m_visualType == VisualType::MESH) DrawMeshEntity(entity, cam, sun, point);
 		else if (entity->m_VisualComponent->m_visualType == VisualType::BILLBOARD) DrawBillboardEntity(entity, cam, sun, point);
-		//else if (entity->m_VisualComponent->m_visualType == VisualType::TERRAIN) DrawTerrainEntity(entity, cam);
+		else if (entity->m_VisualComponent->m_visualType == VisualType::TERRAIN) DrawTerrainEntity(entity, cam);
 	}
 
 	HR(m_swapChain->Present(0, 0));
@@ -191,30 +191,30 @@ void JRenderer::DrawTerrainEntity(Entity* entity, Camera* cam)
 	dc->OMSetBlendState(m_blendStates[BSNOBLEND], blendFactors, 0xffffffff);
 	dc->OMSetDepthStencilState(m_depthStencilStates[DSDEFAULT], 0);
 
+	TerrainVisual* terrainVisual = (TerrainVisual*)entity->m_VisualComponent;
+	
+	UINT stride = sizeof(TerrainVertex);
+	UINT offset = 0;
+	GetGFXDeviceContext()->IASetVertexBuffers(0, 1, &terrainVisual->m_VB, &stride, &offset);
+	GetGFXDeviceContext()->IASetIndexBuffer(terrainVisual->m_IB, DXGI_FORMAT_R16_UINT, 0);
+
+	Vector3 eyePos = Vector3(cam->m_position);
+	Matrix view = cam->GetLookAtMatrix();
+	Matrix VP = view * m_ProjectionMatrix;
+
+	ShaderManager::GetInstance()->m_JTerrain->SetEyePosW(eyePos);
+	ShaderManager::GetInstance()->m_JTerrain->SetViewProj(VP);
+
+	ShaderManager::GetInstance()->m_JTerrain->SetHeightMap(terrainVisual->m_heightMapSRV);
+	ShaderManager::GetInstance()->m_JTerrain->SetTessParams(Vector4(0, 1000, 0, 6));
+
 	ID3DX11EffectTechnique* activeTech = ShaderManager::GetInstance()->m_JTerrain->Tech;
 	D3DX11_TECHNIQUE_DESC techDesc;
 	activeTech->GetDesc(&techDesc);
 	for (unsigned int p = 0; p < techDesc.Passes; p++)
 	{
-		TerrainVisual* terrainVisual = (TerrainVisual*)entity->m_VisualComponent;
-
-
-		UINT stride = sizeof(TerrainVertex);
-		UINT offset = 0;
-		GetGFXDeviceContext()->IASetVertexBuffers(0, 1, &terrainVisual->m_VB, &stride, &offset);
-
-		Vector3 eyePos = Vector3(cam->m_position);
-		Matrix view = cam->GetLookAtMatrix();
-		Matrix VP = view * m_ProjectionMatrix;
-
-		ShaderManager::GetInstance()->m_JTerrain->SetEyePosW(eyePos);
-		ShaderManager::GetInstance()->m_JTerrain->SetViewProj(VP);
-
-		ShaderManager::GetInstance()->m_JTerrain->SetHeightMap(terrainVisual->m_heightMapSRV);
-		ShaderManager::GetInstance()->m_JTerrain->SetTessParams(Vector4(0, 1000, 0, 6));
-
 		activeTech->GetPassByIndex(p)->Apply(0, GetGFXDeviceContext());
-		GetGFXDeviceContext()->Draw(16, 0);
+		GetGFXDeviceContext()->DrawIndexed(terrainVisual->m_numPatchQuadFaces * 4, 0, 0);
 	}
 
 	dc->RSSetState(0);

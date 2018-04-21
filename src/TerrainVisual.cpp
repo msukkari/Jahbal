@@ -20,7 +20,7 @@ TerrainVisual::TerrainVisual(BaseEntity* owner, JRenderer* renderer, TerrainInfo
 	SmoothHeightMap();
 	InitHeightMapSRV();
 
-	//SetupBuffers();
+	SetupBuffers();
 }
 
 TerrainVisual::~TerrainVisual() {}
@@ -145,7 +145,7 @@ void TerrainVisual::InitVB()
 		{
 			float x = -halfWidth + (j * patchWidth);
 
-			int index = (i * m_numPatchCols) * j;
+			int index = (i * m_numPatchCols) + j;
 
 			patchVertices[index].position = Vector3(x, 0, z);
 			patchVertices[index].textureCoord = Vector2(i*du, j*dv);
@@ -192,6 +192,12 @@ void TerrainVisual::InitIB()
 			indices[cur++] = index + m_numPatchCols;
 			indices[cur++] = index + m_numPatchCols + 1;
 		}
+	}
+
+	std::vector<Vector3> vertexPosTest(indices.size());
+	for (int i = 0; i < indices.size(); i++)
+	{
+		vertexPosTest[i] = m_vertices[indices[i]].position;
 	}
 
 	D3D11_BUFFER_DESC ibd;
