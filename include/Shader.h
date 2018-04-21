@@ -32,6 +32,10 @@ public:
 	void SetWorldInvTranspose(Matrix M) { WorldInvTranspose->SetMatrix(reinterpret_cast<const float*>(&M)); }	\
 	ID3DX11EffectMatrixVariable* WorldInvTranspose;	\
 
+#define TPARAMS_DEC \
+	void SetTessParams(const Vector4& v) {TessParams->SetRawValue(&v, 0, sizeof(Vector4));} \
+	ID3DX11EffectVectorVariable* TessParams; \
+
 #define VP_DEC \
 	void SetViewProj(Matrix M) {ViewProj->SetMatrix(reinterpret_cast<const float*>(&M));}	\
 	ID3DX11EffectMatrixVariable* ViewProj;	\
@@ -59,6 +63,10 @@ public:
 #define SPEC_DEC	\
 	void SetSpecMap(ID3D11ShaderResourceView* s) { if (s) SpecMap->SetResource(s); } \
 	ID3DX11EffectShaderResourceVariable* SpecMap;	\
+
+#define HMAP_DEC \
+	void SetHeightMap(ID3D11ShaderResourceView* h) { if(h) HeightMap->SetResource(h); } \
+	ID3DX11EffectShaderResourceVariable* HeightMap; \
 
 
 

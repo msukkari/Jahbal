@@ -38,7 +38,7 @@ public:
 	void InitHeightMapSRV();
 
 	float GetWidth() const { return (m_terrainInfo.width - 1) * m_terrainInfo.cellSpacing; }
-	float GetHeight() const { return (m_terrainInfo.height - 1) * m_terrainInfo.cellSpacing; }
+	float GetDepth() const { return (m_terrainInfo.height - 1) * m_terrainInfo.cellSpacing; }
 
 	ID3D11Buffer* m_VB;
 	ID3D11Buffer* m_IB;

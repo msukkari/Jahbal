@@ -87,6 +87,9 @@
     <ClCompile Include="src\JQuadTess.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="include\JTerrain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\BaseEntity.h">
@@ -161,6 +164,9 @@
     <ClInclude Include="include\JQuadTess.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\JTerrain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="fx\Generic.fx">
@@ -173,6 +179,9 @@
       <Filter>FX</Filter>
     </CustomBuild>
     <CustomBuild Include="FX\QuadTess.fx">
+      <Filter>FX</Filter>
+    </CustomBuild>
+    <CustomBuild Include="FX\Terrain.fx">
       <Filter>FX</Filter>
     </CustomBuild>
   </ItemGroup>

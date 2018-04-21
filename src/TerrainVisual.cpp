@@ -128,10 +128,81 @@ void TerrainVisual::SetupBuffers()
 
 void TerrainVisual::InitVB()
 {
+	std::vector<TerrainVertex> patchVertices(m_numPatchRows * m_numPatchCols);
 
+	float halfWidth = 0.5f * GetWidth();
+	float halfDepth = 0.5f * GetDepth();
+
+	float patchWidth = GetWidth() / (m_numPatchCols - 1);
+	float patchDepth = GetDepth() / (m_numPatchRows - 1);
+	float du = 1.0f / (m_numPatchCols - 1);
+	float dv = 1.0f / (m_numPatchRows - 1);
+
+	for (UINT i = 0; i < m_numPatchRows; ++i)
+	{
+		float z = halfDepth - (i * patchDepth);
+		for (UINT j = 0; j < m_numPatchCols; ++j)
+		{
+			float x = -halfWidth + (j * patchWidth);
+
+			int index = (i * m_numPatchCols) * j;
+
+			patchVertices[index].position = Vector3(x, 0, z);
+			patchVertices[index].textureCoord = Vector2(i*du, j*dv);
+		}
+	}
+
+	for (UINT i = 0; i < m_numPatchRows - 1; ++i)
+	{
+		for (UINT j = 0; j < m_numPatchCols - 1; ++j)
+		{
+			UINT patchID = (i * (m_numPatchCols - 1)) + j;
+			//patchVertices[(i*m_numPatchCols) + j].boundsY = m_patchBounds[patchID];
+		}
+	}
+
+	m_vertices = patchVertices;
+
+	D3D11_BUFFER_DESC vbd;
+	vbd.Usage = D3D11_USAGE_IMMUTABLE;
+	vbd.ByteWidth = sizeof(TerrainVertex) * patchVertices.size();
+	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vbd.CPUAccessFlags = 0;
+	vbd.MiscFlags = 0;
+	vbd.StructureByteStride = 0;
+
+	D3D11_SUBRESOURCE_DATA vinitData;
+	vinitData.pSysMem = &patchVertices[0];
+	HR(m_Renderer->GetGFXDevice()->CreateBuffer(&vbd, &vinitData, &m_VB));
 }
 
 void TerrainVisual::InitIB()
 {
+	std::vector<USHORT> indices(m_numPatchQuadFaces * 4);
 
+	int cur = 0;
+	for (int i = 0; i < (m_numPatchRows - 1); ++i)
+	{
+		for (int j = 0; j < (m_numPatchCols - 1); ++j)
+		{
+			int index = (i * m_numPatchCols) + j;
+
+			indices[cur++] = index;
+			indices[cur++] = index + 1;
+			indices[cur++] = index + m_numPatchCols;
+			indices[cur++] = index + m_numPatchCols + 1;
+		}
+	}
+
+	D3D11_BUFFER_DESC ibd;
+	ibd.Usage = D3D11_USAGE_IMMUTABLE;
+	ibd.ByteWidth = sizeof(USHORT) * indices.size();
+	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	ibd.CPUAccessFlags = 0;
+	ibd.MiscFlags = 0;
+	ibd.StructureByteStride = 0;
+
+	D3D11_SUBRESOURCE_DATA iinitData;
+	iinitData.pSysMem = &indices[0];
+	HR(m_Renderer->GetGFXDevice()->CreateBuffer(&ibd, &iinitData, &m_IB));
 }

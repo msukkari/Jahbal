@@ -23,6 +23,7 @@
 #include "JGeneric.h"
 #include "JBillboard.h"
 #include "JQuadTess.h"
+#include "JTerrain.h"
 #include "Light.h"
 
 using namespace DirectX;
@@ -183,36 +184,37 @@ void JRenderer::DrawTerrainEntity(Entity* entity, Camera* cam)
 {
 	ID3D11DeviceContext* dc = GetGFXDeviceContext();
 	dc->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST);
-	dc->IASetInputLayout(ShaderManager::GetInstance()->m_JQuadTess->m_InputLayout);
+	dc->IASetInputLayout(ShaderManager::GetInstance()->m_JTerrain->m_InputLayout);
 
 	float blendFactors[] = { 0.0f, 0.0f, 0.0f, 0.0f }; // only used with D3D11_BLEND_BLEND_FACTOR
 	dc->RSSetState(m_rasterizerStates[RSWIREFRAME]);
 	dc->OMSetBlendState(m_blendStates[BSNOBLEND], blendFactors, 0xffffffff);
 	dc->OMSetDepthStencilState(m_depthStencilStates[DSDEFAULT], 0);
 
-	ID3DX11EffectTechnique* activeTech = ShaderManager::GetInstance()->m_JQuadTess->Tech;
+	ID3DX11EffectTechnique* activeTech = ShaderManager::GetInstance()->m_JTerrain->Tech;
 	D3DX11_TECHNIQUE_DESC techDesc;
 	activeTech->GetDesc(&techDesc);
 	for (unsigned int p = 0; p < techDesc.Passes; p++)
 	{
 		TerrainVisual* terrainVisual = (TerrainVisual*)entity->m_VisualComponent;
 
+
 		UINT stride = sizeof(TerrainVertex);
 		UINT offset = 0;
 		GetGFXDeviceContext()->IASetVertexBuffers(0, 1, &terrainVisual->m_VB, &stride, &offset);
 
 		Vector3 eyePos = Vector3(cam->m_position);
-		Matrix rotation = Matrix::CreateFromYawPitchRoll(entity->m_rotationEuler.x, entity->m_rotationEuler.y, entity->m_rotationEuler.z);
-		Matrix model = rotation * Matrix::CreateTranslation(entity->m_position);
 		Matrix view = cam->GetLookAtMatrix();
-		Matrix MVP = model * view * m_ProjectionMatrix;
+		Matrix VP = view * m_ProjectionMatrix;
 
-		ShaderManager::GetInstance()->m_JQuadTess->SetEyePosW(eyePos);
-		ShaderManager::GetInstance()->m_JQuadTess->SetWorld(model);
-		ShaderManager::GetInstance()->m_JQuadTess->SetWorldViewProj(MVP);
+		ShaderManager::GetInstance()->m_JTerrain->SetEyePosW(eyePos);
+		ShaderManager::GetInstance()->m_JTerrain->SetViewProj(VP);
+
+		ShaderManager::GetInstance()->m_JTerrain->SetHeightMap(terrainVisual->m_heightMapSRV);
+		ShaderManager::GetInstance()->m_JTerrain->SetTessParams(Vector4(0, 1000, 0, 6));
 
 		activeTech->GetPassByIndex(p)->Apply(0, GetGFXDeviceContext());
-		GetGFXDeviceContext()->Draw(4, 0);
+		GetGFXDeviceContext()->Draw(16, 0);
 	}
 
 	dc->RSSetState(0);
