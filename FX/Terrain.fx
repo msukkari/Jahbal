@@ -71,8 +71,7 @@ float calcTessFactor(float3 p)
 	float d = distance(p, gEyePosW);
 
 	float s = saturate((d - gTessParams.x) / (gTessParams.y - gTessParams.x));
-	//return pow(2, lerp(gTessParams.w, gTessParams.z, s));
-	return 4;
+	return pow(2, lerp(gTessParams.w, gTessParams.z, s));
 }
 
 PatchTess ConstantHS(InputPatch<VOUT, 4> patch, uint patchID : SV_PrimitiveID)
@@ -97,7 +96,7 @@ PatchTess ConstantHS(InputPatch<VOUT, 4> patch, uint patchID : SV_PrimitiveID)
 }
 
 [domain("quad")]
-[partitioning("integer")]
+[partitioning("fractional_even")]
 [outputtopology("triangle_cw")]
 [outputcontrolpoints(4)]
 [patchconstantfunc("ConstantHS")]
@@ -139,7 +138,7 @@ DOUT DS(PatchTess patchTess, float2 uv : SV_DomainLocation,
 	return dout;
 }
 
-float PS(DOUT pin) : SV_Target
+float4 PS(DOUT pin) : SV_Target
 {
 	return float4(1.0f, 1.0f, 1.0f, 1.0f);
 }
