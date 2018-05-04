@@ -16,10 +16,22 @@ TerrainVisual::TerrainVisual(BaseEntity* owner, JRenderer* renderer, TerrainInfo
 	m_numPatchVertices = m_numPatchCols * m_numPatchRows;
 	m_numPatchQuadFaces = (m_numPatchCols - 1) * (m_numPatchRows - 1);
 
-	InitHeightMap();
-	SmoothHeightMap();
-	InitHeightMapSRV();
+	std::ifstream processedHeightMapFile("resources/textures/terrain_p.raw", std::ios::in | std::ios::binary);
 
+	if (processedHeightMapFile)
+	{
+		m_heightMapData.resize(m_terrainInfo.height * m_terrainInfo.width, 0);
+		
+		processedHeightMapFile.read((char*)&m_heightMapData[0], m_heightMapData.size() * sizeof(float));
+		processedHeightMapFile.close();
+	}
+	else
+	{
+		InitHeightMap();
+		SmoothHeightMap();
+	}
+
+	InitHeightMapSRV();
 	SetupBuffers();
 }
 
@@ -54,9 +66,16 @@ void TerrainVisual::SmoothHeightMap()
 		return;
 	}
 
-	std::vector<float> smoothedData(m_heightMapData.size(), 0);
-	for (UINT i = 0; i < m_heightMapData.size(); i++) smoothedData[i] = ComputeHeightAverage(i / m_terrainInfo.width, i % m_terrainInfo.width);
+	std::ofstream processedHeightMapFile("resources/textures/terrain_p.raw", std::ios::out | std::ios::binary);
 
+	std::vector<float> smoothedData(m_heightMapData.size(), 0);
+	for (UINT i = 0; i < m_heightMapData.size(); i++)
+	{
+		smoothedData[i] = ComputeHeightAverage(i / m_terrainInfo.width, i % m_terrainInfo.width);
+	}
+
+	processedHeightMapFile.write((char*)&smoothedData[0], smoothedData.size() * sizeof(float));
+	processedHeightMapFile.close();
 	m_heightMapData = smoothedData;
 }
 
