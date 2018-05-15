@@ -24,7 +24,6 @@ public:
 	void Update(float dt) {}
 
 	Material* GetMaterial() { return m_VisualComponent->m_Material; }
-	Shader* GetShader() { return m_VisualComponent->m_Shader; }
 
 	VisualComponent* m_VisualComponent;
 

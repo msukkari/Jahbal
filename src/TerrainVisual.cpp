@@ -7,10 +7,14 @@
 #include "BaseEntity.h"
 #include "Engine.h"
 #include "JRenderer.h"
+#include "ShaderManager.h"
+#include "JTerrain.h"
 
 TerrainVisual::TerrainVisual(BaseEntity* owner, JRenderer* renderer, TerrainInfo info) :
 	VisualComponent(owner, renderer, VisualType::TERRAIN), m_terrainInfo(info)
 {
+	m_JTerrain = ShaderManager::GetInstance()->m_JTerrain;
+
 	m_numPatchCols = ((info.width - 1) / sCellsPerPatch) + 1;
 	m_numPatchRows = ((info.height - 1) / sCellsPerPatch) + 1;
 	m_numPatchVertices = m_numPatchCols * m_numPatchRows;
@@ -101,7 +105,7 @@ float TerrainVisual::ComputeHeightAverage(int i, int j)
 
 boolean TerrainVisual::isWithinHeightMap(int i, int j)
 {
-	return (i >= 0) && (i < m_terrainInfo.height) && (j >= 0) && (j < m_terrainInfo.width);
+	return (i >= 0) && (i < (UINT)m_terrainInfo.height) && (j >= 0) && (j < (UINT)m_terrainInfo.width);
 }
 
 void TerrainVisual::InitHeightMapSRV()
@@ -157,10 +161,10 @@ void TerrainVisual::InitVB()
 	float du = 1.0f / (m_numPatchCols - 1);
 	float dv = 1.0f / (m_numPatchRows - 1);
 
-	for (UINT i = 0; i < m_numPatchRows; ++i)
+	for (UINT i = 0; i < (UINT)m_numPatchRows; ++i)
 	{
 		float z = halfDepth - (i * patchDepth);
-		for (UINT j = 0; j < m_numPatchCols; ++j)
+		for (UINT j = 0; j < (UINT)m_numPatchCols; ++j)
 		{
 			float x = -halfWidth + (j * patchWidth);
 
@@ -171,9 +175,9 @@ void TerrainVisual::InitVB()
 		}
 	}
 
-	for (UINT i = 0; i < m_numPatchRows - 1; ++i)
+	for (UINT i = 0; i < (UINT)m_numPatchRows - 1; ++i)
 	{
-		for (UINT j = 0; j < m_numPatchCols - 1; ++j)
+		for (UINT j = 0; j < (UINT)m_numPatchCols - 1; ++j)
 		{
 			UINT patchID = (i * (m_numPatchCols - 1)) + j;
 			//patchVertices[(i*m_numPatchCols) + j].boundsY = m_patchBounds[patchID];
@@ -214,7 +218,7 @@ void TerrainVisual::InitIB()
 	}
 
 	std::vector<Vector3> vertexPosTest(indices.size());
-	for (int i = 0; i < indices.size(); i++)
+	for (int i = 0; i < (UINT)indices.size(); i++)
 	{
 		vertexPosTest[i] = m_vertices[indices[i]].position;
 	}

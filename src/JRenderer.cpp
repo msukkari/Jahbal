@@ -91,7 +91,7 @@ void JRenderer::DrawMeshEntity(Entity* entity, Camera* cam, Light* sun, Light* p
 	ShaderManager::GetInstance()->m_JGeneric->SetPLight((PLightData*)point->m_LightData);
 
 	float blendFactors[] = { 0.0f, 0.0f, 0.0f, 0.0f }; // only used with D3D11_BLEND_BLEND_FACTOR
-	dc->RSSetState(m_rasterizerStates[RSSOLID]);
+	dc->RSSetState(m_rasterizerStates[RSWIREFRAME]);
 	dc->OMSetBlendState(m_blendStates[BSNOBLEND], blendFactors, 0xffffffff);
 	dc->OMSetDepthStencilState(m_depthStencilStates[DSDEFAULT], 0);
 
@@ -345,8 +345,8 @@ void JRenderer::ShutDown()
 	ReleaseCOM(m_depthStencilBuffer);
 
 
-	for (int i = 0; i < m_rasterizerStates.size(); i++) ReleaseCOM(m_rasterizerStates[i]);
-	for (int i = 0; i < m_blendStates.size(); i++) ReleaseCOM(m_blendStates[i]);
+	for (int i = 0; i < (UINT)m_rasterizerStates.size(); i++) ReleaseCOM(m_rasterizerStates[i]);
+	for (int i = 0; i < (UINT)m_blendStates.size(); i++) ReleaseCOM(m_blendStates[i]);
 
 	// Restore all default settings.
 	if (m_d3dImmediateContext)

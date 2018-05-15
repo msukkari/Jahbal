@@ -2,14 +2,12 @@
 #include "Mesh.h"
 #include "JRenderer.h"
 #include "Material.h"
-#include "Shader.h"
 
 
 VisualComponent::VisualComponent(BaseEntity* owner, JRenderer* renderer, VisualType visualType) : 
 		Component(owner), m_visualType(visualType)
 {
 	m_Material = nullptr;
-	m_Shader = nullptr;
 
 	m_Renderer = renderer;
 }
@@ -29,5 +27,4 @@ void VisualComponent::CreateMaterial()
 	}
 
 	//m_Material = new Material();
-	//m_Material->m_Shader = new Shader(this);
 }

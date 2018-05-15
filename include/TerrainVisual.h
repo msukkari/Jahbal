@@ -1,6 +1,8 @@
 #pragma once
 #include "VisualComponent.h"
 
+class JTerrain;
+
 struct TerrainVertex
 {
 	TerrainVertex(float px, float py, float pz)
@@ -40,6 +42,7 @@ public:
 	float GetWidth() const { return (m_terrainInfo.width - 1) * m_terrainInfo.cellSpacing; }
 	float GetDepth() const { return (m_terrainInfo.height - 1) * m_terrainInfo.cellSpacing; }
 
+	JTerrain* m_JTerrain;
 	ID3D11Buffer* m_VB;
 	ID3D11Buffer* m_IB;
 	ID3D11ShaderResourceView* m_heightMapSRV;

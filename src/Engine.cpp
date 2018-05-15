@@ -82,7 +82,6 @@ bool Engine::Init()
 				MeshVisual* meshVisual = (MeshVisual*)e->m_VisualComponent;
 				meshVisual->m_Mesh = nanosuitMesh;
 				meshVisual->m_Mesh->m_componentOwner = meshVisual;
-				e->m_VisualComponent->m_Shader = ShaderManager::GetInstance()->m_JGeneric;
 				e->m_VisualComponent->m_Material = material;
 				m_ActiveScene->GetEntityList()->push_back(e);
 			}
@@ -122,14 +121,12 @@ bool Engine::Init()
 		Entity* plane = new Entity(m_JRenderer, Vector3(0.0f, -6.0f, 0.0f));
 		MeshVisual* plane1MeshVisual = new MeshVisual(plane, m_JRenderer);
 		plane1MeshVisual->m_Mesh = planeMesh;
-		plane1MeshVisual->m_Shader = ShaderManager::GetInstance()->m_JGeneric;
 		plane1MeshVisual->m_Material = material;
 		plane->m_VisualComponent = plane1MeshVisual;
 
 		Entity* plane2 = new Entity(m_JRenderer, Vector3(22.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, M_PI / 2));
 		MeshVisual* plane2MeshVisual = new MeshVisual(plane2, m_JRenderer);
 		plane2MeshVisual->m_Mesh = planeMesh;
-		plane2MeshVisual->m_Shader = ShaderManager::GetInstance()->m_JGeneric;
 		plane2MeshVisual->m_Material = material;
 		plane2->m_VisualComponent = plane2MeshVisual;
 
@@ -143,7 +140,6 @@ bool Engine::Init()
 			{
 				Entity* board = new Entity(m_JRenderer, Vector3(rand() % 40, 0.0f, 20.0f + (rand() % 40)), Vector3(0.0f, 0.0f, 0.0f));
 				BillboardVisual* boardVisual = new BillboardVisual(board, m_JRenderer, 10.0f, 10.0f);
-				boardVisual->m_Material = material;
 				boardVisual->m_diffuseSRV = treeSRV;
 				board->m_VisualComponent = boardVisual;
 				m_ActiveScene->GetEntityList()->push_back(board);
