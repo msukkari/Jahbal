@@ -19,59 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="include\JTerrain.cpp" />
-    <ClCompile Include="src\BaseEntity.cpp" />
-    <ClCompile Include="src\BillBoardVisual.cpp" />
-    <ClCompile Include="src\Camera.cpp" />
-    <ClCompile Include="src\dxerr.cpp" />
-    <ClCompile Include="src\Engine.cpp" />
-    <ClCompile Include="src\Entity.cpp" />
-    <ClCompile Include="src\GeometryGenerator.cpp" />
-    <ClCompile Include="src\InputManager.cpp" />
-    <ClCompile Include="src\JBillboard.cpp" />
-    <ClCompile Include="src\JGeneric.cpp" />
-    <ClCompile Include="src\JQuadTess.cpp" />
-    <ClCompile Include="src\JRenderer.cpp" />
-    <ClCompile Include="src\Light.cpp" />
-    <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\Mesh.cpp" />
-    <ClCompile Include="src\MeshVisual.cpp" />
-    <ClCompile Include="src\Scene.cpp" />
-    <ClCompile Include="src\Shader.cpp" />
-    <ClCompile Include="src\ShaderManager.cpp" />
-    <ClCompile Include="src\SubMesh.cpp" />
-    <ClCompile Include="src\TerrainVisual.cpp" />
-    <ClCompile Include="src\TransformComponent.cpp" />
-    <ClCompile Include="src\VisualComponent.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="include\BaseEntity.h" />
-    <ClInclude Include="include\BillboardVisual.h" />
-    <ClInclude Include="include\Camera.h" />
-    <ClInclude Include="include\Component.h" />
-    <ClInclude Include="include\dxerr.h" />
-    <ClInclude Include="include\Engine.h" />
-    <ClInclude Include="include\Entity.h" />
-    <ClInclude Include="include\GeometryGenerator.h" />
-    <ClInclude Include="include\InputManager.h" />
-    <ClInclude Include="include\JBillboard.h" />
-    <ClInclude Include="include\JGeneric.h" />
-    <ClInclude Include="include\JQuadTess.h" />
-    <ClInclude Include="include\JRenderer.h" />
-    <ClInclude Include="include\JTerrain.h" />
-    <ClInclude Include="include\Light.h" />
-    <ClInclude Include="include\Material.h" />
-    <ClInclude Include="include\Mesh.h" />
-    <ClInclude Include="include\MeshVisual.h" />
-    <ClInclude Include="include\Scene.h" />
-    <ClInclude Include="include\Shader.h" />
-    <ClInclude Include="include\ShaderManager.h" />
-    <ClInclude Include="include\SubMesh.h" />
-    <ClInclude Include="include\TerrainVisual.h" />
-    <ClInclude Include="include\TransformComponent.h" />
-    <ClInclude Include="include\VisualComponent.h" />
-  </ItemGroup>
-  <ItemGroup>
     <CustomBuild Include="fx\Generic.fx">
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Tech</EntryPointName>
       <FileType>Document</FileType>
@@ -136,6 +83,61 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RelativeDir)\%(Filename).fxo</Outputs>
     </CustomBuild>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\common\BaseEntity.cpp" />
+    <ClCompile Include="src\common\Camera.cpp" />
+    <ClCompile Include="src\common\Entity.cpp" />
+    <ClCompile Include="src\common\Light.cpp" />
+    <ClCompile Include="src\common\Mesh.cpp" />
+    <ClCompile Include="src\common\Scene.cpp" />
+    <ClCompile Include="src\common\SubMesh.cpp" />
+    <ClCompile Include="src\components\BillBoardVisual.cpp" />
+    <ClCompile Include="src\components\MeshVisual.cpp" />
+    <ClCompile Include="src\components\TerrainVisual.cpp" />
+    <ClCompile Include="src\components\TransformComponent.cpp" />
+    <ClCompile Include="src\components\VisualComponent.cpp" />
+    <ClCompile Include="src\core\Engine.cpp" />
+    <ClCompile Include="src\core\InputManager.cpp" />
+    <ClCompile Include="src\core\JRenderer.cpp" />
+    <ClCompile Include="src\core\Shader.cpp" />
+    <ClCompile Include="src\core\ShaderManager.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\shaders\JBillboard.cpp" />
+    <ClCompile Include="src\shaders\JGeneric.cpp" />
+    <ClCompile Include="src\shaders\JQuadTess.cpp" />
+    <ClCompile Include="src\shaders\JTerrain.cpp" />
+    <ClCompile Include="src\util\dxerr.cpp" />
+    <ClCompile Include="src\util\GeometryGenerator.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\common\BaseEntity.h" />
+    <ClInclude Include="src\common\Camera.h" />
+    <ClInclude Include="src\common\Entity.h" />
+    <ClInclude Include="src\common\Light.h" />
+    <ClInclude Include="src\common\Material.h" />
+    <ClInclude Include="src\common\Mesh.h" />
+    <ClInclude Include="src\common\Model.h" />
+    <ClInclude Include="src\common\Scene.h" />
+    <ClInclude Include="src\common\SubMesh.h" />
+    <ClInclude Include="src\components\BillBoardVisual.h" />
+    <ClInclude Include="src\components\Component.h" />
+    <ClInclude Include="src\components\MeshVisual.h" />
+    <ClInclude Include="src\components\TerrainVisual.h" />
+    <ClInclude Include="src\components\TransformComponent.h" />
+    <ClInclude Include="src\components\VisualComponent.h" />
+    <ClInclude Include="src\core\Engine.h" />
+    <ClInclude Include="src\core\InputManager.h" />
+    <ClInclude Include="src\core\JRenderer.h" />
+    <ClInclude Include="src\core\Shader.h" />
+    <ClInclude Include="src\core\ShaderManager.h" />
+    <ClInclude Include="src\shaders\JBillboard.h" />
+    <ClInclude Include="src\shaders\JGeneric.h" />
+    <ClInclude Include="src\shaders\JQuadTess.h" />
+    <ClInclude Include="src\shaders\JTerrain.h" />
+    <ClInclude Include="src\util\d3dx11effect.h" />
+    <ClInclude Include="src\util\dxerr.h" />
+    <ClInclude Include="src\util\GeometryGenerator.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{39761F10-91F0-4DC2-8006-0653600ED3AA}</ProjectGuid>
     <RootNamespace>Jahbal</RootNamespace>
@@ -192,7 +194,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>./include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./include;./src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>assimp.lib;DirectXTK.lib;d3d11.lib;D3DCompiler.lib;Effects11d.lib;dxgi.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -218,7 +220,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>./include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./include;./src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

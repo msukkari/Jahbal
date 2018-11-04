@@ -1,6 +1,6 @@
 #include <windows.h>
 
-#include "Engine.h"
+#include "core/Engine.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
     PSTR cmdLine, int showCmd)
