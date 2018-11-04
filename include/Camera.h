@@ -14,7 +14,7 @@ public:
 	Camera(float radius);
 	Camera();
 
-	void Update(float dt);
+	void Update(__int64 dt_msec);
 
 	Matrix GetLookAtMatrix();
 	void UpdatePosition();

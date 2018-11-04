@@ -1,5 +1,6 @@
 #include "Scene.h"
 #include "Entity.h"
+#include "Light.h"
 
 void Scene::AddEntity(Entity* entity)
 {
@@ -10,11 +11,11 @@ void Scene::Shutdown()
 {
 	for (Entity* e : m_EntityList)
 	{
-		delete e->m_VisualComponent;
+		if(e) delete e->m_VisualComponent;
 	}
 
 	for (Light* l : m_LightList)
 	{
-		delete l;
+		if(l) delete l;
 	}
 }

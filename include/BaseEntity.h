@@ -10,7 +10,7 @@ public:
 	BaseEntity();
 	~BaseEntity();
 
-	virtual void Update(float dt) = 0;
+	virtual void Update(__int64 dt_msec) = 0;
 
 	Vector3 m_position;
 };

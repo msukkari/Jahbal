@@ -69,9 +69,10 @@ class Light : BaseEntity
 {
 public:
 	Light(LightType lightType);
+    virtual ~Light();
 	LightType m_LightType;
 
-	void Update(float dt) {}
+	void Update(__int64 dt_msec) {}
 
 	LightData* m_LightData;
 };

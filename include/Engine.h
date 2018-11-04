@@ -36,7 +36,7 @@ private:
     bool InitWindow();
 
     void HandleEvents();
-    void Update(float dt);
+    void Update(__int64 dt_msec);
     void DrawScene(Scene* scene);
 
     HINSTANCE		m_hAppInst;

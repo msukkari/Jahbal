@@ -21,7 +21,7 @@ public:
 	Entity(JRenderer* renderer, Vector3 position, Vector3 rotation);
 	~Entity();
 
-	void Update(float dt) {}
+	void Update(__int64 dt_msec) {}
 
 	Material* GetMaterial() { return m_VisualComponent->m_Material; }
 

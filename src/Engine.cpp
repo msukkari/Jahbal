@@ -133,12 +133,12 @@ bool Engine::Init()
 		m_ActiveScene->GetEntityList()->push_back(plane);
 		m_ActiveScene->GetEntityList()->push_back(plane2);
 
-		srand(time(NULL));
+		srand((unsigned int)time(NULL));
 		for (int i = 0; i < 10; i++)
 		{
 			for (int j = 0; j < 10; j++)
 			{
-				Entity* board = new Entity(m_JRenderer, Vector3(rand() % 40, 0.0f, 20.0f + (rand() % 40)), Vector3(0.0f, 0.0f, 0.0f));
+				Entity* board = new Entity(m_JRenderer, Vector3(float(rand() % 40), 0.0f, 20.0f + (rand() % 40)), Vector3(0.0f, 0.0f, 0.0f));
 				BillboardVisual* boardVisual = new BillboardVisual(board, m_JRenderer, 10.0f, 10.0f);
 				boardVisual->m_diffuseSRV = treeSRV;
 				board->m_VisualComponent = boardVisual;
@@ -289,7 +289,7 @@ void Engine::Run()
 {
     MSG msg = { 0 };
 
-	double currentTime = getCurTime(), newTime = getCurTime(), frameTime;
+	__int64 currentTime = getCurTime(), newTime = getCurTime(), frameTime;
 		
 	double fpsCounter = 0;
 	double frameCount = 0;
@@ -338,12 +338,12 @@ void Engine::HandleEvents()
 	if (kb.Escape) m_Running = false;
 }
 
-void Engine::Update(float dt)
+void Engine::Update(__int64 dt_msec)
 {
-	m_ActiveScene->GetActiveCamera()->Update(dt);
+	m_ActiveScene->GetActiveCamera()->Update(dt_msec);
 	for (unsigned int i = 0; i < m_ActiveScene->GetEntityList()->size(); i++)
 	{
-		m_ActiveScene->GetEntityList()->at(i)->Update(dt);
+		m_ActiveScene->GetEntityList()->at(i)->Update(dt_msec);
 	}
 }
 

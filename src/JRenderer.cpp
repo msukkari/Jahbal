@@ -345,8 +345,8 @@ void JRenderer::ShutDown()
 	ReleaseCOM(m_depthStencilBuffer);
 
 
-	for (int i = 0; i < (UINT)m_rasterizerStates.size(); i++) ReleaseCOM(m_rasterizerStates[i]);
-	for (int i = 0; i < (UINT)m_blendStates.size(); i++) ReleaseCOM(m_blendStates[i]);
+	for (unsigned int i = 0; i < (UINT)m_rasterizerStates.size(); i++) ReleaseCOM(m_rasterizerStates[i]);
+	for (unsigned int i = 0; i < (UINT)m_blendStates.size(); i++) ReleaseCOM(m_blendStates[i]);
 
 	// Restore all default settings.
 	if (m_d3dImmediateContext)
