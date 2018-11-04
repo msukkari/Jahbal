@@ -3,15 +3,13 @@
 #include <d3d11.h>
 #include "DirectXTK/SimpleMath.h"
 
-using namespace DirectX;
-
 class Material
 {
 public:
 
 	Material() {}
-	Vector4 Ambient;
-	Vector4 Diffuse;
-	Vector4 Specular;
+    DirectX::SimpleMath::Vector4 Ambient;
+    DirectX::SimpleMath::Vector4 Diffuse;
+    DirectX::SimpleMath::Vector4 Specular;
 };
 

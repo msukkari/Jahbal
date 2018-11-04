@@ -1,6 +1,7 @@
 #include "Entity.h"
 #include "VisualComponent.h"
 
+using DirectX::SimpleMath::Vector3;
 
 Entity::Entity(JRenderer* renderer) : Entity(renderer, Vector3::Zero, Vector3::Zero) {}
 

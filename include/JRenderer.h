@@ -8,8 +8,6 @@
 #include "dxerr.h"
 #include "DirectXTK/SimpleMath.h"
 
-using namespace DirectX;
-
 class Scene;
 class Camera;
 class Entity;
@@ -51,8 +49,8 @@ private:
     ID3D11DepthStencilView* m_depthStencilView;
     D3D11_VIEWPORT m_screenViewport;
 
-	Matrix m_ProjectionMatrix;
-	Matrix m_ViewMatrix;
+    DirectX::SimpleMath::Matrix m_ProjectionMatrix;
+    DirectX::SimpleMath::Matrix m_ViewMatrix;
 
 	std::vector<ID3D11RasterizerState*> m_rasterizerStates;
 	std::vector<ID3D11BlendState*> m_blendStates;
@@ -61,7 +59,7 @@ private:
     int m_ClientWidth;
     int m_ClientHeight;
     bool m_Enable4xMSAA;
-	const Vector4 m_ClearColor = { 0.2f, 0.2f, 0.2f, 1.0f };
+	const DirectX::SimpleMath::Vector4 m_ClearColor = { 0.2f, 0.2f, 0.2f, 1.0f };
 
 
     UINT m_4xMsaaQuality;

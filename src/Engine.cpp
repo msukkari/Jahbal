@@ -27,11 +27,13 @@
 #include "BillboardVisual.h"
 #include "TerrainVisual.h"
 
-using namespace DirectX;
-
 Engine* Engine::m_spInstance = nullptr;
 
 #define getCurTime() std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count()
+
+using DirectX::SimpleMath::Matrix;
+using DirectX::SimpleMath::Vector3;
+using DirectX::SimpleMath::Vector4;
 
 bool Engine::Init()
 {
@@ -97,7 +99,7 @@ bool Engine::Init()
 			ID3D11ShaderResourceView* srv;
 			std::string path = "resources/textures/brickwall.jpg";
 			std::wstring wc = std::wstring(path.begin(), path.end());
-			CreateWICTextureFromFile(
+			DirectX::CreateWICTextureFromFile(
 				Engine::GetInstance()->GetRenderer()->GetGFXDevice(),
 				Engine::GetInstance()->GetRenderer()->GetGFXDeviceContext(),
 				wc.c_str(),
@@ -111,7 +113,7 @@ bool Engine::Init()
 		// load tree billboard texture
 		ID3D11ShaderResourceView* treeSRV;
 		ID3D11Resource* texResource = nullptr;
-		CreateWICTextureFromFile(
+		DirectX::CreateWICTextureFromFile(
 			Engine::GetInstance()->GetRenderer()->GetGFXDevice(),
 			Engine::GetInstance()->GetRenderer()->GetGFXDeviceContext(),
 			L"resources/textures/tree0.dds",
@@ -133,12 +135,12 @@ bool Engine::Init()
 		m_ActiveScene->GetEntityList()->push_back(plane);
 		m_ActiveScene->GetEntityList()->push_back(plane2);
 
-		srand(time(NULL));
+		srand((unsigned int)time(NULL));
 		for (int i = 0; i < 10; i++)
 		{
 			for (int j = 0; j < 10; j++)
 			{
-				Entity* board = new Entity(m_JRenderer, Vector3(rand() % 40, 0.0f, 20.0f + (rand() % 40)), Vector3(0.0f, 0.0f, 0.0f));
+				Entity* board = new Entity(m_JRenderer, Vector3(float(rand() % 40), 0.0f, 20.0f + (rand() % 40)), Vector3(0.0f, 0.0f, 0.0f));
 				BillboardVisual* boardVisual = new BillboardVisual(board, m_JRenderer, 10.0f, 10.0f);
 				boardVisual->m_diffuseSRV = treeSRV;
 				board->m_VisualComponent = boardVisual;
@@ -257,8 +259,8 @@ LRESULT Engine::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		PostQuitMessage(0);
 		return 0;
 	case WM_ACTIVATEAPP:
-		Keyboard::ProcessMessage(msg, wParam, lParam);
-		Mouse::ProcessMessage(msg, wParam, lParam);
+		DirectX::Keyboard::ProcessMessage(msg, wParam, lParam);
+		DirectX::Mouse::ProcessMessage(msg, wParam, lParam);
 		break;
 	case WM_INPUT:
 	case WM_MOUSEMOVE:
@@ -272,13 +274,13 @@ LRESULT Engine::MsgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_XBUTTONDOWN:
 	case WM_XBUTTONUP:
 	case WM_MOUSEHOVER:
-		Mouse::ProcessMessage(msg, wParam, lParam);
+		DirectX::Mouse::ProcessMessage(msg, wParam, lParam);
 		break;
 	case WM_KEYDOWN:
 	case WM_SYSKEYDOWN:
 	case WM_KEYUP:
 	case WM_SYSKEYUP:
-		Keyboard::ProcessMessage(msg, wParam, lParam);
+		DirectX::Keyboard::ProcessMessage(msg, wParam, lParam);
 		break;
 	}
     return DefWindowProc(hwnd, msg, wParam, lParam);
@@ -289,7 +291,7 @@ void Engine::Run()
 {
     MSG msg = { 0 };
 
-	double currentTime = getCurTime(), newTime = getCurTime(), frameTime;
+	__int64 currentTime = getCurTime(), newTime = getCurTime(), frameTime;
 		
 	double fpsCounter = 0;
 	double frameCount = 0;
@@ -338,12 +340,12 @@ void Engine::HandleEvents()
 	if (kb.Escape) m_Running = false;
 }
 
-void Engine::Update(float dt)
+void Engine::Update(__int64 dt_msec)
 {
-	m_ActiveScene->GetActiveCamera()->Update(dt);
+	m_ActiveScene->GetActiveCamera()->Update(dt_msec);
 	for (unsigned int i = 0; i < m_ActiveScene->GetEntityList()->size(); i++)
 	{
-		m_ActiveScene->GetEntityList()->at(i)->Update(dt);
+		m_ActiveScene->GetEntityList()->at(i)->Update(dt_msec);
 	}
 }
 

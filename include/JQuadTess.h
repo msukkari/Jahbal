@@ -7,8 +7,6 @@
 #include "Material.h"
 #include "Light.h"
 
-using namespace DirectX;
-
 class JQuadTess : public Shader
 {
 public:

@@ -10,9 +10,9 @@ struct MeshVertex
 		: position(px, py, pz), normal(nx, ny, nz), uv(u, v) {}
 	MeshVertex() : position(0.0f, 0.0f, 0.0f), normal(0.0f, 0.0f, 0.0f), uv(0.0f, 0.0f) {}
 
-	Vector3 position;
-	Vector3 normal;
-	Vector2 uv;
+    DirectX::SimpleMath::Vector3 position;
+    DirectX::SimpleMath::Vector3 normal;
+    DirectX::SimpleMath::Vector2 uv;
 };
 
 class MeshVisual : public VisualComponent

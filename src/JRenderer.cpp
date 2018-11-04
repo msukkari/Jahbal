@@ -26,7 +26,9 @@
 #include "JTerrain.h"
 #include "Light.h"
 
-using namespace DirectX;
+using DirectX::SimpleMath::Matrix;
+using DirectX::SimpleMath::Vector3;
+using DirectX::SimpleMath::Vector4;
 
 bool JRenderer::Init(int width, int height, HWND hMainWnd)
 {
@@ -345,8 +347,8 @@ void JRenderer::ShutDown()
 	ReleaseCOM(m_depthStencilBuffer);
 
 
-	for (int i = 0; i < (UINT)m_rasterizerStates.size(); i++) ReleaseCOM(m_rasterizerStates[i]);
-	for (int i = 0; i < (UINT)m_blendStates.size(); i++) ReleaseCOM(m_blendStates[i]);
+	for (unsigned int i = 0; i < (UINT)m_rasterizerStates.size(); i++) ReleaseCOM(m_rasterizerStates[i]);
+	for (unsigned int i = 0; i < (UINT)m_blendStates.size(); i++) ReleaseCOM(m_blendStates[i]);
 
 	// Restore all default settings.
 	if (m_d3dImmediateContext)

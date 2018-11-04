@@ -7,8 +7,6 @@
 #include "DirectXTK/SimpleMath.h"
 #include "Mesh.h"
 
-using namespace DirectX;
-
 struct MeshVertex;
 
 class GeometryGenerator

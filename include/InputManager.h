@@ -4,8 +4,6 @@
 #include "DirectXTK\keyboard.h"
 #include "DirectXTK\Mouse.h"
 
-using namespace DirectX;
-
 class InputManager
 {
 public:

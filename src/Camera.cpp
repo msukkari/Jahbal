@@ -1,12 +1,16 @@
 #include "Camera.h"
 #include "InputManager.h"
 
+using DirectX::SimpleMath::Matrix;
+using DirectX::SimpleMath::Vector3;
+
 Camera::Camera(float radius)
 {
 	m_Phi = 0;
 	m_Theta = 0;
 	m_Radius = radius;
-	m_moveSpeed = 5;
+	m_moveSpeed = 3;
+    m_scrollSpeed = 40;
 
 	UpdatePosition();
 	m_target = Vector3::Zero;
@@ -14,23 +18,24 @@ Camera::Camera(float radius)
 
 Camera::Camera() : Camera(20.0){}
 
-void Camera::Update(float dt)
+void Camera::Update(__int64 dt_msec)
 {
 	auto kb = InputManager::GetInstance()->m_Keyboard->GetState();
+    float dt_sec = float(dt_msec) / 1000.0f;
 
 	float phi = m_Phi;
 	float theta = m_Theta;
 	float radius = m_Radius;
 	if (kb.Up || kb.W)
-		phi += 0.0005f * dt * m_moveSpeed;
+		phi += dt_sec * m_moveSpeed;
 	if (kb.Down || kb.S)
-		phi -= 0.0005f * dt * m_moveSpeed;
+		phi -= dt_sec * m_moveSpeed;
 	if (kb.Left || kb.A)
-		theta -= 0.0005f * dt * m_moveSpeed;
+		theta -= dt_sec * m_moveSpeed;
 	if (kb.Right || kb.D)
-		theta += 0.0005f * dt * m_moveSpeed;
-	if (kb.OemPlus) radius += 0.01f * dt * m_moveSpeed;
-	if (kb.OemMinus) radius -= 0.01f * dt * m_moveSpeed;
+		theta += dt_sec * m_moveSpeed;
+	if (kb.OemPlus) radius += dt_sec * m_scrollSpeed;
+	if (kb.OemMinus) radius -= dt_sec * m_scrollSpeed;
 
 	radius = radius < 1.0 ? 1.0f : radius;
 	phi = phi >(3.14f / 2.0f) ? (3.14f / 2.0f) : (phi < -(3.14f / 2.0f) ? -(3.14f / 2.0f) : phi);

@@ -10,9 +10,9 @@ struct TerrainVertex
 	TerrainVertex()
 		: position(0.0f, 0.0f, 0.0f) {}
 
-	Vector3 position;
-	Vector2 textureCoord;
-	Vector2 boundsY;
+    DirectX::SimpleMath::Vector3 position;
+    DirectX::SimpleMath::Vector2 textureCoord;
+    DirectX::SimpleMath::Vector2 boundsY;
 };
 
 struct TerrainInfo
