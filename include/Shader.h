@@ -21,27 +21,27 @@ public:
 
 
 #define WVP_DEC	\
-	void SetWorldViewProj(Matrix M) { WorldViewProj->SetMatrix(reinterpret_cast<const float*>(&M)); }	\
+	void SetWorldViewProj(DirectX::SimpleMath::Matrix M) { WorldViewProj->SetMatrix(reinterpret_cast<const float*>(&M)); }	\
 	ID3DX11EffectMatrixVariable* WorldViewProj;	\
 
 #define WORLD_DEC	\
-	void SetWorld(Matrix M) { World->SetMatrix(reinterpret_cast<const float*>(&M)); }	\
+	void SetWorld(DirectX::SimpleMath::Matrix M) { World->SetMatrix(reinterpret_cast<const float*>(&M)); }	\
 	ID3DX11EffectMatrixVariable* World;	\
 
 #define WOLRDINV_DEC	\
-	void SetWorldInvTranspose(Matrix M) { WorldInvTranspose->SetMatrix(reinterpret_cast<const float*>(&M)); }	\
+	void SetWorldInvTranspose(DirectX::SimpleMath::Matrix M) { WorldInvTranspose->SetMatrix(reinterpret_cast<const float*>(&M)); }	\
 	ID3DX11EffectMatrixVariable* WorldInvTranspose;	\
 
 #define TPARAMS_DEC \
-	void SetTessParams(const Vector4& v) {TessParams->SetRawValue(&v, 0, sizeof(Vector4));} \
+	void SetTessParams(const DirectX::SimpleMath::Vector4& v) {TessParams->SetRawValue(&v, 0, sizeof(DirectX::SimpleMath::Vector4));} \
 	ID3DX11EffectVectorVariable* TessParams; \
 
 #define VP_DEC \
-	void SetViewProj(Matrix M) {ViewProj->SetMatrix(reinterpret_cast<const float*>(&M));}	\
+	void SetViewProj(DirectX::SimpleMath::Matrix M) {ViewProj->SetMatrix(reinterpret_cast<const float*>(&M));}	\
 	ID3DX11EffectMatrixVariable* ViewProj;	\
 
 #define EYEPOS_DEC																				\
-	void SetEyePosW(const Vector3& v) { EyePosW->SetRawValue(&v, 0, sizeof(Vector3)); }			\
+	void SetEyePosW(const DirectX::SimpleMath::Vector3& v) { EyePosW->SetRawValue(&v, 0, sizeof(DirectX::SimpleMath::Vector3)); }			\
 	ID3DX11EffectVectorVariable* EyePosW;															\
 
 #define DLIGHT_DEC	\

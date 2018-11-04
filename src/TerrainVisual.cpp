@@ -10,6 +10,10 @@
 #include "ShaderManager.h"
 #include "JTerrain.h"
 
+using DirectX::SimpleMath::Matrix;
+using DirectX::SimpleMath::Vector3;
+using DirectX::SimpleMath::Vector2;
+
 TerrainVisual::TerrainVisual(BaseEntity* owner, JRenderer* renderer, TerrainInfo info) :
 	VisualComponent(owner, renderer, VisualType::TERRAIN), m_terrainInfo(info)
 {

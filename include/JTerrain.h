@@ -3,8 +3,6 @@
 #include "Shader.h"
 #include "DirectXTK\SimpleMath.h"
 
-using namespace DirectX;
-
 class JTerrain : public Shader
 {
 public:

@@ -7,8 +7,6 @@
 
 #include "DirectXTK/SimpleMath.h"
 
-using namespace DirectX;
-
 struct MeshVertex;
 
 class SubMesh

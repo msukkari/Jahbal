@@ -15,8 +15,6 @@ class SubMesh;
 
 struct MeshVertex;
 
-using namespace DirectX;
-
 struct Texture
 {
 	unsigned int ID;

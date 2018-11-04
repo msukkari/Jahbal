@@ -26,7 +26,9 @@
 #include "JTerrain.h"
 #include "Light.h"
 
-using namespace DirectX;
+using DirectX::SimpleMath::Matrix;
+using DirectX::SimpleMath::Vector3;
+using DirectX::SimpleMath::Vector4;
 
 bool JRenderer::Init(int width, int height, HWND hMainWnd)
 {

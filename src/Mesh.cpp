@@ -82,7 +82,7 @@ bool Mesh::createSRVFromAssimpMat(aiMaterial* mat, aiTextureType type, ID3D11Sha
 	ID3D11Resource* texResource = nullptr;
 	std::string path = m_meshFolder + str.C_Str();
 	std::wstring wc = std::wstring(path.begin(), path.end());
-	CreateWICTextureFromFile(
+	DirectX::CreateWICTextureFromFile(
 		Engine::GetInstance()->GetRenderer()->GetGFXDevice(),
 		Engine::GetInstance()->GetRenderer()->GetGFXDeviceContext(),
 		wc.c_str(),
